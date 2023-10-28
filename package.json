@@ -1,0 +1,10 @@
+{
+  "name": "MatchyoSports",
+  "version": "0.1.0",
+  "description": "A website for matching people with partners to play sport with",
+  "main": "index.ts",
+  "repository": "https://github.com/ESP-Number-One/MatchyoSports",
+  "author": "",
+  "license": "MIT",
+  "private": true
+}
