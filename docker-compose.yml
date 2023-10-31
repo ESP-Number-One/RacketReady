@@ -1,0 +1,28 @@
+version: "3.4"
+services:
+  frontend:
+    image: node:alpine3.18
+    container_name: frontend
+    # entrypoint: /bin/sh
+    ports:
+      - 3000:3000
+    working_dir: /srv/app
+    volumes:
+      - type: bind
+        source: ./frontend
+        target: /srv/app
+    tty: true
+    command: yarn install && yarn run dev
+  backend:
+    image: node:alpine3.18
+    container_name: backend
+    # entrypoint: /bin/sh
+    ports:
+      - 3001:3000
+    working_dir: /srv/app
+    volumes:
+      - type: bind
+        source: ./backend
+        target: /srv/app
+    tty: true
+    command: yarn install && yarn run dev

@@ -1,31 +1,34 @@
 # MatchyoSports
 
+This is the mono repo for everything with this project because its nicely
+organised
+
 ## Requirements
 
 You probably want to research into each of these to actually understand what
 each of their purposes are.
 
-- [poetry](https://python-poetry.org/docs/) w/ Python 3.11
 - node v20 with npm and yarn (use [`nvm`](https://github.com/nvm-sh/nvm) to
   install please - if on Windows there is a fork or something
   [here](https://github.com/coreybutler/nvm-windows), don't know how good it is
   tho)
 - [docker](https://www.docker.com/) if you want to have some fun with it
-- [webpack](https://webpack.js.org/guides/installation/) should be installed
-  with yarn but you may want to install globally
+- [vite](https://vitejs.dev)
 
 ## Installation
 
+To be updated once the final system has been designed
+
 ```sh
+# It may ask you to login to overleaf in the console when cloning, just use your
+# credentials for that and it should be fine.
 git clone --recurse-submodules -j8 https://github.com/ESP-Number-One/MatchyoSports.git
 cd MatchyoSports
-poetry install
-cd web-app
+cd frontend
+yarn install
+cd ../backend
 yarn install
 ```
-
-It may ask you to login to overleaf in the console when cloning, just use your
-credentials for that and it should be fine.
 
 ## Usage
 
@@ -38,23 +41,6 @@ TODO: Implement live reloading
 ```sh
 docker build -t matchyosports:latest .
 docker run --rm -p 8080:8080 matchyosports:latest
-```
-
-### Manually
-
-You then have to build the react app:
-
-```sh
-cd web-app
-yarn build
-```
-
-To then run the server:
-
-```sh
-cd .. # Going back to the MatchyoSports dir
-poetry shell
-flask run --debug
 ```
 
 ## Contributing
@@ -72,7 +58,7 @@ flask run --debug
 
 ## Code Quality Standards
 
-### Both Languages
+### Overview
 
 - 4 spaces as tabs
 - Lines should not be longer than 80 characters (install extension)
@@ -88,137 +74,21 @@ flask run --debug
 - Methods should be ordered alphabetically (with private methods ordered
   separately and at the bottom of the file) e.g. in python:
 
-  ```python
-  def a_func():
-      ...
-
-  def b_func():
-      ...
-
-  def z_func():
-      ...
-
-  def _a_private_func():
-    ...
-
-  def _b_private_func():
-    ...
+  ```js
+  function a_func() {}
+  function b_func() {}
+  function z_func() {}
+  function _a_private_func() {}
+  function _b_private_func() {}
   ```
 
 #### Use a Linter
 
 Linters usually will catch most issues, these can be installed as extensions to
-your preferred editor. E.g. for python use [PyLint](https://pylint.org/) and
-[Flake8](https://flake8.pycqa.org/en/latest/) and for TypeScript we will be
+your preferred editor. E.g. for TypeScript we will be
 using [ESLint](https://eslint.org/)
 
-### Python
-
-Should follow [pep-8](https://peps.python.org/pep-0008/) and parts of flake8
-(however some features have been turned off by [.flake8](./.flake8) file)
-
-Quick overview:
-
-- `snake_case` for variables, functions and modules
-- `PascalCase` for classes
-- Global variables should not be used, however constants can when the are in
-  `SCREAMING_CASE`.
-- Prefer `"` over `'` for strings, unless it is a single character.
-- Protected methods and attributes to start with `_`, private to start with 
-  `__`
-- When a variable is not used, give it the name `_` e.g.
-
-  ```python
-  for _ in range(10):
-      print("Hi")
-
-  (important_var, _) = some_func()
-  ```
-
-- Please use statically written code when possible (only for variables when
-  it's hard to tell) e.g.
-
-  ```python
-  MY_CONST: dict[str, set[list[(str|int)]]] = {
-      "something": set(["hi"], [2], [3]),
-  }
-
-  def my_func(param1: int, param2: list[str]) -> (dict[str, int]|None):
-      my_variable = "hi"
-      ...
-
-  def void_func():
-      ...
-  ```
-
-  However note that we should try to avoid using the `str|int` type and keep to
-  one type when possible.
-
-#### Documentation
-
-Documentation should be for all public modules, methods, classes and functions
-(however please also try to do them for private versions, but they don't have
-to be as indepth).
-
-The style of documentation is kinda whatever you want it to be, so here is a
-somewhat okay layout. (Any better styles are most welcome as long as we are
-consistent)
-
-Example:
-
-example_module.py
-
-```python
-"""
-Description
-
-Global Variables
-----------------
-...
-
-Public Classes
---------------
-...
-
-Public Methods
---------------
-...
-"""
-
-def my_func(param1: int) -> str:
-    """Description of return which fits in less than 80 chars"""
-    ...
-
-def my_complex_func(param1: list[str]):
-    """
-    Description
-
-    Parameters
-        param1 (type): Description
-
-    Return
-        brief_name (type): Description
-    """
-
-class MyClass:
-  """
-  Description
-
-  Attributes
-  ----------
-  ...
-
-  Public Methods
-  --------------
-  ...
-  """
-
-  def my_method():
-    """..."""
-  ...
-```
-
-### TypeScript
+### Specifically
 
 - We are using `.tsx` over `.ts` files for a reason, go look up the difference
 - `camelCase` for variables + functions
@@ -276,3 +146,6 @@ class MyClass:
 
 TypeScript + JavaScript have actually good documentation (probably the only
 good thing about them), so please use it.
+
+Basically please read through
+[this](https://gamedevacademy.org/javascript-docstrings-tutorial/).

@@ -1,3 +1,2 @@
-web-app/.yarn
-web-app/.yarnrc.yml
-__pycache__
+*/.yarn
+*/.yarnrc.yml

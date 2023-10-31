@@ -1,4 +1,0 @@
-[flake8]
-extend-ignore = E272,E221,E227,E201,E202
-exclude = .git,__pycache__
-max-complexity = 10
