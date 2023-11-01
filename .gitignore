@@ -1,6 +1,4 @@
 # Logs
-build
-.yarn
 logs
 *.log
 npm-debug.log*
@@ -10,6 +8,8 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+build
+.yarn
 dist
 dist-ssr
 *.local

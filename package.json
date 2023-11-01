@@ -1,0 +1,12 @@
+{
+    "name": "esp-group-one",
+    "private": true,
+    "workspaces": [
+        "backend",
+        "frontend"
+    ],
+    "scripts": {
+        "dev": "npm run dev --port=3001 --workspace=frontend & npm run dev --workspace=backend",
+        "yarn-dev": "yarn workspace frontend dev --port=3001 & yarn workspace backend dev"
+    }
+}
