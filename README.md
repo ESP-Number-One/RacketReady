@@ -1,47 +1,16 @@
-# MatchyoSports
+## ESP Group One &mdash; Starter Code?
 
-This is the mono repo for everything with this project because its nicely
-organised
+Essentially this is a Typescript-all-the-way-down stack.
 
-## Requirements
+* ESLint is being used to lint `.ts(x)` files.
+* Prettier is being used to format code.
 
-You probably want to research into each of these to actually understand what
-each of their purposes are.
+### Getting Started
 
-- node v20 with npm and yarn (use [`nvm`](https://github.com/nvm-sh/nvm) to
-  install please - if on Windows there is a fork or something
-  [here](https://github.com/coreybutler/nvm-windows), don't know how good it is
-  tho)
-- [docker](https://www.docker.com/) if you want to have some fun with it
-- [vite](https://vitejs.dev)
-
-## Installation
-
-To be updated once the final system has been designed
-
-```sh
-# It may ask you to login to overleaf in the console when cloning, just use your
-# credentials for that and it should be fine.
-git clone --recurse-submodules -j8 https://github.com/ESP-Number-One/MatchyoSports.git
-cd MatchyoSports
-cd frontend
-yarn install
-cd ../backend
-yarn install
-```
-
-## Usage
-
-This is likely to change as we add more requirements + secrets
-
-### Docker
-
-TODO: Implement live reloading
-
-```sh
-docker build -t matchyosports:latest .
-docker run --rm -p 8080:8080 matchyosports:latest
-```
+1. Clone this repo: `git clone https://github.com/ESP-Number-One/MatchyoSports`
+2. Install the dependencies (either `npm install` or `yarn install`).
+3. Run the dev servers (either `npm run dev`, `yarn dev`)
+4. Check out the result at [http://localhost:3001]
 
 ## Contributing
 
@@ -60,11 +29,13 @@ docker run --rm -p 8080:8080 matchyosports:latest
 
 ### Overview
 
-- 4 spaces as tabs
+This should mostly be done by prettier + eslint, but so you know
+
+- 2 spaces as tabs
 - Lines should not be longer than 80 characters (install extension)
 - Trailing commas when the bracket on a new line (see below)
 - NO trailing whitespaces! (Install an extension to remove it for you)
-- Space after comments e.g. `# something` or `// something`
+- Space after comments e.g. `// something`
 - Try to prioritise readability of code
 - Order imports alphabetically but split internal imports
 - Prefer documentation over comments (see below on how you do that)
@@ -90,7 +61,6 @@ using [ESLint](https://eslint.org/)
 
 ### Specifically
 
-- We are using `.tsx` over `.ts` files for a reason, go look up the difference
 - `camelCase` for variables + functions
 - `PascalCase` for classes
 - `SCREAMING_CASE` for global constants
