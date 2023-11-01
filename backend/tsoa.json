@@ -10,10 +10,5 @@
   },
   "routes": {
     "routesDir": "routes"
-  },
-  "compilerOptions": {
-    "lib": [
-      "ES2022"
-    ]
   }
 }
