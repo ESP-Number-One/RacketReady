@@ -4,7 +4,13 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [fruits, setFruits] = useState<string[]>([])
+  const [selectedFruit, setSelectedFruit] = useState<string | null>(null);
+
+
+  fetch(`http://localhost:3000/fruits`)
+    .then(res => res.json())
+    .then(setFruits);
 
   return (
     <>
@@ -18,8 +24,11 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+        <select id="fruit" onChange={e => setSelectedFruit(() => e.target.value)}>
+          {fruits.map(a => (<option key={a} value={a}>{a}</option>))}
+        </select><br/>
+        <button disabled={selectedFruit === null} onClick={async () => alert((await fetch(`http://localhost:3000/fruits/${selectedFruit}`).then(r => r.json())).price)}>
+          Click for price.
         </button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
