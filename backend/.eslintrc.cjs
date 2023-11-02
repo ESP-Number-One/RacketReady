@@ -1,7 +1,5 @@
+const fs = require("fs");
+
 /* eslint-env node */
-module.exports = {
-    extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended',],
-    parser: '@typescript-eslint/parser',
-    plugins: ['@typescript-eslint',],
-    root: true,
-  };
+const config = JSON.parse(fs.readFileSync("../@common/eslint.json"));
+module.exports = config;

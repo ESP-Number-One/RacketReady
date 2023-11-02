@@ -1,3 +1,5 @@
-import config from "../@meta/prettier.json";
+const fs = require("fs");
 
-export default config;
+const config = JSON.parse(fs.readFileSync("../@common/prettier.json"));
+
+module.exports = config;
