@@ -26,7 +26,7 @@ function App() {
       <div className="card">
         <select id="fruit" onChange={e => setSelectedFruit(() => e.target.value)}>
           {fruits.map(a => (<option key={a} value={a}>{a}</option>))}
-        </select><br/>
+        </select><br />
         <button disabled={selectedFruit === null} onClick={async () => alert((await fetch(`http://localhost:3000/fruits/${selectedFruit}`).then(r => r.json())).price)}>
           Click for price.
         </button>
