@@ -6,8 +6,10 @@
   "scripts": {
     "build": "tsoa spec-and-routes && tsc",
     "dev": "npx tsoa spec-and-routes && concurrently \"nodemon\" \"nodemon -x npx tsoa spec-and-routes\"",
+    "format": "prettier --write '**/*.tsx' '**/*.ts'",
     "gen": "tsoa routes",
-    "lint": "eslint --ext ts",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix",
     "start": "node build/src/server.js"
   },
   "keywords": [],

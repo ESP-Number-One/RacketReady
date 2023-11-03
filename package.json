@@ -7,8 +7,10 @@
   ],
   "scripts": {
     "dev": "npm run dev --port=3001 --workspace=frontend & npm run dev --workspace=backend",
-    "yarn-dev": "yarn workspace frontend dev --port=3001 & yarn workspace backend dev",
-    "lint": "yarn workspace frontend lint & yarn workspace backend lint"
+    "format": "yarn workspace frontend format & yarn workspace backend format",
+    "lint": "yarn workspace frontend lint & yarn workspace backend lint",
+    "lint:fix": "yarn workspace frontend lint:fix & yarn workspace backend lint:fix",
+    "yarn-dev": "yarn workspace frontend dev --port=3001 & yarn workspace backend dev"
   },
   "packageManager": "yarn@4.0.1"
 }

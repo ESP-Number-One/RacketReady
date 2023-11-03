@@ -2,8 +2,8 @@
 
 Essentially this is a Typescript-all-the-way-down stack.
 
-* ESLint is being used to lint `.ts(x)` files.
-* Prettier is being used to format code.
+- ESLint is being used to lint `.ts(x)` files.
+- Prettier is being used to format code.
 
 ### Getting Started
 
@@ -12,6 +12,39 @@ Essentially this is a Typescript-all-the-way-down stack.
 3. Run the dev servers (either `npm run dev`, `yarn dev`)
 4. Check out the result at [http://localhost:3001]
 
+### Other useful commands
+
+These commands should be run in the root of the project, or in `backend` and
+`frontend` if you only want to run it on those respectively.
+
+If you have the extensions for this setup correctly you should not need to run
+these but if you don't want to fath with that just run the following
+
+#### Formatting
+
+To format all the files run:
+
+```sh
+yarn format
+```
+
+#### Linting
+
+To get a list of the issues the linter has with your code run:
+
+```sh
+yarn lint
+```
+
+If you want to be lazy and have it fix most of the issues for you run:
+
+```sh
+yarn lint:fix
+```
+
+Note there will still be some parts which cannot be automatically fixed for
+you which will be printed out.
+
 ## Contributing
 
 - Always create your own branch + PR for any change, do NOT push to main
@@ -19,7 +52,6 @@ Essentially this is a Typescript-all-the-way-down stack.
 
   - The PR should include a brief description of the issue and link to the
     issue on the trello board
-
   - The PR should be reviewed by someone else before being merged and can
     contain any further discussion on there
 
