@@ -5,12 +5,47 @@ Essentially this is a Typescript-all-the-way-down stack.
 - ESLint is being used to lint `.ts(x)` files.
 - Prettier is being used to format code.
 
+### Requirements
+
+Basically just Node 20.9.0, please install via `nvm` if you haven't go that:
+
+For windows [install here](https://github.com/coreybutler/nvm-windows/releases).
+
+Once this has installed you can then open up a terminal and run:
+
+```bash
+nvm install 20.9.0
+nvm use 20.9.0
+npm install -g yarn
+```
+
+Then you can check the installation by going
+
+```bash
+node --version
+# v20.9.0
+yarn --version
+# 1.22.19
+```
+
+If it says the commands are not recognised, please check your PATH (or ask
+one of the linux users for help).
+
 ### Getting Started
 
 1. Clone this repo: `git clone https://github.com/ESP-Number-One/MatchyoSports`
-2. Install the dependencies (either `npm install` or `yarn install`).
-3. Run the dev servers (either `npm run dev`, `yarn dev`)
-4. Check out the result at [http://localhost:3001]
+2. cd into the repo `cd MatchyoSports`
+3. Install the dependencies (either `npm install` or `yarn install`).
+   If you want to have some fun with yarn, you can run:
+
+```bash
+yarn set version berry
+yarn install
+yarn dlx @yarnpkg/sdks vscode
+```
+
+4. Run the dev servers (either `npm run dev`, `yarn dev`)
+5. Check out the result at [http://localhost:3001]
 
 ### Other useful commands
 
@@ -24,7 +59,7 @@ these but if you don't want to fath with that just run the following
 
 To format all the files run:
 
-```sh
+```bash
 yarn format
 ```
 
@@ -32,13 +67,13 @@ yarn format
 
 To get a list of the issues the linter has with your code run:
 
-```sh
+```bash
 yarn lint
 ```
 
 If you want to be lazy and have it fix most of the issues for you run:
 
-```sh
+```bash
 yarn lint:fix
 ```
 
