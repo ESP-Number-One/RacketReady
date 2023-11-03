@@ -805,14 +805,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mime@npm:*":
-  version: 3.0.3
-  resolution: "@types/mime@npm:3.0.3"
-  checksum: cef99f8cdc42af9de698027c2a20ba5df12bc9a89dcf5513e70103ebb55e00c5f5c585d02411f4b42fde0e78488342f1b1d3e3546a59a3da42e95fdc616e01eb
-  languageName: node
-  linkType: hard
-
-"@types/mime@npm:^1":
+"@types/mime@npm:*, @types/mime@npm:^1":
   version: 1.3.4
   resolution: "@types/mime@npm:1.3.4"
   checksum: a0a16d26c0e70a1b133e26e7c46b70b3136b7e894396bdb7de1c642f4ac87fdbbba26bf56cf73f001312289d89de4f1c06ab745d9445850df45a5a802564c4d6
@@ -1407,6 +1400,7 @@ __metadata:
     ts-node: "npm:^10.9.1"
     tsoa: "npm:^5.1.1"
     typescript: "npm:^5.2.2"
+    yarn: "npm:^1.22.19"
   languageName: unknown
   linkType: soft
 
@@ -1863,9 +1857,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.535":
-  version: 1.4.572
-  resolution: "electron-to-chromium@npm:1.4.572"
-  checksum: 12bcd1ec9bfe6947186951decac2c5bb32188d99ddf1d2a26739a84fb8e1bfa0d6bb439e16a4bdddcf0dddad4e6defcdea1f4bd02964962c198998c6b63f35d3
+  version: 1.4.571
+  resolution: "electron-to-chromium@npm:1.4.571"
+  checksum: a9132ec4480b28ea7092f23787e40b16ee2e7ffe4de57a80edaf0e3fe3823b9f0433279f34e67e3726da321320339283f366e025fe5b6cff135bec5c8ad2a2c0
   languageName: node
   linkType: hard
 
@@ -2223,6 +2217,8 @@ __metadata:
 "esp-group-one@workspace:.":
   version: 0.0.0-use.local
   resolution: "esp-group-one@workspace:."
+  dependencies:
+    yarn: "npm:^1.22.19"
   languageName: unknown
   linkType: soft
 
@@ -2483,6 +2479,7 @@ __metadata:
     react-dom: "npm:^18.2.0"
     typescript: "npm:^5.0.2"
     vite: "npm:^4.3.9"
+    yarn: "npm:^1.22.19"
   languageName: unknown
   linkType: soft
 
@@ -3566,14 +3563,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ms@npm:2.1.2":
+"ms@npm:2.1.2, ms@npm:^2.1.1":
   version: 2.1.2
   resolution: "ms@npm:2.1.2"
   checksum: a437714e2f90dbf881b5191d35a6db792efbca5badf112f87b9e1c712aace4b4b9b742dd6537f3edf90fd6f684de897cec230abde57e87883766712ddda297cc
   languageName: node
   linkType: hard
 
-"ms@npm:2.1.3, ms@npm:^2.1.1":
+"ms@npm:2.1.3":
   version: 2.1.3
   resolution: "ms@npm:2.1.3"
   checksum: d924b57e7312b3b63ad21fc5b3dc0af5e78d61a1fc7cfb5457edaf26326bf62be5307cc87ffb6862ef1c2b33b0233cdb5d4f01c4c958cc0d660948b65a287a48
@@ -3618,8 +3615,8 @@ __metadata:
   linkType: hard
 
 "node-gyp@npm:latest":
-  version: 10.0.0
-  resolution: "node-gyp@npm:10.0.0"
+  version: 10.0.1
+  resolution: "node-gyp@npm:10.0.1"
   dependencies:
     env-paths: "npm:^2.2.0"
     exponential-backoff: "npm:^3.1.1"
@@ -3633,7 +3630,7 @@ __metadata:
     which: "npm:^4.0.0"
   bin:
     node-gyp: bin/node-gyp.js
-  checksum: 6d18c65cae4f8cc87c8ff53bfa2626f43adfda5d5fbccbfe1c94c4e115f978f6c09072546ece2cffa36aa05ef30c261976cdcaa2c8beea069771f582b2989e93
+  checksum: abddfff7d873312e4ed4a5fb75ce893a5c4fb69e7fcb1dfa71c28a6b92a7f1ef6b62790dffb39181b5a82728ba8f2f32d229cf8cbe66769fe02cea7db4a555aa
   languageName: node
   linkType: hard
 
@@ -5041,6 +5038,16 @@ __metadata:
     y18n: "npm:^5.0.5"
     yargs-parser: "npm:^21.1.1"
   checksum: ccd7e723e61ad5965fffbb791366db689572b80cca80e0f96aad968dfff4156cd7cd1ad18607afe1046d8241e6fb2d6c08bf7fa7bfb5eaec818735d8feac8f05
+  languageName: node
+  linkType: hard
+
+"yarn@npm:^1.22.19":
+  version: 1.22.19
+  resolution: "yarn@npm:1.22.19"
+  bin:
+    yarn: bin/yarn.js
+    yarnpkg: bin/yarn.js
+  checksum: a6f9cdf67cca7e11141a18ffc1736a24dd569885b2ec0838982fcf21e5138840c66d9ebfc1846b0b35bc7b415cb985c65d79fb43aa1721b865e4f60c5569062a
   languageName: node
   linkType: hard
 

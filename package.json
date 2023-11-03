@@ -6,11 +6,13 @@
     "frontend"
   ],
   "scripts": {
-    "dev": "npm run dev --port=3001 --workspace=frontend & npm run dev --workspace=backend",
+    "dev": "yarn workspace frontend dev --port=3001 & yarn workspace backend dev",
     "format": "yarn workspace frontend format & yarn workspace backend format",
     "lint": "yarn workspace frontend lint & yarn workspace backend lint",
-    "lint:fix": "yarn workspace frontend lint:fix & yarn workspace backend lint:fix",
-    "yarn-dev": "yarn workspace frontend dev --port=3001 & yarn workspace backend dev"
+    "lint:fix": "yarn workspace frontend lint:fix & yarn workspace backend lint:fix"
   },
-  "packageManager": "yarn@4.0.1"
+  "packageManager": "yarn@4.0.1",
+  "dependencies": {
+    "yarn": "^1.22.19"
+  }
 }
