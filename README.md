@@ -1,4 +1,4 @@
-## ESP Group One &mdash; Starter Code?
+## ESP Group One &mdash; Starter Code
 
 Essentially this is a Typescript-all-the-way-down stack.
 
@@ -7,45 +7,49 @@ Essentially this is a Typescript-all-the-way-down stack.
 
 ### Requirements
 
-Basically just Node 20.9.0, please install via `nvm` if you haven't go that:
+- Basically just Node 20.9.0, please install via `nvm` if you haven't go that:
 
-For windows [install here](https://github.com/coreybutler/nvm-windows/releases).
+  For windows [install here](https://github.com/coreybutler/nvm-windows/releases).
 
-Once this has installed you can then open up a terminal and run:
+  Once this has installed you can then open up a terminal and run:
 
-```bash
-nvm install 20.9.0
-nvm use 20.9.0
-npm install -g yarn
-```
+  ```bash
+  nvm install 20.9.0
+  nvm use 20.9.0
+  npm install -g yarn
+  ```
 
-Then you can check the installation by going
+  Then you can check the installation by going
 
-```bash
-node --version
-# v20.9.0
-yarn --version
-# 1.22.19
-```
+  ```bash
+  node --version
+  # v20.9.0
+  yarn --version
+  # 1.22.19
+  ```
 
-If it says the commands are not recognised, please check your PATH (or ask
-one of the linux users for help).
+  If it says the commands are not recognised, please check your PATH (or ask
+  one of the linux users for help).
+
+- VSCode extensions should be recommended once opening the project (we
+  recommend using vscode for this as it will just be easier for node)
+- Docker (with docker-compose) may be required in the future when we want to
+  add the mongodb server because it would be only 1 command to start up (see
+  [here](https://docs.docker.com/desktop/install/windows-install/) to download)
+  but as of yet it is not required and so not finalised.
 
 ### Getting Started
 
-1. Clone this repo: `git clone https://github.com/ESP-Number-One/MatchyoSports`
+1. Clone this repo: `git clone https://github.com/ESP-Number-One/MatchyoSports --recursive-submodules`
+
+   This may ask you to log into your overleaf account as it will be cloning the
+   submodules (which includes the deliverables on overleaf). Please use the
+   credentials you use for that.
+
 2. cd into the repo `cd MatchyoSports`
 3. Install the dependencies (either `npm install` or `yarn install`).
-   If you want to have some fun with yarn, you can run:
-
-```bash
-yarn set version berry
-yarn install
-yarn dlx @yarnpkg/sdks vscode
-```
-
 4. Run the dev servers (either `npm run dev`, `yarn dev`)
-5. Check out the result at [http://localhost:3001]
+5. Check out the result at http://localhost:3001
 
 ### Other useful commands
 
