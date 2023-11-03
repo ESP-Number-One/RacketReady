@@ -1400,7 +1400,6 @@ __metadata:
     ts-node: "npm:^10.9.1"
     tsoa: "npm:^5.1.1"
     typescript: "npm:^5.2.2"
-    yarn: "npm:^1.22.19"
   languageName: unknown
   linkType: soft
 
@@ -2479,7 +2478,6 @@ __metadata:
     react-dom: "npm:^18.2.0"
     typescript: "npm:^5.0.2"
     vite: "npm:^4.3.9"
-    yarn: "npm:^1.22.19"
   languageName: unknown
   linkType: soft
 

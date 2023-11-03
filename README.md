@@ -47,9 +47,9 @@ Essentially this is a Typescript-all-the-way-down stack.
    credentials you use for that.
 
 2. cd into the repo `cd MatchyoSports`
-3. Install the dependencies (either `npm install` or `yarn install`).
-4. Run the dev servers (either `npm run dev`, `yarn dev`)
-5. Check out the result at http://localhost:3001
+3. Install the dependencies (either `yarn install` or `npm install`).
+4. Run the dev servers (either `yarn dev`, `npm run dev`)
+5. Check out the result at [http://localhost:3001]
 
 ### Other useful commands
 
@@ -57,7 +57,7 @@ These commands should be run in the root of the project, or in `backend` and
 `frontend` if you only want to run it on those respectively.
 
 If you have the extensions for this setup correctly you should not need to run
-these but if you don't want to fath with that just run the following
+these but if you don't want to fath with that just run the following.
 
 #### Formatting
 

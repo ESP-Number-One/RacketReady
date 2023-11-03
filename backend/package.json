@@ -19,8 +19,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "tsoa": "^5.1.1",
-    "yarn": "^1.22.19"
+    "tsoa": "^5.1.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.15",
