@@ -9,5 +9,6 @@
     "dev": "npm run dev --port=3001 --workspace=frontend & npm run dev --workspace=backend",
     "yarn-dev": "yarn workspace frontend dev --port=3001 & yarn workspace backend dev",
     "lint": "yarn workspace frontend lint & yarn workspace backend lint"
-  }
+  },
+  "packageManager": "yarn@4.0.1"
 }

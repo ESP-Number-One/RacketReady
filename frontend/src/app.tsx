@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import reactLogo from '../static/img/react.svg'
 import viteLogo from '../static/img/vite.svg'
-import '../static/img/app.css'
+import '../static/css/app.css'
 
 function App() {
   const [fruits, setFruits] = useState<string[]>([])
@@ -41,4 +41,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
