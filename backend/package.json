@@ -5,13 +5,14 @@
   "main": "index.js",
   "scripts": {
     "build": "tsoa spec-and-routes && tsc",
-    "dev": "npx tsoa spec-and-routes && concurrently \"nodemon\" \"nodemon -x npx tsoa spec-and-routes\"",
+    "dev": "tsoa spec-and-routes && concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
     "format": "prettier --write '**/*.tsx' '**/*.ts'",
     "gen": "tsoa routes",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix",
     "start": "node build/src/server.js"
   },
+  "packageManager": "yarn@4.0.1",
   "keywords": [],
   "author": "",
   "license": "ISC",
