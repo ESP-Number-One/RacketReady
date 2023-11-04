@@ -7,16 +7,23 @@ Essentially this is a Typescript-all-the-way-down stack.
 
 ### Requirements
 
-- Basically just Node 20.9.0, please install via `nvm` if you haven't go that:
+- Basically just Node 20.9.0, please install via `nvm`, if you haven't done it
+  via nvm, please uninstall it install the correct version through nvm as you
+  probably don't have the same version and/or the tools we will be using:
 
-  For windows [install here](https://github.com/coreybutler/nvm-windows/releases).
+  - For windows [install here](https://github.com/coreybutler/nvm-windows/releases).
+  - For MacOS/Linux [install here](https://github.com/nvm-sh/nvm#install--update-script) which basically gets you to run:
+
+    ```bash
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+    ```
 
   Once this has installed you can then open up a terminal and run:
 
   ```bash
   nvm install 20.9.0
   nvm use 20.9.0
-  npm install -g yarn
+  corepack enable
   ```
 
   Then you can check the installation by going
