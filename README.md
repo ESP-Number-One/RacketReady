@@ -26,6 +26,12 @@ Essentially this is a Typescript-all-the-way-down stack.
   corepack enable
   ```
 
+  On windows you will also have to open an administrative powershell instance and run:
+
+  ```
+  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+  ```
+
   Then you can check the installation by going
 
   ```bash
