@@ -1,6 +1,6 @@
 [submodule "reports/deliverable_1"]
 	path = reports/deliverable_1
-	url = https://git.overleaf.com/653b7d2a82908a9e822ccd1d
+	url = git@github.com:ESP-Number-One/deliverable-1.git
 [submodule "reports/deliverable_2"]
 	path = reports/deliverable_2
-	url = https://git.overleaf.com/6553a5e2f9c2a49fa8b5c0cb
+	url = git@github.com:ESP-Number-One/deliverable-2.git
