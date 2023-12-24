@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "module": "NodeNext",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "outDir": "build",
+    "target": "es2022",
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

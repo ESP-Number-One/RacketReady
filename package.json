@@ -1,20 +1,30 @@
 {
   "name": "esp-group-one",
-  "private": true,
+  "version": "1.0.0",
+  "packageManager": "yarn@4.0.2",
   "workspaces": [
-    "backend",
-    "frontend"
+    "packages/*"
   ],
   "scripts": {
-    "dev": "(yarn --version || npm run dev:npm) && yarn dev:yarn",
-    "dev:npm": "npm run dev --port=3001 --workspace=frontend & npm run dev --workspace=backend",
-    "dev:yarn": "yarn workspace frontend dev --port=3001 & yarn workspace backend dev",
-    "format": "yarn workspace frontend format & yarn workspace backend format",
-    "lint": "yarn workspace frontend lint & yarn workspace backend lint",
-    "lint:fix": "yarn workspace frontend lint:fix & yarn workspace backend lint:fix"
+    "build": "yarn workspaces foreach -Apt run build",
+    "dev:admin": "yarn workspaces foreach -Aip run dev",
+    "format": "run format:me && run format:ws",
+    "format:ws": "yarn workspaces foreach -Ap --exclude esp-group-one run format",
+    "format:me": "prettier --write '*.md' '*.json' .prettierrc .eslintrc.cjs",
+    "lint": "yarn workspaces foreach -Ap run lint",
+    "lint:fix": "yarn workspaces foreach -Ap run lint:fix"
   },
-  "packageManager": "yarn@4.0.1",
-  "dependencies": {
-    "yarn": "^1.22.19"
+  "devDependencies": {
+    "@vercel/style-guide": "^5.1.0",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.0.4",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-turbo": "^1.11.2",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.1.1",
+    "eslint_d": "^13.1.2",
+    "prettier": "^3.1.1",
+    "typescript": "5.x"
   }
 }

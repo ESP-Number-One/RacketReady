@@ -1,0 +1,30 @@
+{
+  "entryFile": "src/app.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": ["src/**/*_controller.ts"],
+  "spec": {
+    "outputDirectory": "build",
+    "specVersion": 3
+  },
+  "routes": {
+    "esm": true,
+    "routesDir": "routes"
+  },
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "module": "NodeNext",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "outDir": "build",
+    "target": "es2016",
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "strict": true
+  }
+}
