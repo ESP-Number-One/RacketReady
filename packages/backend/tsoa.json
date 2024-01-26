@@ -3,12 +3,12 @@
   "noImplicitAdditionalProperties": "throw-on-extras",
   "controllerPathGlobs": ["src/**/*_controller.ts"],
   "spec": {
-    "outputDirectory": "build",
+    "outputDirectory": "tsoa",
     "specVersion": 3
   },
   "routes": {
     "esm": true,
-    "routesDir": "routes"
+    "routesDir": "tsoa"
   },
   "compilerOptions": {
     "resolveJsonModule": true,

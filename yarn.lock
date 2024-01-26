@@ -495,6 +495,98 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@esp-group-one/api-client@workspace:packages/api-client":
+  version: 0.0.0-use.local
+  resolution: "@esp-group-one/api-client@workspace:packages/api-client"
+  dependencies:
+    "@esp-group-one/types": "workspace:^"
+    "@types/node": "npm:^20.11.7"
+    eslint: "npm:^8.56.0"
+    prettier: "npm:^3.1.1"
+    typescript: "npm:^5.0.2"
+  languageName: unknown
+  linkType: soft
+
+"@esp-group-one/backend@workspace:packages/backend":
+  version: 0.0.0-use.local
+  resolution: "@esp-group-one/backend@workspace:packages/backend"
+  dependencies:
+    "@tsoa/runtime": "npm:^5.0.0"
+    "@types/cors": "npm:^2.8.15"
+    "@types/express": "npm:^4.17.20"
+    "@types/node": "npm:^20.10.5"
+    "@types/swagger-ui-express": "npm:^4.1.6"
+    concurrently: "npm:^8.2.2"
+    cors: "npm:^2.8.5"
+    eslint: "npm:^8.56.0"
+    express: "npm:^4.18.2"
+    nodemon: "npm:^3.0.1"
+    prettier: "npm:^3.1.1"
+    swagger-ui-express: "npm:^5.0.0"
+    tsoa: "npm:^5.1.1"
+    typescript: "npm:^5.x"
+  languageName: unknown
+  linkType: soft
+
+"@esp-group-one/db-client@workspace:packages/db-client":
+  version: 0.0.0-use.local
+  resolution: "@esp-group-one/db-client@workspace:packages/db-client"
+  dependencies:
+    "@esp-group-one/types": "workspace:^"
+    "@types/node": "npm:^20.11.7"
+    eslint: "npm:^8.56.0"
+    mongodb: "npm:^6.3.0"
+    prettier: "npm:^3.1.1"
+    typescript: "npm:^5.0.2"
+  languageName: unknown
+  linkType: soft
+
+"@esp-group-one/frontend@workspace:packages/frontend":
+  version: 0.0.0-use.local
+  resolution: "@esp-group-one/frontend@workspace:packages/frontend"
+  dependencies:
+    "@types/react": "npm:^18.0.37"
+    "@types/react-dom": "npm:^18.0.11"
+    "@vitejs/plugin-react": "npm:^4.0.0"
+    eslint: "npm:^8.56.0"
+    prettier: "npm:^3.1.1"
+    react: "npm:^18.2.0"
+    react-dom: "npm:^18.2.0"
+    typescript: "npm:^5.0.2"
+    vite: "npm:^4.3.9"
+  languageName: unknown
+  linkType: soft
+
+"@esp-group-one/matchyo-sports@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@esp-group-one/matchyo-sports@workspace:."
+  dependencies:
+    "@vercel/style-guide": "npm:^5.1.0"
+    eslint: "npm:^8.56.0"
+    eslint-config-next: "npm:^14.0.4"
+    eslint-config-prettier: "npm:^9.1.0"
+    eslint-config-turbo: "npm:^1.11.2"
+    eslint-import-resolver-typescript: "npm:^3.6.1"
+    eslint-plugin-import: "npm:^2.29.1"
+    eslint-plugin-prettier: "npm:^5.1.1"
+    eslint_d: "npm:^13.1.2"
+    prettier: "npm:^3.1.1"
+    typescript: "npm:5.x"
+  languageName: unknown
+  linkType: soft
+
+"@esp-group-one/types@workspace:^, @esp-group-one/types@workspace:packages/types":
+  version: 0.0.0-use.local
+  resolution: "@esp-group-one/types@workspace:packages/types"
+  dependencies:
+    "@types/node": "npm:^20.10.6"
+    eslint: "npm:^8.56.0"
+    mongodb: "npm:^6.3.0"
+    prettier: "npm:^3.1.1"
+    typescript: "npm:^5.0.2"
+  languageName: unknown
+  linkType: soft
+
 "@humanwhocodes/config-array@npm:^0.11.13":
   version: 0.11.13
   resolution: "@humanwhocodes/config-array@npm:0.11.13"
@@ -592,6 +684,15 @@ __metadata:
   version: 0.14.2
   resolution: "@microsoft/tsdoc@npm:0.14.2"
   checksum: c018857ad439144559ce34a397a29ace7cf5b24b999b8e3c1b88d878338088b3a453eaac4435beaf2c7eae13c4c0aac81e42f96f0f1d48e8d4eeb438eb3bb82f
+  languageName: node
+  linkType: hard
+
+"@mongodb-js/saslprep@npm:^1.1.0":
+  version: 1.1.1
+  resolution: "@mongodb-js/saslprep@npm:1.1.1"
+  dependencies:
+    sparse-bitfield: "npm:^3.0.3"
+  checksum: b59fb1ed62b1a31ad26bbca8a5d81a4f4c0b880c95616a3650f6eb57f27b6ae83e5597fd6a63ddf899d4ace6979a79eb0024f50d33d871ef7f93f73f1106e816
   languageName: node
   linkType: hard
 
@@ -869,6 +970,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^20.10.6":
+  version: 20.10.6
+  resolution: "@types/node@npm:20.10.6"
+  dependencies:
+    undici-types: "npm:~5.26.4"
+  checksum: 6692ccfa8552ef60c4069fda3c8de726c23e8d403cdf788e3c7efa769987e80fbda5f02723dd857f9de7df24a5fa40b3ed4580ec3c5cbac04eba44cf7b2ab1dc
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^20.11.7":
+  version: 20.11.7
+  resolution: "@types/node@npm:20.11.7"
+  dependencies:
+    undici-types: "npm:~5.26.4"
+  checksum: ba4b41542b64f21a881a277189e761c553d00af0b1c02f2d8a47ebe8bc29a00ed21b45adf0bf9af2cf8ea6c92a443853d4f7b690081ceaecc150719cc574e9ea
+  languageName: node
+  linkType: hard
+
 "@types/normalize-package-data@npm:^2.4.0":
   version: 2.4.4
   resolution: "@types/normalize-package-data@npm:2.4.4"
@@ -959,6 +1078,22 @@ __metadata:
     "@types/express": "npm:*"
     "@types/serve-static": "npm:*"
   checksum: b7d10d04e70a4e35b0b98bed9ecebb51c0c9bddcb56f7132022b6022c58d643b05a7fe97e792cd6dc8d2c5d952ef173922db56137642a74b464d704fc3c8962b
+  languageName: node
+  linkType: hard
+
+"@types/webidl-conversions@npm:*":
+  version: 7.0.3
+  resolution: "@types/webidl-conversions@npm:7.0.3"
+  checksum: ac2ccff93b95ac7c8ca73dc6064403181691bba7ea144296f462dc9108a07be16cbad7b9c704b3df706dcc5a117e1f7bf7fb27aeb75b09c0f3148de8aee11aff
+  languageName: node
+  linkType: hard
+
+"@types/whatwg-url@npm:^11.0.2":
+  version: 11.0.3
+  resolution: "@types/whatwg-url@npm:11.0.3"
+  dependencies:
+    "@types/webidl-conversions": "npm:*"
+  checksum: 99dd4e2f0f6270c91cadb206c9241964391b7cbd47a669af73a161334ce251227be9bdac04fcfb57a51fc3d6cdb139767da5b3e1cd6e345c063616bd1b63d241
   languageName: node
   linkType: hard
 
@@ -1511,27 +1646,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"backend@workspace:packages/backend":
-  version: 0.0.0-use.local
-  resolution: "backend@workspace:packages/backend"
-  dependencies:
-    "@tsoa/runtime": "npm:^5.0.0"
-    "@types/cors": "npm:^2.8.15"
-    "@types/express": "npm:^4.17.20"
-    "@types/node": "npm:^20.10.5"
-    "@types/swagger-ui-express": "npm:^4.1.6"
-    concurrently: "npm:^8.2.2"
-    cors: "npm:^2.8.5"
-    eslint: "npm:^8.56.0"
-    express: "npm:^4.18.2"
-    nodemon: "npm:^3.0.1"
-    prettier: "npm:^3.1.1"
-    swagger-ui-express: "npm:^5.0.0"
-    tsoa: "npm:^5.1.1"
-    typescript: "npm:^5.x"
-  languageName: unknown
-  linkType: soft
-
 "balanced-match@npm:^1.0.0":
   version: 1.0.2
   resolution: "balanced-match@npm:1.0.2"
@@ -1621,6 +1735,13 @@ __metadata:
   bin:
     browserslist: cli.js
   checksum: 2a331aab90503130043ca41dd5d281fa1e89d5e076d07a2d75e76bf4d693bd56e73d5abcd8c4f39119da6328d450578c216cf1cd5c99b82d8a90a2ae6271b465
+  languageName: node
+  linkType: hard
+
+"bson@npm:^6.2.0":
+  version: 6.2.0
+  resolution: "bson@npm:6.2.0"
+  checksum: 90f447dbafc97cf84cadcb75fa0fe1eecdcb396492ce3d47b1fbf2e6e2ce88bfcf92d62e491e1a70c2fc4a1bf7825d6ce53ba75ed3359c772c41b93ff84db410
   languageName: node
   linkType: hard
 
@@ -2823,24 +2944,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esp-group-one@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "esp-group-one@workspace:."
-  dependencies:
-    "@vercel/style-guide": "npm:^5.1.0"
-    eslint: "npm:^8.56.0"
-    eslint-config-next: "npm:^14.0.4"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-config-turbo: "npm:^1.11.2"
-    eslint-import-resolver-typescript: "npm:^3.6.1"
-    eslint-plugin-import: "npm:^2.29.1"
-    eslint-plugin-prettier: "npm:^5.1.1"
-    eslint_d: "npm:^13.1.2"
-    prettier: "npm:^3.1.1"
-    typescript: "npm:5.x"
-  languageName: unknown
-  linkType: soft
-
 "espree@npm:^9.6.0, espree@npm:^9.6.1":
   version: 9.6.1
   resolution: "espree@npm:9.6.1"
@@ -3131,22 +3234,6 @@ __metadata:
   checksum: c6d27f3ed86cc5b601404822f31c900dd165ba63fff8152a3ef714e2012e7535027063bc67ded4cb5b3a49fa596495d46cacd9f47d6328459cf570f08b7d9e5a
   languageName: node
   linkType: hard
-
-"frontend@workspace:packages/frontend":
-  version: 0.0.0-use.local
-  resolution: "frontend@workspace:packages/frontend"
-  dependencies:
-    "@types/react": "npm:^18.0.37"
-    "@types/react-dom": "npm:^18.0.11"
-    "@vitejs/plugin-react": "npm:^4.0.0"
-    eslint: "npm:^8.56.0"
-    prettier: "npm:^3.1.1"
-    react: "npm:^18.2.0"
-    react-dom: "npm:^18.2.0"
-    typescript: "npm:^5.0.2"
-    vite: "npm:^4.3.9"
-  languageName: unknown
-  linkType: soft
 
 "fs-extra@npm:^10.1.0":
   version: 10.1.0
@@ -4330,6 +4417,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"memory-pager@npm:^1.0.2":
+  version: 1.5.0
+  resolution: "memory-pager@npm:1.5.0"
+  checksum: 2596e80c99fee24f05bd8a20cde2ee899012c996f4ec361ac76ed6f009f34149d733ac6f76880106ccd6a66d062ad439357578d383d429df66ba1278f68806e9
+  languageName: node
+  linkType: hard
+
 "merge-descriptors@npm:1.0.1":
   version: 1.0.1
   resolution: "merge-descriptors@npm:1.0.1"
@@ -4545,6 +4639,50 @@ __metadata:
   bin:
     mkdirp: bin/cmd.js
   checksum: 46ea0f3ffa8bc6a5bc0c7081ffc3907777f0ed6516888d40a518c5111f8366d97d2678911ad1a6882bf592fa9de6c784fea32e1687bb94e1f4944170af48a5cf
+  languageName: node
+  linkType: hard
+
+"mongodb-connection-string-url@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "mongodb-connection-string-url@npm:3.0.0"
+  dependencies:
+    "@types/whatwg-url": "npm:^11.0.2"
+    whatwg-url: "npm:^13.0.0"
+  checksum: f2b779f51869da20b2ba2af5157a1d04376be938241fee741c0a0572ecbbd4c97f169fb2b33d19eec5c9537e0d9a6c48e6d4cc8cc3b6b330ab57159760f6a4cf
+  languageName: node
+  linkType: hard
+
+"mongodb@npm:^6.3.0":
+  version: 6.3.0
+  resolution: "mongodb@npm:6.3.0"
+  dependencies:
+    "@mongodb-js/saslprep": "npm:^1.1.0"
+    bson: "npm:^6.2.0"
+    mongodb-connection-string-url: "npm:^3.0.0"
+  peerDependencies:
+    "@aws-sdk/credential-providers": ^3.188.0
+    "@mongodb-js/zstd": ^1.1.0
+    gcp-metadata: ^5.2.0
+    kerberos: ^2.0.1
+    mongodb-client-encryption: ">=6.0.0 <7"
+    snappy: ^7.2.2
+    socks: ^2.7.1
+  peerDependenciesMeta:
+    "@aws-sdk/credential-providers":
+      optional: true
+    "@mongodb-js/zstd":
+      optional: true
+    gcp-metadata:
+      optional: true
+    kerberos:
+      optional: true
+    mongodb-client-encryption:
+      optional: true
+    snappy:
+      optional: true
+    socks:
+      optional: true
+  checksum: e846c941b739c503b34c02500db56f966fdb8930420db24214d4305ac987415464ebc9eefaf5da1ffb7521844fc733177433b4cc7ba43c423f55eed4f2670cfe
   languageName: node
   linkType: hard
 
@@ -5133,7 +5271,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"punycode@npm:^2.1.0":
+"punycode@npm:^2.1.0, punycode@npm:^2.3.0":
   version: 2.3.1
   resolution: "punycode@npm:2.3.1"
   checksum: 14f76a8206bc3464f794fb2e3d3cc665ae416c01893ad7a02b23766eb07159144ee612ad67af5e84fa4479ccfe67678c4feb126b0485651b302babf66f04f9e9
@@ -5735,6 +5873,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sparse-bitfield@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "sparse-bitfield@npm:3.0.3"
+  dependencies:
+    memory-pager: "npm:^1.0.2"
+  checksum: 248c6ff7b5e354735e1daac4059222a29c9d291dfcf265daf675d13515eeaac454cfcccd687c8d134f86698b39abd7ad4d7434f7272dd6f8e41a00f21aae4194
+  languageName: node
+  linkType: hard
+
 "spawn-command@npm:0.0.2":
   version: 0.0.2
   resolution: "spawn-command@npm:0.0.2"
@@ -6063,6 +6210,15 @@ __metadata:
   bin:
     nodetouch: ./bin/nodetouch.js
   checksum: dacb4a639401b83b0a40b56c0565e01096e5ecf38b22a4840d9eeb642a5bea136c6a119e4543f9b172349a5ee343b10cda0880eb47f7d7ddfd6eac59dcf53244
+  languageName: node
+  linkType: hard
+
+"tr46@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "tr46@npm:4.1.1"
+  dependencies:
+    punycode: "npm:^2.3.0"
+  checksum: 92085dcf186f56a49ba4124a581d9ae6a5d0cd4878107c34e2e670b9ddc49da85e4950084bb3e75015195cc23f37ae1c02d45064e94dd6018f5e789aa51d93a8
   languageName: node
   linkType: hard
 
@@ -6425,6 +6581,23 @@ __metadata:
   bin:
     vite: bin/vite.js
   checksum: 352a94b13f793e4bcbc424d680a32507343223eeda8917fde0f23c1fa1ba3db7c806dade8461ca5cfb270154ddb8895a219fdd4384519fe9b8e46d1cf491a890
+  languageName: node
+  linkType: hard
+
+"webidl-conversions@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "webidl-conversions@npm:7.0.0"
+  checksum: 228d8cb6d270c23b0720cb2d95c579202db3aaf8f633b4e9dd94ec2000a04e7e6e43b76a94509cdb30479bd00ae253ab2371a2da9f81446cc313f89a4213a2c4
+  languageName: node
+  linkType: hard
+
+"whatwg-url@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "whatwg-url@npm:13.0.0"
+  dependencies:
+    tr46: "npm:^4.1.1"
+    webidl-conversions: "npm:^7.0.0"
+  checksum: 06b0c1808bb80eaab6582087bd8be594a1947843cbb0ce1a90635841a549a5849dff5be2b28f5b1b596ef70ea4c3df5c599d35b160899d12343334149851e688
   languageName: node
   linkType: hard
 

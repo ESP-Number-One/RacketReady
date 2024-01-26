@@ -19,5 +19,5 @@
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
-  "include": ["src/**/*", "tsoa/routes.ts", "tsoa/swagger.json"]
+  "include": ["src/**/*"]
 }

@@ -1,0 +1,23 @@
+{
+  "name": "@esp-group-one/api-client",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "build/src/index.js",
+  "typings": "build/src/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write '**/*.tsx' '**/*.ts' '**/*.json'",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives",
+    "lint:fix": "eslint src --ext ts,tsx --report-unused-disable-directives --fix"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.7",
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1",
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "@esp-group-one/types": "workspace:^"
+  }
+}

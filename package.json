@@ -1,5 +1,5 @@
 {
-  "name": "esp-group-one",
+  "name": "@esp-group-one/matchyo-sports",
   "version": "1.0.0",
   "packageManager": "yarn@4.0.2",
   "workspaces": [
@@ -9,7 +9,7 @@
     "build": "yarn workspaces foreach -Apt run build",
     "dev:admin": "yarn workspaces foreach -Aip run dev",
     "format": "run format:me && run format:ws",
-    "format:ws": "yarn workspaces foreach -Ap --exclude esp-group-one run format",
+    "format:ws": "yarn workspaces foreach -Ap --exclude @esp-group-one/matchyo-sports run format",
     "format:me": "prettier --write '*.md' '*.json' .prettierrc .eslintrc.cjs",
     "lint": "yarn workspaces foreach -Ap run lint",
     "lint:fix": "yarn workspaces foreach -Ap run lint:fix"
