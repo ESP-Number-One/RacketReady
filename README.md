@@ -109,6 +109,17 @@ you which will be printed out.
 
 - Git messages should always be in present tense
 
+### Before commiting
+
+Please remember before you commit please run:
+
+```bash
+yarn format
+yarn lint:fix
+```
+
+and fix any linting issues.
+
 ## Code Quality Standards
 
 ### Overview
