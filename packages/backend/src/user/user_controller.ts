@@ -10,7 +10,7 @@ import {
 } from "@esp-group-one/types";
 import type { OptionalId } from "mongodb";
 import { ObjectId } from "mongodb";
-import { Body, Get, Path, Post, Query, Route, SuccessResponse } from "tsoa";
+import { Body, Get, Path, Post, Route, SuccessResponse } from "tsoa";
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
 import { ControllerWrap } from "../controller.js";
 
@@ -40,9 +40,9 @@ export class UsersController extends ControllerWrap<User, UserCreation> {
     return res;
   }
 
-  @Get("find")
+  @Post("find")
   public async findUsers(
-    @Query() query: QueryOptions,
+    @Body() query: QueryOptions,
   ): Promise<WithError<CensoredUser[]>> {
     // TODO: Check if user has access to this information (if not censor it)
     const res = await this.find(query);

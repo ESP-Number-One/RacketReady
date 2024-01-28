@@ -5,6 +5,7 @@ import type {
   InsertManyResult,
   ObjectId,
   OptionalId,
+  Sort,
 } from "mongodb";
 import type { QueryOptions } from "@esp-group-one/types";
 
@@ -44,7 +45,7 @@ export class CollectionWrap<T> {
       .skip(opts.pageStart ?? 0)
       .limit(opts.pageSize ?? 20);
 
-    if (opts.sort) req.sort(opts.sort);
+    if (opts.sort) req.sort(opts.sort as Sort);
 
     return (await req.toArray()) as unknown[] as T[];
   }

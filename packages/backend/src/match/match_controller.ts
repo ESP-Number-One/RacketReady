@@ -8,7 +8,7 @@ import {
 } from "@esp-group-one/types";
 import type { OptionalId } from "mongodb";
 import { ObjectId } from "mongodb";
-import { Body, Get, Path, Post, Query, Route, SuccessResponse } from "tsoa";
+import { Body, Get, Path, Post, Route, SuccessResponse } from "tsoa";
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
 import { ControllerWrap } from "../controller.js";
 
@@ -33,9 +33,9 @@ export class MatchsController extends ControllerWrap<Match, MatchProposal> {
     return this.get(matchId);
   }
 
-  @Get("find")
+  @Post("find")
   public async findMatchs(
-    @Query() query: QueryOptions,
+    @Body() query: QueryOptions,
   ): Promise<WithError<Match[]>> {
     // TODO: Check if user has access to this information
     return this.find(query);

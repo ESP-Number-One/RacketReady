@@ -1,11 +1,9 @@
-import type {
-  CollectionWrap,
-  QueryOptions,
-} from "@esp-group-one/db-client/build/src/collection.js";
+import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
 import {
   newAPIError,
   newAPISuccess,
   type WithError,
+  type QueryOptions,
 } from "@esp-group-one/types";
 import type { ObjectId, OptionalId } from "mongodb";
 import { Controller } from "tsoa";

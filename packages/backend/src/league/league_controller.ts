@@ -7,7 +7,7 @@ import {
 } from "@esp-group-one/types";
 import type { OptionalId } from "mongodb";
 import { ObjectId } from "mongodb";
-import { Body, Get, Path, Post, Query, Route, SuccessResponse } from "tsoa";
+import { Body, Get, Path, Post, Route, SuccessResponse } from "tsoa";
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
 import { ControllerWrap } from "../controller.js";
 
@@ -30,9 +30,9 @@ export class LeaguesController extends ControllerWrap<League, LeagueCreation> {
     return this.get(leagueId);
   }
 
-  @Get("find")
+  @Post("find")
   public async findLeagues(
-    @Query() query: QueryOptions,
+    @Body() query: QueryOptions,
   ): Promise<WithError<League[]>> {
     // TODO: Check if user has access to this information
     return this.find(query);

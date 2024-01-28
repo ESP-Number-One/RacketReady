@@ -1,8 +1,7 @@
-import type { Document, Filter, Sort } from "mongodb";
-
 export interface QueryOptions {
-  query?: Filter<Document>;
-  sort?: Sort;
+  // Annoyingly tsoa cannot compile mongoDB types and so this will have to do
+  query?: unknown;
+  sort?: unknown;
   pageStart?: number; // Defaults to 0
   pageSize?: number; // Defaults to 20
 }

@@ -17,7 +17,8 @@ export interface Match {
   _id: ObjectId;
   date: Date;
   owner: ObjectId;
-  score?: [number, number];
+  // Maps player id to score
+  score?: Record<string, number>;
   status: MatchStatus;
   sport: Sport;
   players: ObjectId[];
