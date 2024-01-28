@@ -80,6 +80,9 @@ To format all the files run:
 yarn format
 ```
 
+However it is recommended you set this up in your editor to format on save
+(with prettier)
+
 #### Linting
 
 To get a list of the issues the linter has with your code run:
@@ -110,6 +113,8 @@ you which will be printed out.
 - Git messages should always be in present tense
 - If altering one of the common libraries you will have to run `yarn build`
   before you can start seeing typing help or compile another project
+- For the frontend, please remember we are designing this for mobile phones so
+  always have your browser set to that view
 
 ### Before commiting
 
@@ -129,12 +134,12 @@ and fix any linting issues.
 This should mostly be done by prettier + eslint, but so you know
 
 - 2 spaces as tabs
-- Lines should not be longer than 80 characters (install extension)
+- Lines should not be longer than 80 characters
 - Trailing commas when the bracket on a new line (see below)
 - NO trailing whitespaces! (Install an extension to remove it for you)
 - Space after comments e.g. `// something`
 - Try to prioritise readability of code
-- Order imports alphabetically but split internal imports
+- Order imports alphabetically
 - Prefer documentation over comments (see below on how you do that)
 - Comments should only be written when necessary, mainly to describe why
   something is done the way it is or to example a really unreadable bit of
@@ -172,13 +177,13 @@ using [ESLint](https://eslint.org/)
 
   ```js
   function something(my_arg) {
-      ...
+    ...
   }
 
   // NOT
   function something(my_arg)
   {
-      ...
+    ...
   }
   ```
 

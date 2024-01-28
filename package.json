@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "build": "yarn workspaces foreach -Apt run build",
-    "dev:admin": "yarn workspaces foreach -Aip run dev",
+    "dev": "yarn workspaces foreach -Aip run dev",
     "format": "run format:me && run format:ws",
     "format:ws": "yarn workspaces foreach -Ap --exclude @esp-group-one/matchyo-sports run format",
     "format:me": "prettier --write '*.md' '*.json' .prettierrc .eslintrc.cjs",
