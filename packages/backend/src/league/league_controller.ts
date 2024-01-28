@@ -3,15 +3,15 @@ import {
   type League,
   type LeagueCreation,
   type WithError,
+  type QueryOptions,
 } from "@esp-group-one/types";
 import type { OptionalId } from "mongodb";
 import { ObjectId } from "mongodb";
 import { Body, Get, Path, Post, Query, Route, SuccessResponse } from "tsoa";
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
-import { QueryOptions } from "@esp-group-one/db-client/build/src/collection.js";
 import { ControllerWrap } from "../controller.js";
 
-@Route("user")
+@Route("league")
 export class LeaguesController extends ControllerWrap<League, LeagueCreation> {
   creationToObj(proposal: LeagueCreation): OptionalId<League> {
     return proposal;
@@ -45,7 +45,7 @@ export class LeaguesController extends ControllerWrap<League, LeagueCreation> {
   }
 
   @SuccessResponse("201", "Created")
-  @Post("propose")
+  @Post("new")
   public async createLeague(
     @Body() requestBody: LeagueCreation,
   ): Promise<WithError<League>> {

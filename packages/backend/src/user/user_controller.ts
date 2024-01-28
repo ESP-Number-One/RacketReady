@@ -4,6 +4,7 @@ import {
   type CensoredUser,
   type User,
   type UserCreation,
+  type QueryOptions,
   type WithError,
   censorUser,
 } from "@esp-group-one/types";
@@ -11,7 +12,6 @@ import type { OptionalId } from "mongodb";
 import { ObjectId } from "mongodb";
 import { Body, Get, Path, Post, Query, Route, SuccessResponse } from "tsoa";
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
-import { QueryOptions } from "@esp-group-one/db-client/build/src/collection.js";
 import { ControllerWrap } from "../controller.js";
 
 @Route("user")

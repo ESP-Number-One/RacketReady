@@ -5,15 +5,8 @@ import type {
   InsertManyResult,
   ObjectId,
   OptionalId,
-  Sort,
 } from "mongodb";
-
-export interface QueryOptions {
-  query?: Filter<Document>;
-  sort?: Sort;
-  pageStart?: number; // Defaults to 0
-  pageSize?: number; // Defaults to 20
-}
+import type { QueryOptions } from "@esp-group-one/types";
 
 /**
  * This is here to give a much nicer interface which handles the types

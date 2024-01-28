@@ -3,16 +3,16 @@ import {
   MatchStatus,
   type Match,
   type MatchProposal,
+  type QueryOptions,
   type WithError,
 } from "@esp-group-one/types";
 import type { OptionalId } from "mongodb";
 import { ObjectId } from "mongodb";
 import { Body, Get, Path, Post, Query, Route, SuccessResponse } from "tsoa";
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
-import { QueryOptions } from "@esp-group-one/db-client/build/src/collection.js";
 import { ControllerWrap } from "../controller.js";
 
-@Route("user")
+@Route("match")
 export class MatchsController extends ControllerWrap<Match, MatchProposal> {
   creationToObj(proposal: MatchProposal): OptionalId<Match> {
     return {
@@ -42,7 +42,7 @@ export class MatchsController extends ControllerWrap<Match, MatchProposal> {
   }
 
   @SuccessResponse("201", "Created")
-  @Post("propose")
+  @Post("new")
   public async createMatch(
     @Body() requestBody: MatchProposal,
   ): Promise<WithError<Match>> {

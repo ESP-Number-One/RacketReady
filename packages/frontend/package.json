@@ -12,6 +12,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@esp-group-one/api-client": "workspace:^",
+    "@esp-group-one/types": "workspace:^",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

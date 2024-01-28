@@ -495,7 +495,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@esp-group-one/api-client@workspace:packages/api-client":
+"@esp-group-one/api-client@workspace:^, @esp-group-one/api-client@workspace:packages/api-client":
   version: 0.0.0-use.local
   resolution: "@esp-group-one/api-client@workspace:packages/api-client"
   dependencies:
@@ -548,6 +548,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@esp-group-one/frontend@workspace:packages/frontend"
   dependencies:
+    "@esp-group-one/api-client": "workspace:^"
+    "@esp-group-one/types": "workspace:^"
     "@types/react": "npm:^18.0.37"
     "@types/react-dom": "npm:^18.0.11"
     "@vitejs/plugin-react": "npm:^4.0.0"
