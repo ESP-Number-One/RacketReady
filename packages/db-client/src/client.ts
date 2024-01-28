@@ -1,10 +1,4 @@
-import {
-  type Db,
-  type Collection,
-  type Document,
-  type Filter,
-  MongoClient,
-} from "mongodb";
+import { type Db, MongoClient } from "mongodb";
 import type { League, Match, User } from "@esp-group-one/types";
 import {
   LEAGUE_COLLECTION_NAME,
@@ -13,63 +7,55 @@ import {
   getDbName,
   getUrl,
 } from "./constants.js";
-
-export interface Collections {
-  users: Collection;
-  leagues: Collection;
-  matches: Collection;
-}
+import { CollectionWrap } from "./collection.js";
 
 export class DbClient {
-  #client: MongoClient;
-  #db: Promise<Db>;
-  #url = "";
-  #users?: Collection;
-  #leagues?: Collection;
-  #matches?: Collection;
-  dbName = "";
+  public dbName = "";
+  private client: MongoClient;
+  private db: Promise<Db>;
+  private url = "";
+  private users_cache?: CollectionWrap<User>;
+  private leagues_cache?: CollectionWrap<League>;
+  private matches_cache?: CollectionWrap<Match>;
 
   constructor(url?: string, dbName?: string) {
-    this.#url = url ?? getUrl();
+    this.url = url ?? getUrl();
     this.dbName = dbName ?? getDbName();
-    this.#client = new MongoClient(this.#url);
-    this.#db = this.#connect();
+    this.client = new MongoClient(this.url);
+    this.db = this.connect();
   }
 
-  async findLeagues(query: Filter<Document>): Promise<League[]> {
-    return (await this.#find(await this.leagueColl(), query)) as League[];
+  public async leagues(): Promise<CollectionWrap<League>> {
+    const db = await this.db;
+
+    if (!this.leagues_cache)
+      this.leagues_cache = new CollectionWrap(
+        db.collection(LEAGUE_COLLECTION_NAME),
+      );
+
+    return this.leagues_cache;
   }
 
-  async findMatches(query: Filter<Document>): Promise<Match[]> {
-    return (await this.#find(await this.matchesColl(), query)) as Match[];
+  public async matches(): Promise<CollectionWrap<Match>> {
+    const db = await this.db;
+
+    if (!this.matches_cache)
+      this.matches_cache = new CollectionWrap(
+        db.collection(MATCH_COLLECTION_NAME),
+      );
+
+    return this.matches_cache;
   }
 
-  async findUsers(query: Filter<Document>): Promise<User[]> {
-    return (await this.#find(await this.usersColl(), query)) as User[];
-  }
+  public async users(): Promise<CollectionWrap<User>> {
+    const db = await this.db;
 
-  async leagueColl(): Promise<Collection> {
-    const db = await this.#db;
+    if (!this.users_cache)
+      this.users_cache = new CollectionWrap(
+        db.collection(USER_COLLECTION_NAME),
+      );
 
-    if (!this.#leagues) this.#leagues = db.collection(LEAGUE_COLLECTION_NAME);
-
-    return this.#leagues;
-  }
-
-  async matchesColl(): Promise<Collection> {
-    const db = await this.#db;
-
-    if (!this.#matches) this.#matches = db.collection(MATCH_COLLECTION_NAME);
-
-    return this.#matches;
-  }
-
-  async usersColl(): Promise<Collection> {
-    const db = await this.#db;
-
-    if (!this.#users) this.#users = db.collection(USER_COLLECTION_NAME);
-
-    return this.#users;
+    return this.users_cache;
   }
 
   /**
@@ -77,17 +63,9 @@ export class DbClient {
    *
    * This should only be called in the constructor
    */
-  async #connect(): Promise<Db> {
-    await this.#client.connect();
+  private async connect(): Promise<Db> {
+    await this.client.connect();
 
-    return this.#client.db(this.dbName);
-  }
-
-  /**
-   * This runs find on collection with the given query and converts the type to
-   * unknown to make it easier to process
-   */
-  async #find(coll: Collection, query: Filter<Document>): Promise<unknown[]> {
-    return (await coll.find(query).toArray()) as unknown[];
+    return this.client.db(this.dbName);
   }
 }

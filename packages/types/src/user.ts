@@ -16,14 +16,37 @@ export interface Availability {
   timeStart: Date;
   timeEnd: Date;
   // TODO: Look into using "Duration" objects from Momentjs
-  recurring: number | null;
+  recurring?: number;
 }
 
 export interface User {
-  id: ObjectId;
+  _id: ObjectId;
   name: string;
+  description: string;
   email: string;
   sports: SportInfo[];
   leagues: ObjectId[];
   availability: Availability[];
+}
+
+export interface CensoredUser {
+  _id: ObjectId;
+  name: string;
+  description: string;
+  sports: SportInfo[];
+}
+
+export interface UserCreation {
+  name: string;
+  description: string;
+  email: string;
+}
+
+export function censorUser(user: User): CensoredUser {
+  return {
+    _id: user._id,
+    name: user.name,
+    description: user.description,
+    sports: user.sports,
+  };
 }

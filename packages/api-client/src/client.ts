@@ -1,34 +1,56 @@
+import type { WithError } from "@esp-group-one/types";
 import { API_URL } from "./constants.js";
 
 export class APIClient {
-  #url = "";
+  private url = "";
 
   constructor(url?: string) {
-    this.#url = url ?? API_URL;
+    this.url = url ?? API_URL;
   }
 
-  #request(endpoint: string, body: unknown, extra?: object): Promise<unknown> {
+  private get(
+    endpoint: string,
+    body: unknown,
+    extra?: object,
+  ): Promise<unknown> {
+    return this.request("GET", endpoint, body, extra);
+  }
+
+  private post(
+    endpoint: string,
+    body: unknown,
+    extra?: object,
+  ): Promise<unknown> {
+    return this.request("POST", endpoint, body, extra);
+  }
+
+  private async request(
+    type: string,
+    endpoint: string,
+    body: unknown,
+    extra?: object,
+  ): Promise<unknown> {
     const headers: Headers = new Headers();
     headers.set("Content-Type", "application/json");
     headers.set("Accept", "application/json");
 
-    const request: RequestInfo = new Request(`${this.#url}/${endpoint}`, {
-      method: "POST",
+    const request: RequestInfo = new Request(`${this.url}/${endpoint}`, {
+      method: type,
       headers,
       body: JSON.stringify(body),
       ...extra,
     });
 
     return fetch(request).then(async (res) => {
-      // Technically this is not correct but TypeScript doesn't need to know
-      // that
-      const json = (await res.json()) as Record<string, string>;
+      const json = (await res.json()) as WithError<unknown>;
 
-      if (res.status % 100 !== 2 || json.error !== "") {
+      if (!json.success) {
         throw Error(`Request failed: ${json.error}`);
+      } else if (res.status % 100 !== 2) {
+        throw Error(`Request failed with status ${res.status}`);
       }
 
-      return json;
+      return json.data;
     });
   }
 }

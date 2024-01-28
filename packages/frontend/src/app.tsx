@@ -25,7 +25,9 @@ function App() {
       <div className='card'>
         <select
           id='fruit'
-          onChange={(e) => setSelectedFruit(() => e.target.value)}
+          onChange={(e) => {
+            setSelectedFruit(() => e.target.value);
+          }}
         >
           {fruits.map((a) => (
             <option key={a} value={a}>

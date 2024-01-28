@@ -718,6 +718,8 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./packages/backend/",\
         "packageDependencies": [\
           ["@esp-group-one/backend", "workspace:packages/backend"],\
+          ["@esp-group-one/db-client", "workspace:packages/db-client"],\
+          ["@esp-group-one/types", "workspace:packages/types"],\
           ["@tsoa/runtime", "npm:5.0.0"],\
           ["@types/cors", "npm:2.8.17"],\
           ["@types/express", "npm:4.17.21"],\
@@ -727,6 +729,7 @@ const RAW_RUNTIME_STATE =
           ["cors", "npm:2.8.5"],\
           ["eslint", "npm:8.56.0"],\
           ["express", "npm:4.18.2"],\
+          ["mongodb", "virtual:a6d776dccba4a1c448e936c69eaaca75dbc45d8bc017f00faa1bc623decfb8f14c8b39cb1ff36206f1351b7214fd3cb03b7a6bc71a638600b942e096a74a7ce7#npm:6.3.0"],\
           ["nodemon", "npm:3.0.2"],\
           ["prettier", "npm:3.1.1"],\
           ["swagger-ui-express", "virtual:0f448fb2a08bb5a8a87c0200d2a0e0a920d913bff6108a70fb07efc53ecd4f120203aa2f328b5f8611af6a4f1864757031dcec43bf28d4a913f884182423d4e2#npm:5.0.0"],\

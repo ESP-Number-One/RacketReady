@@ -14,12 +14,21 @@ export interface Message {
 }
 
 export interface Match {
-  id: ObjectId;
+  _id: ObjectId;
   date: Date;
-  score: [number, number] | null;
+  owner: ObjectId;
+  score?: [number, number];
   status: MatchStatus;
   sport: Sport;
   players: ObjectId[];
   messages: Message[];
-  league: ObjectId | null;
+  league?: ObjectId;
+}
+
+export interface MatchProposal {
+  date: Date;
+  sport: Sport;
+  owner: ObjectId;
+  players: ObjectId[];
+  league?: ObjectId;
 }

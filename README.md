@@ -108,6 +108,8 @@ you which will be printed out.
     contain any further discussion on there
 
 - Git messages should always be in present tense
+- If altering one of the common libraries you will have to run `yarn build`
+  before you can start seeing typing help or compile another project
 
 ### Before commiting
 
