@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc && vite build",
     "dev": "vite --port=3001",
-    "format": "prettier --write '**/*.tsx' '**/*.ts' '**/*.json'",
+    "format": "prettier --write '**/*.tsx' '**/*.ts' '**/*.json' '**/*.html' '*.config.js'",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives",
     "lint:fix": "eslint src --ext ts,tsx --report-unused-disable-directives --fix",
     "preview": "vite preview"
@@ -21,8 +21,11 @@
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^4.0.0",
+    "autoprefixer": "^10.4.17",
     "eslint": "^8.56.0",
+    "postcss": "^8.4.33",
     "prettier": "^3.1.1",
+    "tailwindcss": "^3.4.1",
     "typescript": "^5.0.2",
     "vite": "^4.3.9"
   }
