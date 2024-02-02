@@ -17,6 +17,5 @@
     "packages/db-client",
     "packages/frontend",
     "packages/types",
-    "packages/service-worker"
   ]
 }
