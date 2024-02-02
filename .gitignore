@@ -1,5 +1,6 @@
 .yarn/*
 !.yarn/sdks
+.pnp.*
 *.env
 
 # Logs
