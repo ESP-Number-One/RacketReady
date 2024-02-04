@@ -6,5 +6,16 @@
   "eslint.nodePath": ".yarn/sdks",
   "prettier.prettierPath": ".yarn/sdks/prettier/index.cjs",
   "typescript.tsdk": ".yarn/sdks/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+
+  // This resolves issues with tsconfig.json not found in ${workspaceRoot}
+  // on VSCode.
+
+  "eslint.workingDirectories": [
+    "packages/api-client",
+    "packages/backend",
+    "packages/db-client",
+    "packages/frontend",
+    "packages/types",
+  ]
 }
