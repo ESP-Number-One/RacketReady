@@ -1,9 +1,25 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
+
+const PWA_OPTIONS: Partial<VitePWAOptions> = {
+  srcDir: "sw",
+  filename: "index.ts",
+  strategies: "injectManifest", // Make our own service worker!
+  registerType: "autoUpdate",
+  devOptions: {
+    navigateFallback: "index.html",
+    type: "module",
+    enabled: true,
+  },
+  manifest: {
+    // TODO: Add manifest details in a WebManifest.
+  },
+};
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), VitePWA(PWA_OPTIONS)],
   server: {
     watch: {
       usePolling: true,
