@@ -11,7 +11,7 @@ Essentially this is a Typescript-all-the-way-down stack.
   via nvm, please uninstall it install the correct version through nvm as you
   probably don't have the same version and/or the tools we will be using:
 
-  - For windows [install here](https://github.com/coreybutler/nvm-windows/releases).
+  - For windows [install here](https://github.com/coreybutler/nvm-windows/releases), or `winget install -e --id CoreyButler.NVMforWindows`
   - For MacOS/Linux [install here](https://github.com/nvm-sh/nvm#install--update-script) which basically gets you to run:
 
     ```bash
