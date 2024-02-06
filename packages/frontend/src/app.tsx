@@ -1,5 +1,3 @@
-import "../static/css/fonts.css";
-import "../static/css/colours.css";
 import { PageWithTitle } from "./components/page";
 
 function App() {

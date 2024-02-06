@@ -48,7 +48,7 @@ export function PageWithTitle({
 
   const title =
     typeof heading === "string" ? (
-      <h1 className="primary-heading-font primary-font">{heading}</h1>
+      <h1 className="font-title text-4xl text-font-gray">{heading}</h1>
     ) : (
       heading
     );
