@@ -54,11 +54,6 @@ Essentially this is a Typescript-all-the-way-down stack.
 ### Getting Started
 
 1. Clone this repo: `git clone https://github.com/ESP-Number-One/MatchyoSports --recursive-submodules`
-
-   This may ask you to log into your overleaf account as it will be cloning the
-   submodules (which includes the deliverables on overleaf). Please use the
-   credentials you use for that.
-
 2. cd into the repo `cd MatchyoSports`
 3. Install dependencies `yarn install`
 4. Build the project `yarn build`
@@ -127,6 +122,16 @@ yarn lint:fix
 ```
 
 and fix any linting issues.
+
+### PRs
+
+**NO COMMITING TO MAIN OR MERGING WITHOUT REVIEW**
+
+Please include examples of you testing your code (screenshots?), or when we
+have a unit testing scheme, please add unit tests.
+
+Make sure the description includes a summary of whats in the PR and ask either
+Sammy or Hugo to review.
 
 ## Code Quality Standards
 
