@@ -1,5 +1,14 @@
 # Frontend
 
+## Development
+
+**VSCode users**: For a quick dev'ing experience, you can open the debug panel and launch
+the dev server and open it in a web browser at the same time — no commands needed! 😎
+
+This also works for other `launch.json`-compatible IDEs.
+
+## General Cleanliness
+
 The frontend is built in [React](https://react.dev/) and
 [Vite](https://vitejs.dev/).
 
@@ -7,7 +16,7 @@ You will notice there is a `components` folder in `src`, this is where all the
 components should go (snake case file names) with their own files for each
 thing. Unless they are simple and make sense to group.
 
-If you feel it would be better organised with another subfold, please add. We
+If you feel it would be better organised with another subfolder, please add. We
 love organisation.
 
 ## React
