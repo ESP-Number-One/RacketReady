@@ -9,7 +9,7 @@
       "request": "launch",
       "type": "chrome",
       "url": "http://localhost:3001",
-      "preLaunchTask": "dev-server",
+      "preLaunchTask": "frontend-dev-server",
       "webRoot": "${workspaceFolder}"
     },
     {
@@ -17,7 +17,7 @@
       "request": "launch",
       "type": "firefox",
       "url": "http://localhost:3001",
-      "preLaunchTask": "dev-server",
+      "preLaunchTask": "frontend-dev-server",
       "webRoot": "${workspaceFolder}"
     },
   ]

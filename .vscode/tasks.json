@@ -8,9 +8,9 @@
         "color": "terminal.ansiBlue"
       },
       "isBackground": true,
-      "label": "dev-server",
+      "label": "frontend-dev-server",
       "command": "nvm use && yarn dev:frontend",
-      "detail": "Runs `yarn dev` for you :)",
+      "detail": "Runs `yarn dev:frontend` for you :)",
       "dependsOrder": "sequence",
       "problemMatcher": {
         "source": "VITE",
