@@ -3,6 +3,7 @@
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
     "arcanis.vscode-zipfs",
-    "bradlc.vscode-tailwindcss"
+    "bradlc.vscode-tailwindcss",
+    "firefox-devtools.vscode-firefox-debug"
   ]
 }

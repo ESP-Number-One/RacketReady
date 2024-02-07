@@ -1,0 +1,33 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "icon": {
+        "id": "beaker",
+        "color": "terminal.ansiBlue"
+      },
+      "isBackground": true,
+      "label": "dev-server",
+      "command": "nvm use && yarn dev:frontend",
+      "detail": "Runs `yarn dev` for you :)",
+      "dependsOrder": "sequence",
+      "problemMatcher": {
+        "source": "VITE",
+        "pattern": [
+          {
+            "kind": "file",
+            "regexp": "VITE v\\d.\\d.\\d\\s*ready in (\\d*) ms",
+            "file": 0,
+            "message": 0
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".",
+          "endsPattern": "VITE v\\d.\\d.\\d\\s*ready in \\d* ms"
+        }
+      }
+    }
+  ]
+}
