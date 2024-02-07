@@ -28,6 +28,78 @@ the value itself depending on whether it changes the look or not.
 You will then need to create the state in the test page to test it works
 correctly.
 
+### Adding a new component
+
+Each component should have its own file following the format
+[`src/components/my_link.tsx`](./src/components/).
+
+You then need to define an interface for the parameters, there are some special
+parameters like `children`, but they are basically attributes in html.
+
+e.g. if you had `<MyLink href="some_link" className="something">child</MyLink>`
+the interface for the input would be:
+
+```ts
+interface Params {
+  href: string;
+  className: string;
+  children: ReactNode; // This stores the children html "child"
+}
+```
+
+You then need to export a function (Don't use `export default`) which takes in
+an object as the first, which is the `Params` type.
+
+Note the function should be PascalCase and should be the only time you break
+the naming convention of typescript. This should then return a react node
+(basically just start writing html after return).
+
+e.g.
+
+```tsx
+export function MyLink({ href, className, children }: Params) {
+  return (
+    <a href={href} className={className}>
+      {children}
+    </a>
+  );
+}
+```
+
+Note here `class` in react is called `className`. Some other html properties
+are in the format `html<prop_name>`
+
+### Testing a component
+
+Testing a component is as simple as editing [`src/app.tsx`](./src/app.tsx)
+and replacing `<p>I am the child</p>` with your component. E.g.
+
+```tsx
+function App() {
+  return (
+    <PageWithTitle currPage="home" heading="Testing">
+      <MyLink href="some_link" className="something">
+        child
+      </MyLink>
+    </PageWithTitle>
+  );
+}
+```
+
+You can then run `yarn dev:frontend` in [the package root](../../) or run
+`yarn dev` in the [`frontend` folder](./) which will start up the server
+and you can go to [http://localhost:3001](http://localhost:3001).
+
+**REMEMBER: Change your view to mobile in inspect element as we want to be
+designing for that platform**
+
+Once the server is running, you can leave it running and it will automatically
+update when you update a file in the source.
+
+[React developer tools](https://addons.mozilla.org/en-US/firefox/addon/react-devtools/)
+is also a good extension to get to help debugging react. Or on chrome it is
+[here](https://chromewebstore.google.com/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi)
+
 ## Tailwindcss
 
 [Tailwindcss](https://tailwindcss.com/) is an extremely barebones css library,
