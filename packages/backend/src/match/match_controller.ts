@@ -8,10 +8,11 @@ import {
 } from "@esp-group-one/types";
 import type { OptionalId } from "mongodb";
 import { ObjectId } from "mongodb";
-import { Body, Get, Path, Post, Route, SuccessResponse } from "tsoa";
+import { Body, Get, Path, Post, Route, Security, SuccessResponse } from "tsoa";
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
 import { ControllerWrap } from "../controller.js";
 
+@Security("auth0")
 @Route("match")
 export class MatchsController extends ControllerWrap<Match, MatchProposal> {
   creationToObj(proposal: MatchProposal): OptionalId<Match> {

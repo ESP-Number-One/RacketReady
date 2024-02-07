@@ -1,6 +1,8 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { ReactNode } from "react";
+import { LoginButton } from "./auth.js";
 
 interface PageParamsBase {
   currPage: string; // to be used for nav page
@@ -18,10 +20,18 @@ interface WithTitleParams extends PageParamsBase {
 }
 
 export function Page({ heading, children }: PageParams) {
+  const { isAuthenticated } = useAuth0();
+
   return (
     <div className="w-full">
-      {heading}
-      <div className="px-3">{children}</div>
+      {isAuthenticated ? (
+        <>
+          {heading}
+          <div className="px-3">{children}</div>
+        </>
+      ) : (
+        <LoginButton />
+      )}
     </div>
   );
 }

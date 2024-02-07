@@ -3,9 +3,11 @@ import { API_URL } from "./constants.js";
 
 export class APIClientBase {
   protected url = "";
+  protected accessToken: string;
 
-  constructor(url?: string) {
+  constructor(accessToken: string, url?: string) {
     this.url = url ?? API_URL;
+    this.accessToken = accessToken;
   }
 
   protected get<T>(
@@ -49,6 +51,7 @@ export class APIClientBase {
     const headers: Headers = new Headers();
     headers.set("Content-Type", "application/json");
     headers.set("Accept", "application/json");
+    headers.set("authorization", `Bearer ${this.accessToken}`);
 
     const request: RequestInfo = new Request(`${this.url}/${endpoint}`, {
       method: type,

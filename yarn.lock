@@ -42,6 +42,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@auth0/auth0-react@npm:^2.2.4":
+  version: 2.2.4
+  resolution: "@auth0/auth0-react@npm:2.2.4"
+  dependencies:
+    "@auth0/auth0-spa-js": "npm:^2.1.3"
+  peerDependencies:
+    react: ^16.11.0 || ^17 || ^18
+    react-dom: ^16.11.0 || ^17 || ^18
+  checksum: d294141692676eb4dbf5672e4293a924a656a1d2fc87d53f7c1cca69626557316ab2caa4ec0624986e822a21e015ce58ded67daba47be5b8bd66453e484f150e
+  languageName: node
+  linkType: hard
+
+"@auth0/auth0-spa-js@npm:^2.1.3":
+  version: 2.1.3
+  resolution: "@auth0/auth0-spa-js@npm:2.1.3"
+  checksum: 781d474564731f96182ff78d85e1d13841e924eba5d2e9a42593db28c66e2a6c59db1755c8c906698f0cd6d33d6e61501f0e0ab57ec981700966246944cccf74
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.22.13, @babel/code-frame@npm:^7.23.5":
   version: 7.23.5
   resolution: "@babel/code-frame@npm:7.23.5"
@@ -1686,23 +1705,38 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@esp-group-one/backend@workspace:packages/backend"
   dependencies:
+    "@esp-group-one/config": "workspace:^"
     "@esp-group-one/db-client": "workspace:^"
     "@esp-group-one/types": "workspace:^"
     "@tsoa/runtime": "npm:^6.0.0"
     "@types/cors": "npm:^2.8.15"
     "@types/express": "npm:^4.17.20"
+    "@types/jsonwebtoken": "npm:^9.0.5"
     "@types/node": "npm:^20.10.5"
     "@types/swagger-ui-express": "npm:^4.1.6"
+    access-token-jwt: "https://github.com/ESP-Number-One/access-token-jwt"
     concurrently: "npm:^8.2.2"
     cors: "npm:^2.8.5"
     eslint: "npm:^8.56.0"
     express: "npm:^4.18.2"
     mongodb: "npm:^6.3.0"
     nodemon: "npm:^3.0.1"
+    oauth2-bearer: "https://github.com/ESP-Number-One/oauth2-bearer"
     prettier: "npm:^3.1.1"
     swagger-ui-express: "npm:^5.0.0"
     tsoa: "npm:^6.0.1"
     typescript: "npm:^5.x"
+  languageName: unknown
+  linkType: soft
+
+"@esp-group-one/config@workspace:^, @esp-group-one/config@workspace:packages/config":
+  version: 0.0.0-use.local
+  resolution: "@esp-group-one/config@workspace:packages/config"
+  dependencies:
+    "@types/node": "npm:^20.10.6"
+    eslint: "npm:^8.56.0"
+    prettier: "npm:^3.1.1"
+    typescript: "npm:^5.0.2"
   languageName: unknown
   linkType: soft
 
@@ -1723,7 +1757,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@esp-group-one/frontend@workspace:packages/frontend"
   dependencies:
+    "@auth0/auth0-react": "npm:^2.2.4"
     "@esp-group-one/api-client": "workspace:^"
+    "@esp-group-one/config": "workspace:^"
     "@esp-group-one/types": "workspace:^"
     "@fortawesome/fontawesome-svg-core": "npm:^6.5.1"
     "@fortawesome/free-solid-svg-icons": "npm:^6.5.1"
@@ -2250,6 +2286,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/jsonwebtoken@npm:^9.0.5":
+  version: 9.0.5
+  resolution: "@types/jsonwebtoken@npm:9.0.5"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: c582b8420586f3b9550f7e34992cb32be300bc953636f3b087ed9c180ce7ea5c2e4b35090be2d57f0d3168cc3ca1074932907caa2afe09f4e9c84cf5c0daefa8
+  languageName: node
+  linkType: hard
+
 "@types/mime@npm:*":
   version: 3.0.4
   resolution: "@types/mime@npm:3.0.4"
@@ -2701,6 +2746,16 @@ __metadata:
     mime-types: "npm:~2.1.34"
     negotiator: "npm:0.6.3"
   checksum: 3a35c5f5586cfb9a21163ca47a5f77ac34fa8ceb5d17d2fa2c0d81f41cbd7f8c6fa52c77e2c039acc0f4d09e71abdc51144246900f6bef5e3c4b333f77d89362
+  languageName: node
+  linkType: hard
+
+"access-token-jwt@https://github.com/ESP-Number-One/access-token-jwt":
+  version: 0.0.1
+  resolution: "access-token-jwt@https://github.com/ESP-Number-One/access-token-jwt.git#commit=3e049b335efadc065e3bed2f56cbd0abb20f22cf"
+  dependencies:
+    jose: "npm:^4.13.1"
+    oauth2-bearer: "https://github.com/ESP-Number-One/oauth2-bearer"
+  checksum: 5011b809dbea7b09cb818987647e81a465bc36847e7c6d320052f376d81ff91d33946cddb114f0c0a5a38a6b07de4a27f95eaa8174fa2fca0b16ad2b4b16a740
   languageName: node
   linkType: hard
 
@@ -5711,6 +5766,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jose@npm:^4.13.1":
+  version: 4.15.4
+  resolution: "jose@npm:4.15.4"
+  checksum: ce8b29f84d6172a566b12b599dafa82f3bef0f16278bb76d562490ac1516fcc14017b05a39d20ffad25ed504f4996d4af4c9d3e0273d95b2d5559bf6d1112bc0
+  languageName: node
+  linkType: hard
+
 "js-tokens@npm:^3.0.0 || ^4.0.0, js-tokens@npm:^4.0.0":
   version: 4.0.0
   resolution: "js-tokens@npm:4.0.0"
@@ -6480,6 +6542,13 @@ __metadata:
   dependencies:
     path-key: "npm:^4.0.0"
   checksum: 7963c1f98e42afebe9524a08b0881477ec145aab34f6018842a315422b25ad40e015bdee709b697571e5efda2ecfa2640ee917d92674e4de1166fa3532a211b1
+  languageName: node
+  linkType: hard
+
+"oauth2-bearer@https://github.com/ESP-Number-One/oauth2-bearer":
+  version: 0.0.1
+  resolution: "oauth2-bearer@https://github.com/ESP-Number-One/oauth2-bearer.git#commit=4801635b6e02e045a1f5d88b3c8d4c6ce8b89e3e"
+  checksum: 1a95fd725e779f1b0e9772cc8aab5975879eaf63116dbec0d06e18a2e299a1f51ad0ff18a046a9ae9d71ab0f76c2832c48470e0c1c47877d8824daf0bba41445
   languageName: node
   linkType: hard
 
