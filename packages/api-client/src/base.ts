@@ -8,28 +8,44 @@ export class APIClientBase {
     this.url = url ?? API_URL;
   }
 
-  protected get(
+  protected get<T>(
+    endpoint: string,
+    query: Record<string, unknown>,
+    extra?: object,
+  ): Promise<T> {
+    var encodedQuery = Object.entries(query)
+      .map(([name, val]): string => {
+        if (val === undefined) return "";
+
+        const encodedName = encodeURIComponent(name);
+        const encodedVal = encodeURIComponent(
+          typeof val === "string" ? val : JSON.stringify(val),
+        );
+        return `${encodedName}=${encodedVal}`;
+      })
+      .join("&");
+
+    if (encodedQuery !== "") {
+      encodedQuery = "?" + encodedQuery;
+    }
+
+    return this.request<T>("GET", endpoint + encodedQuery, undefined, extra);
+  }
+
+  protected post<T>(
     endpoint: string,
     body: unknown,
     extra?: object,
-  ): Promise<unknown> {
-    return this.request("GET", endpoint, body, extra);
+  ): Promise<T> {
+    return this.request<T>("POST", endpoint, body, extra);
   }
 
-  protected post(
-    endpoint: string,
-    body: unknown,
-    extra?: object,
-  ): Promise<unknown> {
-    return this.request("POST", endpoint, body, extra);
-  }
-
-  private async request(
+  private async request<T>(
     type: string,
     endpoint: string,
     body: unknown,
     extra?: object,
-  ): Promise<unknown> {
+  ): Promise<T> {
     const headers: Headers = new Headers();
     headers.set("Content-Type", "application/json");
     headers.set("Accept", "application/json");
@@ -51,6 +67,6 @@ export class APIClientBase {
       }
 
       return json.data;
-    });
+    }) as T;
   }
 }
