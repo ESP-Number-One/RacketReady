@@ -23,7 +23,7 @@
     "declaration": true,
     "esModuleInterop": true,
     "outDir": "build",
-    "target": "es2016",
+    "target": "es2022",
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "strict": true
