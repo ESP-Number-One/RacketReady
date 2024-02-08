@@ -9,10 +9,10 @@ export function ProgressBar({
   maxProgress: maximum,
   pageNames: names,
 }: ProgressBarProps) {
-  const cornerRadius = "30";
+  const cornerRadius = "15";
   return (
     <div
-      className="font-body"
+      className="font-title"
       style={{
         padding: "0px",
         display: "flex",
@@ -20,7 +20,7 @@ export function ProgressBar({
         flexGrow: "initial",
       }}
     >
-      <svg height="80px" width="100%">
+      <svg height="61px" width="100%">
         <rect
           height="100%"
           rx={cornerRadius}
@@ -42,9 +42,9 @@ export function ProgressBar({
           dy="5%"
           fill="#f7f7ff"
           style={{
-            fontSize: "2.5em",
+            fontSize: "2em",
             fontOpticalSizing: "auto",
-            fontWeight: "bold",
+            fontWeight: "1000",
           }}
           textAnchor="middle"
           x="50%"
