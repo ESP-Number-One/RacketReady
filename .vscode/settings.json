@@ -20,6 +20,6 @@
     "packages/frontend",
     "packages/frontend/sw",
     "packages/types",
-    "packages/config/src/index.ts"
+    "packages/config"
   ]
 }
