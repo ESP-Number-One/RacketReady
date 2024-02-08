@@ -13,7 +13,7 @@ const PWA_OPTIONS: Partial<VitePWAOptions> = {
     enabled: true,
   },
   injectManifest: {
-    injectionPoint: undefined
+    injectionPoint: undefined,
   },
   manifest: {
     // TODO: Add manifest details in a WebManifest.
