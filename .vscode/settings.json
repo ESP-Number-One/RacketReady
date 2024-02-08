@@ -19,6 +19,7 @@
     "packages/db-client",
     "packages/frontend",
     "packages/frontend/sw",
-    "packages/types"
+    "packages/types",
+    "packages/config/src/index.ts"
   ]
 }
