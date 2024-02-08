@@ -1,9 +1,10 @@
 import { type Db, MongoClient } from "mongodb";
-import type { League, Match, User } from "@esp-group-one/types";
+import type { League, Match, User, UserIdMap } from "@esp-group-one/types";
 import {
   LEAGUE_COLLECTION_NAME,
   MATCH_COLLECTION_NAME,
   USER_COLLECTION_NAME,
+  USER_MAP_COLLECTION_NAME,
   getDbName,
   getUrl,
 } from "./constants.js";
@@ -15,6 +16,7 @@ export class DbClient {
   private db: Promise<Db>;
   private url = "";
   private users_cache?: CollectionWrap<User>;
+  private users_map_cache?: CollectionWrap<UserIdMap>;
   private leagues_cache?: CollectionWrap<League>;
   private matches_cache?: CollectionWrap<Match>;
 
@@ -45,6 +47,17 @@ export class DbClient {
       );
 
     return this.matches_cache;
+  }
+
+  public async userMap(): Promise<CollectionWrap<UserIdMap>> {
+    const db = await this.db;
+
+    if (!this.users_map_cache)
+      this.users_map_cache = new CollectionWrap(
+        db.collection(USER_MAP_COLLECTION_NAME),
+      );
+
+    return this.users_map_cache;
   }
 
   public async users(): Promise<CollectionWrap<User>> {

@@ -6,7 +6,9 @@ import {
   type QueryOptions,
 } from "@esp-group-one/types";
 import type { ObjectId, OptionalId } from "mongodb";
+import type { Request } from "express";
 import { Controller } from "tsoa";
+import { getUserId } from "./utils.js";
 
 /**
  * This class offers basically functions which implement the APIs for all
@@ -80,6 +82,23 @@ export class ControllerWrap<T, C> extends Controller {
         );
 
         return newAPIError("Failed to create new obj");
+      });
+  }
+
+  protected async withUserId<R>(
+    req: Request,
+    callback: (user: ObjectId) => Promise<WithError<R>>,
+  ): Promise<WithError<R>> {
+    return getUserId(req)
+      .then((res) => {
+        if (res) return callback(res);
+        throw new Error("Could not get user");
+      })
+      .catch((e) => {
+        this.setStatus(500);
+        console.error(`Error when running with User: ${e}`);
+
+        return newAPIError("Unknown User");
       });
   }
 }

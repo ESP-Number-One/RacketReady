@@ -19,6 +19,12 @@ export interface Availability {
   recurring?: number;
 }
 
+export interface UserIdMap {
+  _id: ObjectId;
+  userId: string;
+  internalId: ObjectId;
+}
+
 export interface User {
   _id: ObjectId;
   name: string;

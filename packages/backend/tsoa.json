@@ -11,6 +11,13 @@
     "esm": true,
     "routesDir": "tsoa"
   },
+  "securityDefinitions": {
+    "auth0": {
+      "type": "apiKey",
+      "name": "authorization",
+      "in": "header"
+    }
+  },
   "compilerOptions": {
     "resolveJsonModule": true,
     "experimentalDecorators": true,
