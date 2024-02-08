@@ -1,5 +1,9 @@
 {
   "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "files.eol": "\n",
   "search.exclude": {
     "**/.yarn": true,
