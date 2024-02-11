@@ -6,12 +6,15 @@
   "type": "module",
   "scripts": {
     "build": "tsoa spec-and-routes && tsc",
-    "dev": "tsoa spec-and-routes && concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
+    "dev": "run mongo:start && DB_NAME=esp DB_CONN_STRING=mongodb://localhost:27017 run dev:tsoa",
+    "dev:tsoa": "tsoa spec-and-routes && concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
     "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts' '*.json'",
     "gen": "tsoa routes",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives",
     "lint:fix": "eslint src --ext ts,tsx --report-unused-disable-directives --fix",
-    "start": "node build/src/server.js"
+    "start": "node build/src/server.js",
+    "mongo:start": "docker run -d --rm -p 127.0.0.1:27017:27017 --name esp-mongo-test -v ./mongo_data:/data/db -v ./etc/mongod.conf:/etc/mongod.conf mongo:latest --config /etc/mongod.conf",
+    "mongo:stop": "docker stop $(docker ps -a --filter name=esp-mongo-test --format='{{.ID}}')"
   },
   "dependencies": {
     "@esp-group-one/config": "workspace:^",
