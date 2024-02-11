@@ -2,11 +2,13 @@ import { DbClient } from "@esp-group-one/db-client";
 import {
   newAPISuccess,
   type CensoredUser,
+  type Error,
   type User,
   type UserCreation,
   type QueryOptions,
   type WithError,
   censorUser,
+  newAPIError,
 } from "@esp-group-one/types";
 import type { OptionalId } from "mongodb";
 import { ObjectId } from "mongodb";
@@ -16,6 +18,7 @@ import {
   Path,
   Post,
   Request,
+  Response,
   Route,
   Security,
   SuccessResponse,
@@ -23,7 +26,6 @@ import {
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
 import { ControllerWrap } from "../controller.js";
 import * as express from "express";
-import { getUserId } from "../utils.js";
 
 @Security("auth0")
 @Route("user")
@@ -42,34 +44,44 @@ export class UsersController extends ControllerWrap<User, UserCreation> {
     return client.users();
   }
 
+  /**
+   * Returns all information about the currently logged in user.
+   */
+  @Response<Error>("500", "Internal Server Error")
   @Get("me")
   public async getCurrentUser(
     @Request() req: express.Request,
-  ): Promise<WithError<CensoredUser>> {
+  ): Promise<WithError<User>> {
     return this.withUserId(req, async (userId) => {
       const res = await this.get(userId);
-      if (res.success) return newAPISuccess(res.data);
       return res;
     });
   }
 
+  /**
+   * Returns the user with the given ObjectId, however censors all users,
+   * including the currently logged in one. User /me for all the users
+   * information
+   */
+  @Response<Error>("500", "Internal Server Error")
   @Get("{userId}")
   public async getUser(
     @Path() userId: ObjectId,
-    @Request() req: express.Request,
   ): Promise<WithError<CensoredUser>> {
-    return this.withUserId(req, async (currUser) => {
-      const res = await this.get(userId);
-      if (res.success)
-        return newAPISuccess(
-          userId === currUser ? res.data : censorUser(res.data),
-        );
-      return res;
-    });
+    const res = await this.get(userId);
+    if (res.success) return newAPISuccess(censorUser(res.data));
+
+    return res;
   }
 
+  /**
+   * This returns the users matching the given query, except the user currently
+   * logged in.
+   */
+  @Response<Error>("500", "Internal Server Error")
   @Post("find")
   public async findUsers(
+    // TODO: Move it to our own object which can be converted
     @Body() query: QueryOptions,
     @Request() req: express.Request,
   ): Promise<WithError<CensoredUser[]>> {
@@ -83,12 +95,30 @@ export class UsersController extends ControllerWrap<User, UserCreation> {
     });
   }
 
+  /**
+   * Creates a new user and validates that their email and user id currently
+   * are not in the database
+   */
   @SuccessResponse("201", "Created")
+  @Response<Error>("409", "User already exists")
+  @Response<Error>("500", "Internal Server Error")
   @Post("new")
   public async createUser(
     @Body() requestBody: UserCreation,
+    @Request() req: express.Request,
   ): Promise<WithError<CensoredUser>> {
-    // TODO: Validate a user does not already exist with email
-    return this.create(requestBody);
+    return this.withUserId(req, async (currUser) => {
+      const db = await this.getCollection();
+      if (
+        await db.exists({
+          $or: [{ id: currUser }, { email: requestBody.email }],
+        })
+      ) {
+        this.setStatus(409);
+        return newAPIError("User already exists");
+      }
+
+      return this.create(requestBody);
+    });
   }
 }

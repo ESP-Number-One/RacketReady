@@ -37,10 +37,15 @@ export class ControllerWrap<T, C> extends Controller {
     throw Error("Unimplemented");
   }
 
+  /**
+   * Safely gets an object and converts it to a response. This will not error
+   * out and so you can safely await the function
+   */
   protected async get(objId: ObjectId): Promise<WithError<T>> {
     return (await this.getCollection())
       .get(objId)
       .then((obj): WithError<T> => {
+        if (!obj) throw new Error("Id does not exist");
         return newAPISuccess(obj);
       })
       .catch((e) => {
