@@ -29,6 +29,6 @@
     "typescript": "5.x"
   },
   "dependencies": {
-    "multer": "^1.4.5-lts.1"
+    "@types/multer": "^1.4.11"
   }
 }
