@@ -9,7 +9,7 @@ import * as swaggerUi from "swagger-ui-express";
 import { ValidateError } from "tsoa";
 import { RegisterRoutes } from "../tsoa/routes.js";
 import swaggerConfig from "../tsoa/swagger.json" assert { type: "json" };
-
+import path from "path";
 export const app = express();
 
 // Use body parser to read sent json payloads
@@ -59,5 +59,7 @@ app.use(
     return res.send(swaggerUi.generateHTML(swaggerConfig));
   },
 );
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 RegisterRoutes(app);

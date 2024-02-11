@@ -13,7 +13,19 @@ import { ObjectId } from "mongodb";
 import { Body, Get, Path, Post, Route, SuccessResponse } from "tsoa";
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
 import { ControllerWrap } from "../controller.js";
+import * as multer from "multer";
+import * as path from "path";
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "uploads"));
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + "-" + Date.now());
+  },
+});
+
+const upload = multer({ storage: storage });
 @Route("user")
 export class UsersController extends ControllerWrap<User, UserCreation> {
   creationToObj(creation: UserCreation): OptionalId<User> {
@@ -21,6 +33,7 @@ export class UsersController extends ControllerWrap<User, UserCreation> {
       sports: [],
       leagues: [],
       availability: [],
+      profilePicture: creation.profile_picture,
       ...creation,
     };
   }
@@ -56,6 +69,7 @@ export class UsersController extends ControllerWrap<User, UserCreation> {
     @Body() requestBody: UserCreation,
   ): Promise<WithError<CensoredUser>> {
     // TODO: Validate a user does not already exist with email
+    // TODO: Validate the profile picture URL
     return this.create(requestBody);
   }
 }
