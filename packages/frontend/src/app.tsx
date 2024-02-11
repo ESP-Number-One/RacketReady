@@ -1,10 +1,19 @@
+/* eslint-disable -- wejfhbew*/
 import { PageWithTitle } from "./components/page";
+import { Form } from "./components/form";
 
-function App() {
+function App(this: any) {
+  handleSubmit: {
+    console.log("Hello");
+  }
+
   return (
-    <PageWithTitle currPage="home" heading="Testing">
-      <p>I am the child</p>
-    </PageWithTitle>
+    <div className="App">
+      <PageWithTitle currPage="home" heading="Testing">
+        <p>I am the child</p>
+      </PageWithTitle>
+      <Form onSubmit={this.handleSubmit()} />
+    </div>
   );
 }
 
