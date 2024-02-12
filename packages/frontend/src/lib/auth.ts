@@ -9,3 +9,14 @@ export async function getAPIClient(): Promise<APIClient> {
 
   return new APIClient(apiToken);
 }
+
+export async function isNewUser(client: APIClient): Promise<boolean> {
+  return client
+    .user()
+    .me()
+    .then(() => false)
+    .catch((e) => {
+      console.log(`Had error: ${e}`);
+      return true;
+    });
+}

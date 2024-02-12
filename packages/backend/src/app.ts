@@ -53,7 +53,7 @@ app.use(
 );
 
 app.use(
-  "/",
+  "/docs",
   swaggerUi.serve,
   (_req: ExRequest, res: ExResponse): ExResponse => {
     return res.send(swaggerUi.generateHTML(swaggerConfig));

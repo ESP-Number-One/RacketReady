@@ -65,7 +65,7 @@ export class APIClientBase {
 
       if (!json.success) {
         throw Error(`Request failed: ${json.error}`);
-      } else if (res.status % 100 !== 2) {
+      } else if (Math.floor(res.status / 100) !== 2) {
         throw Error(`Request failed with status ${res.status}`);
       }
 

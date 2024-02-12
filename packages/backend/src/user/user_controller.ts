@@ -26,6 +26,7 @@ import {
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
 import { ControllerWrap } from "../controller.js";
 import * as express from "express";
+import { getUserId, mapUser } from "../utils.js";
 
 @Security("auth0")
 @Route("user")
@@ -107,18 +108,32 @@ export class UsersController extends ControllerWrap<User, UserCreation> {
     @Body() requestBody: UserCreation,
     @Request() req: express.Request,
   ): Promise<WithError<CensoredUser>> {
-    return this.withUserId(req, async (currUser) => {
-      const db = await this.getCollection();
-      if (
-        await db.exists({
-          $or: [{ id: currUser }, { email: requestBody.email }],
-        })
-      ) {
-        this.setStatus(409);
-        return newAPIError("User already exists");
-      }
+    return getUserId(req)
+      .then(async (currUser): Promise<WithError<CensoredUser>> => {
+        const db = await this.getCollection();
 
-      return this.create(requestBody);
-    });
+        if (
+          currUser ||
+          (await db.exists({
+            $or: [{ id: currUser }, { email: requestBody.email }],
+          }))
+        ) {
+          this.setStatus(409);
+          return newAPIError("User already exists");
+        }
+
+        return this.create(requestBody).then(async (user) => {
+          // Error should be passed up to the next catch
+          if (user.success) await mapUser(req, user.data._id);
+
+          return user;
+        });
+      })
+      .catch((e) => {
+        this.setStatus(500);
+        console.error(`Error when running with User: ${e}`);
+
+        return newAPIError("User exists");
+      });
   }
 }

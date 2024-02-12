@@ -39,7 +39,7 @@ export class CollectionWrap<T> {
   }
 
   public async get(id: ObjectId): Promise<T | undefined> {
-    return (await this.page({ query: { id }, pageSize: 1 })).at(0);
+    return (await this.page({ query: { _id: id }, pageSize: 1 })).at(0);
   }
 
   public insert(...items: OptionalId<T>[]): Promise<InsertManyResult> {

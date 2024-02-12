@@ -55,6 +55,10 @@ export class ControllerWrap<T, C> extends Controller {
       });
   }
 
+  /**
+   * Safely finds the information for the current endpoints collection, if
+   * none is found it will just return an error
+   */
   protected async find(query: QueryOptions): Promise<WithError<T[]>> {
     return (await this.getCollection())
       .page(query)
@@ -70,6 +74,10 @@ export class ControllerWrap<T, C> extends Controller {
       });
   }
 
+  /**
+   * Safely creates a new object for the controller. However does not check if
+   * object exists already
+   */
   protected async create(requestBody: C): Promise<WithError<T>> {
     this.setStatus(201);
     const obj = this.creationToObj(requestBody);
@@ -90,6 +98,17 @@ export class ControllerWrap<T, C> extends Controller {
       });
   }
 
+  /**
+   * Gets the current user id and calls the callback if we are able to find
+   * one, if not we return an Error
+   * @param req - The request made to the endpoint to extract the user ID from
+   * @param callback - The function where you can use the userId knowing the
+   *   user does, in fact, exist which returns a response which we will pass
+   *   back to the returns
+   *
+   * @returns A response object which the callback has returned or an error if
+   *   we could not get the user id
+   */
   protected async withUserId<R>(
     req: Request,
     callback: (user: ObjectId) => Promise<WithError<R>>,
