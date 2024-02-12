@@ -10,11 +10,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
-          cache: "yarn"
+          # cache: "yarn"
 
       - run: corepack enable
-      - run: yarn install
-      - run: yarn install # Install twice because reasons...
+      - run: corepack prepare yarn@4.0.2 --activate
+      - run: yarn install --immutable
+      - run: yarn install --immutable # Install twice because reasons...
 
       # Here for only debug purposes...
       - run: node --version
@@ -23,4 +24,8 @@ jobs:
       - run: cat packages/backend/tsoa.json
 
       # Attempt to build this branch.
+      - run: yarn workspace @esp-group-one/types build
+      - run: yarn workspace @esp-group-one/api-client build
+      - run: yarn workspace @esp-group-one/db-client build
+      - run: yarn workspace @esp-group-one/config build
       - run: yarn build -v
