@@ -1,51 +1,52 @@
-export interface ProgressBarProps {
+const CORNER_RADIUS = "15";
+
+interface ProgressBarProps {
   progress: number;
-  maxProgress: number;
   pageNames: string[];
 }
 
 export function ProgressBar({
   progress: current,
-  maxProgress: maximum,
   pageNames: names,
 }: ProgressBarProps) {
-  const cornerRadius = "15";
   return (
     <div
+      aria-labelledby="progress-bar-id"
+      aria-valuemax={names.length}
+      aria-valuemin={1}
+      aria-valuenow={current}
       className="font-title"
-      style={{
-        padding: "0px",
-        display: "flex",
-        flexBasis: "fit-content",
-        flexGrow: "initial",
-      }}
+      role="progressbar"
     >
-      <svg height="61px" width="100%">
+      <svg
+        aria-label={`Progress bar at ${Math.round(
+          (current * 100) / names.length,
+        )}%`}
+        aria-labelledby="progress-bar-lbl"
+        height="61px"
+        role="img"
+        width="100%"
+      >
         <rect
+          className="fill-pg-bar-gray"
           height="100%"
-          rx={cornerRadius}
-          ry={cornerRadius}
-          style={{ fill: "#95A5A6" }}
+          rx={CORNER_RADIUS}
+          ry={CORNER_RADIUS}
           width="100%"
         />
         <rect
-          clipPath={`inset(0 0 0 0 round ${cornerRadius} ${
-            current === maximum ? cornerRadius : 0
-          } ${current === maximum ? cornerRadius : 0} ${cornerRadius})`}
+          className="fill-pg-bar-blue transition: duration-200"
+          clipPath={`inset(0 0 0 0 round ${CORNER_RADIUS} ${
+            current === names.length ? CORNER_RADIUS : 0
+          } ${current === names.length ? CORNER_RADIUS : 0} ${CORNER_RADIUS})`}
           height="100%"
-          style={{ fill: "#3498DB", transitionDuration: "0.4s" }}
-          width={`${100 * (current / maximum)}%`}
+          width={`${100 * (current / names.length)}%`}
         />
         <text
-          color="font-gray"
+          className="font-title font-bold text-4xl fill-font-white"
           dominantBaseline="middle"
           dy="5%"
-          fill="#f7f7ff"
-          style={{
-            fontSize: "2em",
-            fontOpticalSizing: "auto",
-            fontWeight: "1000",
-          }}
+          id="progress-bar-id"
           textAnchor="middle"
           x="50%"
           y="50%"
