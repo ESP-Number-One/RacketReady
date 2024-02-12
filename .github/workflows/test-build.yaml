@@ -1,0 +1,26 @@
+name: "Test Build"
+on: ["push"]
+jobs:
+  Compile-Test:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v4
+
+      # Equivalent of README.md Starting steps.
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "yarn"
+
+      - run: corepack enable
+      - run: yarn install
+      - run: yarn install # Install twice because reasons...
+
+      # Here for only debug purposes...
+      - run: node --version
+      - run: yarn --version
+      - run: yarn exec tsc --version
+      - run: cat packages/backend/tsoa.json
+
+      # Attempt to build this branch.
+      - run: yarn build -v
