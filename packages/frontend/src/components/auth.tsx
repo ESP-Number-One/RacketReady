@@ -1,45 +1,19 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { APIClient } from "@esp-group-one/api-client";
-import { getAPIClient, isNewUser } from "../lib/auth.js";
-import { useEffect, useRef } from "react";
-
-/**
- * Work around due to the fact we need to wait until the user has logged in
- * before we can initialise the api client.
- *
- * Pages is designed to handle authentication behind the scenes but this means
- * we can just add this as a child
- */
-export function APIClientInit({ setAPI }: { setAPI(client: APIClient): void }) {
-  const hasClient = useRef<boolean>(false);
-
-  if (!hasClient.current) {
-    getAPIClient()
-      .then(async (client) => {
-        hasClient.current = true;
-        setAPI(client);
-        if (await isNewUser(client)) {
-          // TODO: Swap to redirect to signup form
-          client
-            .user()
-            .create({
-              description: "I am test bot 9000",
-              email: "test@bath.ac.uk",
-              name: "Test Bot",
-            })
-            .catch(console.error);
-        }
-      })
-      .catch((err) => console.error(err));
-  }
-
-  return <></>;
-}
 
 export function LoginButton() {
   const { loginWithRedirect } = useAuth0();
 
-  return <button onClick={() => loginWithRedirect()}>Log In</button>;
+  return (
+    <button
+      onClick={() => {
+        loginWithRedirect().catch(console.error);
+      }}
+      className="font-title text-4xl text-white bg-p-green-100 hover:bg-p-green-200 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5 me-2 mb-2 focus:outline-none w-full"
+      type="button"
+    >
+      Log In/Sign up
+    </button>
+  );
 }
 
 export function LogoutButton() {
@@ -47,9 +21,13 @@ export function LogoutButton() {
 
   return (
     <button
-      onClick={() =>
-        logout({ logoutParams: { returnTo: window.location.origin } })
-      }
+      onClick={() => {
+        logout({ logoutParams: { returnTo: window.location.origin } }).catch(
+          console.error,
+        );
+      }}
+      className="font-title text-4xl text-white bg-p-grey-100 hover:bg-p-grey-200 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5 me-2 mb-2 focus:outline-none w-full"
+      type="button"
     >
       Log Out
     </button>

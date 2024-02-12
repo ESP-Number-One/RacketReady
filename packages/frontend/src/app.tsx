@@ -1,15 +1,13 @@
 import { useState } from "react";
+import type { APIClient } from "@esp-group-one/api-client";
 import { PageWithTitle } from "./components/page.js";
-import { APIClient } from "@esp-group-one/api-client";
-import { APIClientInit } from "./components/auth.js";
 
 function App() {
   const [api, setAPI] = useState<APIClient | undefined>();
 
   return (
-    <PageWithTitle currPage="home" heading="Testing">
+    <PageWithTitle currPage="home" heading="Testing" setAPI={setAPI}>
       <p>I am the child</p>
-      <APIClientInit setAPI={setAPI} />
       <button
         onClick={() => {
           console.log("Hi!");
@@ -17,9 +15,14 @@ function App() {
           api
             ?.user()
             .find({})
-            .then((res) => console.log(res))
-            .catch((err) => console.log(`Error: ${err}`));
+            .then((res) => {
+              console.log(res);
+            })
+            .catch((err) => {
+              console.log(`Error: ${err}`);
+            });
         }}
+        type="button"
       >
         Click me
       </button>

@@ -15,7 +15,7 @@ export class APIClientBase {
     query: Record<string, unknown>,
     extra?: object,
   ): Promise<T> {
-    var encodedQuery = Object.entries(query)
+    let encodedQuery = Object.entries(query)
       .map(([name, val]): string => {
         if (val === undefined) return "";
 
@@ -28,7 +28,7 @@ export class APIClientBase {
       .join("&");
 
     if (encodedQuery !== "") {
-      encodedQuery = "?" + encodedQuery;
+      encodedQuery = `?${encodedQuery}`;
     }
 
     return this.request<T>("GET", endpoint + encodedQuery, undefined, extra);
@@ -42,7 +42,7 @@ export class APIClientBase {
     return this.request<T>("POST", endpoint, body, extra);
   }
 
-  private async request<T>(
+  private request<T>(
     type: string,
     endpoint: string,
     body: unknown,
@@ -61,7 +61,7 @@ export class APIClientBase {
     });
 
     return fetch(request).then(async (res) => {
-      const json = (await res.json()) as WithError<unknown>;
+      const json = (await res.json()) as WithError<T>;
 
       if (!json.success) {
         throw Error(`Request failed: ${json.error}`);
@@ -70,6 +70,6 @@ export class APIClientBase {
       }
 
       return json.data;
-    }) as T;
+    });
   }
 }

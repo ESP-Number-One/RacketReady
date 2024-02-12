@@ -24,8 +24,8 @@ import {
   SuccessResponse,
 } from "tsoa";
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
-import { ControllerWrap } from "../controller.js";
 import * as express from "express";
+import { ControllerWrap } from "../controller.js";
 import { getUserId, mapUser } from "../utils.js";
 
 @Security("auth0")

@@ -1,11 +1,14 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import type { APIClient } from "@esp-group-one/api-client";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { ReactNode } from "react";
+import { isNewUser, useAPIClient } from "../lib/auth.js";
 import { LoginButton } from "./auth.js";
 
 interface PageParamsBase {
   currPage: string; // to be used for nav page
+  setAPI: (client: APIClient) => void;
   children: ReactNode;
 }
 
@@ -19,29 +22,51 @@ interface WithTitleParams extends PageParamsBase {
   extra?: ReactNode;
 }
 
-export function Page({ heading, children }: PageParams) {
+export function Page({ children, heading, setAPI }: PageParams) {
   const { isAuthenticated } = useAuth0();
 
+  useAPIClient()
+    .then(async (client) => {
+      setAPI(client);
+      if (await isNewUser(client)) {
+        // TODO: Swap to redirect to signup form
+        client
+          .user()
+          .create({
+            description: "I am test bot 9000",
+            email: "test@bath.ac.uk",
+            name: "Test Bot",
+          })
+          .catch(console.error);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+
   return (
-    <div className="w-full">
+    <div className="w-full min-h-screen">
       {isAuthenticated ? (
         <>
           {heading}
           <div className="px-3">{children}</div>
         </>
       ) : (
-        <LoginButton />
+        <div className="flex min-h-screen px-3 items-center place-content-center">
+          <LoginButton />
+        </div>
       )}
     </div>
   );
 }
 
 export function PageWithTitle({
-  currPage,
-  children,
-  heading,
   backUrl,
+  children,
+  currPage,
   extra,
+  heading,
+  setAPI,
 }: WithTitleParams) {
   const parts: ReactNode[] = [];
 
@@ -69,7 +94,7 @@ export function PageWithTitle({
   const headingNode = <div className="flex px-2">{parts}</div>;
 
   return (
-    <Page currPage={currPage} heading={headingNode}>
+    <Page currPage={currPage} heading={headingNode} setAPI={setAPI}>
       {children}
     </Page>
   );

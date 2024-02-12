@@ -1,13 +1,24 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { APIClient } from "@esp-group-one/api-client";
+import { useRef } from "react";
 
-export async function getAPIClient(): Promise<APIClient> {
+/**
+ * React Handle which will get the API client only once
+ *
+ * Note this has to be recalled once the page has signed in.
+ */
+export async function useAPIClient(): Promise<APIClient> {
+  const client = useRef<APIClient | undefined>();
   const { getAccessTokenSilently } = useAuth0();
 
   // TODO: Cache this to cookies or something?
-  const apiToken = await getAccessTokenSilently();
+  if (!client.current) {
+    const apiToken = await getAccessTokenSilently();
 
-  return new APIClient(apiToken);
+    client.current = new APIClient(apiToken);
+  }
+
+  return client.current;
 }
 
 export async function isNewUser(client: APIClient): Promise<boolean> {

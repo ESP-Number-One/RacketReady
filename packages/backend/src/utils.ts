@@ -1,13 +1,12 @@
 import { DbClient } from "@esp-group-one/db-client";
 import type { VerifyJwtResult } from "access-token-jwt";
 import type { Request } from "express";
-import { ObjectId } from "mongodb";
+import type { ObjectId } from "mongodb";
 
 export async function getUserId(
   request: Request,
 ): Promise<ObjectId | undefined> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access -- we need to pass information somehow
-  const userId = (request as any).userId as string;
+  const userId = userIdFromReq(request);
 
   const client = new DbClient();
   const coll = await client.userMap();
@@ -20,8 +19,7 @@ export async function mapUser(
   request: Request,
   internalId: ObjectId,
 ): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access -- we need to pass information somehow
-  const userId = (request as any).userId as string;
+  const userId = userIdFromReq(request);
 
   const client = new DbClient();
   const coll = await client.userMap();
@@ -35,4 +33,9 @@ export function setUserId(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access -- we need to pass information somehow
   (request as any).userId = verifier.payload.sub;
   return request;
+}
+
+function userIdFromReq(request: Request): string {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access -- we need to pass information somehow
+  return (request as any).userId as string;
 }
