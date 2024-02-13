@@ -1,25 +1,10 @@
 name: "Test Build"
 on: ["push"]
 jobs:
-  build-and-lint:
+  lint:
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v4
-
-      # Equivalent of README.md Starting steps.
-      - uses: actions/checkout@v4
-      - name: Enable Corepack
-        run: corepack enable
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: yarn
-
-      - name: Install packages
-        run: yarn install --immutable
-
-      - name: Build all packages
-        run: yarn build
-
+      - uses: ./.github/actions/yarn-install
       - name: Lint packages
         run: yarn lint

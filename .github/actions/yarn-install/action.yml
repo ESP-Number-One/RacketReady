@@ -1,0 +1,19 @@
+name: "Sets up yarn and installs packages"
+runs:
+  using: "composite"
+  steps:
+    - name: Enable Corepack
+      run: corepack enable
+      shell: bash
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: ".nvmrc"
+        cache: yarn
+
+    - name: Install packages
+      run: yarn install --immutable
+      shell: bash
+
+    - name: Build all packages
+      run: yarn build
+      shell: bash
