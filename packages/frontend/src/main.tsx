@@ -14,8 +14,10 @@ if (root) {
           redirect_uri: window.location.origin,
           audience: config.auth.apiIdentifier,
         }}
+        cacheLocation="localstorage"
         clientId={config.auth.clientId}
         domain={config.auth.domain}
+        useRefreshTokens
       >
         <App />
       </Auth0Provider>

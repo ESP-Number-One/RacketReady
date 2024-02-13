@@ -11,7 +11,6 @@ export async function useAPIClient(): Promise<APIClient> {
   const client = useRef<APIClient | undefined>();
   const { getAccessTokenSilently } = useAuth0();
 
-  // TODO: Cache this to cookies or something?
   if (!client.current) {
     const apiToken = await getAccessTokenSilently();
 
