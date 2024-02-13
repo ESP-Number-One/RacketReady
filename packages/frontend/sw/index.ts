@@ -24,12 +24,12 @@ self.addEventListener("install", (_e) => {
   console.groupEnd();
 });
 
-self.addEventListener("fetch", (event: FetchEvent) => {
-  event.respondWith(
-    (async () => {
-      const { request: req } = event;
-      console.log("Intercepted!");
-      return fetch(req);
-    })(),
-  );
-});
+// self.addEventListener("fetch", (event: FetchEvent) => {
+//   event.respondWith(
+//     (async () => {
+//       const { request: req } = event;
+//       console.log("Intercepted!");
+//       return fetch(req);
+//     })(),
+//   );
+// });

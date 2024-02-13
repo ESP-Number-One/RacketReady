@@ -12,7 +12,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@auth0/auth0-react": "^2.2.4",
     "@esp-group-one/api-client": "workspace:^",
+    "@esp-group-one/config": "workspace:^",
     "@esp-group-one/types": "workspace:^",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
