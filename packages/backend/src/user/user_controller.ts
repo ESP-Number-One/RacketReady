@@ -10,18 +10,26 @@ import {
 } from "@esp-group-one/types";
 import type { OptionalId } from "mongodb";
 import { ObjectId } from "mongodb";
+import sharp from "sharp";
 import { Body, Get, Path, Post, Route, SuccessResponse } from "tsoa";
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
 import { ControllerWrap } from "../controller.js";
 
 @Route("user")
 export class UsersController extends ControllerWrap<User, UserCreation> {
-  creationToObj(creation: UserCreation): OptionalId<User> {
+  async creationToObj(creation: UserCreation): Promise<OptionalId<User>> {
+    const imageBuffer = Buffer.from(creation.profilePicture, "base64");
+    const profilePicture = await sharp(imageBuffer)
+      .resize(512, 512)
+      .webp({ quality: 20 })
+      .toBuffer();
+
     return {
       sports: [],
       leagues: [],
       availability: [],
       ...creation,
+      profilePicture: profilePicture.toString("base64"),
     };
   }
 
@@ -38,6 +46,15 @@ export class UsersController extends ControllerWrap<User, UserCreation> {
     const res = await this.get(userId);
     if (res.success) return newAPISuccess(censorUser(res.data));
     return res;
+  }
+
+  @Get("{userId}/profile_picture")
+  public async getProfilePicture(
+    @Path() userId: ObjectId,
+  ): Promise<WithError<string>> {
+    const res = await this.get(userId);
+    if (!res.success) return res;
+    return newAPISuccess(`data:image/webp;base64,${res.data.profilePicture}`);
   }
 
   @Post("find")

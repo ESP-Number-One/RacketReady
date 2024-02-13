@@ -24,7 +24,8 @@ export class ControllerWrap<T, C> extends Controller {
   /**
    * Converts a creation type to the type without the id
    */
-  creationToObj(_: C): OptionalId<T> {
+  // eslint-disable-next-line @typescript-eslint/require-await -- This is a placeholder
+  async creationToObj(_: C): Promise<OptionalId<T>> {
     throw Error("Unimplemented");
   }
 
@@ -65,7 +66,7 @@ export class ControllerWrap<T, C> extends Controller {
 
   protected async create(requestBody: C): Promise<WithError<T>> {
     this.setStatus(201);
-    const obj = this.creationToObj(requestBody);
+    const obj = await this.creationToObj(requestBody);
 
     return (await this.getCollection())
       .insert(obj)

@@ -13,7 +13,8 @@ import { ControllerWrap } from "../controller.js";
 
 @Route("league")
 export class LeaguesController extends ControllerWrap<League, LeagueCreation> {
-  creationToObj(proposal: LeagueCreation): OptionalId<League> {
+  // eslint-disable-next-line @typescript-eslint/require-await -- Stuck by parent
+  async creationToObj(proposal: LeagueCreation): Promise<OptionalId<League>> {
     return proposal;
   }
 
