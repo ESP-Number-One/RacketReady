@@ -5,10 +5,10 @@ export function LoginButton() {
 
   return (
     <button
+      className="font-title text-4xl text-white bg-p-green-100 hover:bg-p-green-200 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5 me-2 mb-2 focus:outline-none w-full"
       onClick={() => {
         loginWithRedirect().catch(console.error);
       }}
-      className="font-title text-4xl text-white bg-p-green-100 hover:bg-p-green-200 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5 me-2 mb-2 focus:outline-none w-full"
       type="button"
     >
       Log In/Sign up
@@ -21,12 +21,12 @@ export function LogoutButton() {
 
   return (
     <button
+      className="font-title text-4xl text-white bg-p-grey-100 hover:bg-p-grey-200 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5 me-2 mb-2 focus:outline-none w-full"
       onClick={() => {
         logout({ logoutParams: { returnTo: window.location.origin } }).catch(
           console.error,
         );
       }}
-      className="font-title text-4xl text-white bg-p-grey-100 hover:bg-p-grey-200 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5 me-2 mb-2 focus:outline-none w-full"
       type="button"
     >
       Log Out
