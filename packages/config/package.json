@@ -12,6 +12,7 @@
     "lint:fix": "eslint src --ext ts,tsx --report-unused-disable-directives --fix"
   },
   "devDependencies": {
+    "@esp-group-one/eslint-config": "workspace:^",
     "@types/node": "^20.10.6",
     "eslint": "^8.56.0",
     "prettier": "^3.1.1",

@@ -23,12 +23,15 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@esp-group-one/eslint-config": "workspace:^",
+    "@types/eslint": "^8.56.2",
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
     "@types/serviceworker": "^0.0.82",
     "@vitejs/plugin-react": "^4.0.0",
     "autoprefixer": "^10.4.17",
     "eslint": "^8.56.0",
+    "eslint-plugin-react": "^7.33.2",
     "postcss": "^8.4.33",
     "prettier": "^3.1.1",
     "tailwindcss": "^3.4.1",
