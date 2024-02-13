@@ -7,6 +7,13 @@ export class UserAPIClient extends SubAPIClient<User, UserCreation> {
    * @returns webp base64 encoded image with prefix `data:image/webp;base64,` so can be assigned to img.src
    */
   public getProfileSrc(id: string): Promise<string> {
-    return this.get(`${id}/profile_picture`, {}) as Promise<string>;
+    return this.get(`${id}/profile_picture`, {});
+  }
+
+  /**
+   * @returns currently logged in user
+   */
+  public me(): Promise<User> {
+    return this.get("me", {});
   }
 }
