@@ -23,6 +23,7 @@
     "tsoa": "^6.0.1"
   },
   "devDependencies": {
+    "@esp-group-one/eslint-config": "workspace:^",
     "@esp-group-one/types": "workspace:^",
     "@types/cors": "^2.8.15",
     "@types/express": "^4.17.20",
