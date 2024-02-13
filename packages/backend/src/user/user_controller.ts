@@ -56,6 +56,7 @@ export class UsersController extends ControllerWrap<User, UserCreation> {
     if (!res.success) return res;
     return newAPISuccess(`data:image/webp;base64,${res.data.profilePicture}`);
   }
+
   @Post("find")
   public async findUsers(
     @Body() query: QueryOptions,
