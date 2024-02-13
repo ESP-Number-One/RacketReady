@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declarationMap": true,
+    "incremental": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "module": "NodeNext",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "declaration": true,
+    "outDir": "build",
+    "target": "es2022",
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.json"]
+}
