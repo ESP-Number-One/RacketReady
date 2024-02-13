@@ -1,9 +1,10 @@
 import { type Db, MongoClient } from "mongodb";
-import type { League, Match, User } from "@esp-group-one/types";
+import type { League, Match, User, UserIdMap } from "@esp-group-one/types";
 import {
   LEAGUE_COLLECTION_NAME,
   MATCH_COLLECTION_NAME,
   USER_COLLECTION_NAME,
+  USER_MAP_COLLECTION_NAME,
   getDbName,
   getUrl,
 } from "./constants.js";
@@ -14,9 +15,10 @@ export class DbClient {
   private client: MongoClient;
   private db: Promise<Db>;
   private url = "";
-  private users_cache?: CollectionWrap<User>;
-  private leagues_cache?: CollectionWrap<League>;
-  private matches_cache?: CollectionWrap<Match>;
+  private usersCache?: CollectionWrap<User>;
+  private usersMapCache?: CollectionWrap<UserIdMap>;
+  private leaguesCache?: CollectionWrap<League>;
+  private matchesCache?: CollectionWrap<Match>;
 
   constructor(url?: string, dbName?: string) {
     this.url = url ?? getUrl();
@@ -28,34 +30,43 @@ export class DbClient {
   public async leagues(): Promise<CollectionWrap<League>> {
     const db = await this.db;
 
-    if (!this.leagues_cache)
-      this.leagues_cache = new CollectionWrap(
+    if (!this.leaguesCache)
+      this.leaguesCache = new CollectionWrap(
         db.collection(LEAGUE_COLLECTION_NAME),
       );
 
-    return this.leagues_cache;
+    return this.leaguesCache;
   }
 
   public async matches(): Promise<CollectionWrap<Match>> {
     const db = await this.db;
 
-    if (!this.matches_cache)
-      this.matches_cache = new CollectionWrap(
+    if (!this.matchesCache)
+      this.matchesCache = new CollectionWrap(
         db.collection(MATCH_COLLECTION_NAME),
       );
 
-    return this.matches_cache;
+    return this.matchesCache;
+  }
+
+  public async userMap(): Promise<CollectionWrap<UserIdMap>> {
+    const db = await this.db;
+
+    if (!this.usersMapCache)
+      this.usersMapCache = new CollectionWrap(
+        db.collection(USER_MAP_COLLECTION_NAME),
+      );
+
+    return this.usersMapCache;
   }
 
   public async users(): Promise<CollectionWrap<User>> {
     const db = await this.db;
 
-    if (!this.users_cache)
-      this.users_cache = new CollectionWrap(
-        db.collection(USER_COLLECTION_NAME),
-      );
+    if (!this.usersCache)
+      this.usersCache = new CollectionWrap(db.collection(USER_COLLECTION_NAME));
 
-    return this.users_cache;
+    return this.usersCache;
   }
 
   /**
