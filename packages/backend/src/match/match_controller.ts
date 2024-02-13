@@ -14,7 +14,8 @@ import { ControllerWrap } from "../controller.js";
 
 @Route("match")
 export class MatchsController extends ControllerWrap<Match, MatchProposal> {
-  creationToObj(proposal: MatchProposal): OptionalId<Match> {
+  // eslint-disable-next-line @typescript-eslint/require-await -- Stuck by parent
+  async creationToObj(proposal: MatchProposal): Promise<OptionalId<Match>> {
     return {
       status: MatchStatus.Request,
       messages: [],
