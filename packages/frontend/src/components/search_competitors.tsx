@@ -2,7 +2,6 @@ import {
   faArrowRight,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
@@ -16,7 +15,7 @@ function submitSearch(query: string) {
     pageSize: "20",
   }`;
   // Request a list of censored users form backend
-  let req = new Request("http://localhost:3000/user/find", {
+  const req = new Request("http://localhost:3000/user/find", {
     method: "POST",
     body: data,
   });
@@ -43,15 +42,6 @@ export function SearchCompetitor({ id }: SearchBarProps) {
   const [hideSearch, setHideSearch] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const input = (
-    <input
-      id={`searchbar-${id}`}
-      placeholder="Search for competitors..."
-      onInput={(i) => {
-        setSearchQuery(i.target.value);
-      }}
-    />
-  );
   return (
     <div className="display-flex">
       <button
@@ -63,12 +53,34 @@ export function SearchCompetitor({ id }: SearchBarProps) {
         <FontAwesomeIcon icon={faMagnifyingGlass} />
       </button>
       <div hidden={hideSearch}>
-        {input}
+        <input
+          id={`searchbar-${id}`}
+          inputMode="text"
+          name="search"
+          onChange={(i) => {
+            setSearchQuery(i.target.value);
+          }}
+          onKeyUp={(event) => {
+            if (event.key === "Enter") {
+              submitSearch(searchQuery);
+            }
+          }}
+          onSubmit={() => {
+            submitSearch(searchQuery);
+          }}
+          placeholder="Search for competitors..."
+          required
+          type="text"
+        />
         <button
-          type="button"
           onClick={() => {
             submitSearch(searchQuery);
           }}
+          onSubmit={() => {
+            submitSearch(searchQuery);
+          }}
+          type="submit"
+          value="Search"
         >
           <FontAwesomeIcon icon={faArrowRight} />
         </button>
