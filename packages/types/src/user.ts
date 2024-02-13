@@ -23,7 +23,7 @@ export interface User {
   _id: ObjectId;
   name: string;
   description: string;
-  profile_picture: string;
+  profilePicture: string;
   email: string;
   sports: SportInfo[];
   leagues: ObjectId[];
@@ -40,7 +40,7 @@ export interface CensoredUser {
 export interface UserCreation {
   name: string;
   description: string;
-  profile_picture: string;
+  profilePicture: string;
   email: string;
 }
 

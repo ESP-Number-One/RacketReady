@@ -1749,7 +1749,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@esp-group-one/matchyo-sports@workspace:."
   dependencies:
-    "@types/multer": "npm:^1.4.11"
     "@vercel/style-guide": "npm:^5.1.0"
     eslint: "npm:^8.56.0"
     eslint-config-next: "npm:^14.0.4"

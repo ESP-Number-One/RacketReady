@@ -27,8 +27,5 @@
     "eslint_d": "^13.1.2",
     "prettier": "^3.1.1",
     "typescript": "5.x"
-  },
-  "dependencies": {
-    "@types/multer": "^1.4.11"
   }
 }

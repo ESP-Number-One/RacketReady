@@ -6,7 +6,7 @@ interface Success<T> {
 interface Error {
   success: false;
   error: string;
-} //s
+}
 
 export type WithError<T> = Success<T> | Error;
 

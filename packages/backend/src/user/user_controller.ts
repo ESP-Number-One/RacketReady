@@ -13,43 +13,17 @@ import { ObjectId } from "mongodb";
 import { Body, Get, Path, Post, Route, SuccessResponse } from "tsoa";
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
 import { ControllerWrap } from "../controller.js";
-import { upload } from "packages/backend/src/server.ts";
-import * as multer from "multer";
-import * as path from "path";
-import { Request, Response } from "express";
-import { Route, Post } from "tsoa";
 
-@Route("upload")
-export class UsersController extends ControllerWrap<User, UserCreation> {
-  @Post()
-  public async uploadProfilePicture(
-    @Request() req: any,
-    @Response() res: any,
-  ): Promise<void> {
-    upload.single("profilePicture")(req, res, (err: any) => {
-      if (err) {
-        // An error occurred when uploading
-        res.status(422).send("an Error occured");
-      } else {
-        // No error occured.
-        res.send({
-          success: true,
-          message: "Profile picture uploaded!",
-          filename: req.file.filename,
-        });
-      }
-    });
-  }
-}
 @Route("user")
 export class UsersController extends ControllerWrap<User, UserCreation> {
   creationToObj(creation: UserCreation): OptionalId<User> {
+    const imageBuffer = Buffer.from(creation.profilePicture, "base64");
     return {
       sports: [],
       leagues: [],
       availability: [],
-      profilePicture: creation.profile_picture,
       ...creation,
+      profilePicture: imageBuffer.toString("base64"),
     };
   }
 
