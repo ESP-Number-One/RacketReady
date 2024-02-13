@@ -48,7 +48,7 @@ export class UsersController extends ControllerWrap<User, UserCreation> {
     return res;
   }
 
-  @Get("{userId}/profilePicture")
+  @Get("{userId}/profile_picture")
   public async getProfilePicture(
     @Path() userId: ObjectId,
   ): Promise<WithError<string>> {
