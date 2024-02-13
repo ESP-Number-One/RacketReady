@@ -6,7 +6,6 @@
     "packages/*"
   ],
   "scripts": {
-    "build:sync": "yarn workspaces foreach -A --exclude @esp-group-one/matchyo-sports --topological-dev run build",
     "build": "yarn workspaces foreach -Ap --topological-dev run build",
     "dev:frontend": "yarn workspace @esp-group-one/frontend dev",
     "dev": "yarn workspaces foreach -Aip run dev",

@@ -1,7 +1,7 @@
 name: "Test Build"
 on: ["push"]
 jobs:
-  Compile-Test:
+  build-and-lint:
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v4
@@ -15,7 +15,11 @@ jobs:
           node-version-file: ".nvmrc"
           cache: yarn
 
-      - run: yarn install --immutable
+      - name: Install packages
+        run: yarn install --immutable
 
-      # Attempt to build this branch.
-      - run: yarn build
+      - name: Build all packages
+        run: yarn build
+
+      - name: Lint packages
+        run: yarn lint
