@@ -1,6 +1,0 @@
-[submodule "reports/deliverable_1"]
-	path = reports/deliverable_1
-	url = git@github.com:ESP-Number-One/deliverable-1.git
-[submodule "reports/deliverable_2"]
-	path = reports/deliverable_2
-	url = git@github.com:ESP-Number-One/deliverable-2.git
