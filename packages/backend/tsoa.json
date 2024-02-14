@@ -7,8 +7,16 @@
     "specVersion": 3
   },
   "routes": {
+    "authenticationModule": "./src/authentication.ts",
     "esm": true,
     "routesDir": "tsoa"
+  },
+  "securityDefinitions": {
+    "auth0": {
+      "type": "apiKey",
+      "name": "authorization",
+      "in": "header"
+    }
   },
   "compilerOptions": {
     "resolveJsonModule": true,
@@ -22,7 +30,7 @@
     "declaration": true,
     "esModuleInterop": true,
     "outDir": "build",
-    "target": "es2016",
+    "target": "es2022",
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "strict": true
