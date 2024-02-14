@@ -5,7 +5,7 @@ interface Tagging {
 export function Tag({ sportName }: Tagging) {
   return (
     <div
-      className={`inline-block rounded-full py-1 px-6 font-bold font-title text-white text-lg ${getSportColorClass(
+      className={`inline-block rounded-full py-1 px-5 font-bold font-title text-white text-md ${getSportColorClass(
         sportName,
       )}`}
     >
@@ -24,5 +24,3 @@ const getSportColorClass = (sportName: string) => {
       return "bg-squash";
   }
 };
-
-export default Tag;
