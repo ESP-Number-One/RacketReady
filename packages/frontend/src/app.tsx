@@ -1,4 +1,5 @@
-import { PageWithTitle } from "./components/page.js";
+import { Button } from "./components/button";
+import { PageWithTitle } from "./components/page";
 
 export function App() {
   return (
@@ -9,6 +10,7 @@ export function App() {
       setAPI={console.log}
     >
       <p>I am the child</p>
+      <Button backgroundColor="red">Click me</Button>
     </PageWithTitle>
   );
 }
