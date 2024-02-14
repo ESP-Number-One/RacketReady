@@ -1718,18 +1718,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@esp-group-one/config@workspace:^, @esp-group-one/config@workspace:packages/config":
-  version: 0.0.0-use.local
-  resolution: "@esp-group-one/config@workspace:packages/config"
-  dependencies:
-    "@esp-group-one/eslint-config": "workspace:^"
-    "@types/node": "npm:^20.10.6"
-    eslint: "npm:^8.56.0"
-    prettier: "npm:^3.1.1"
-    typescript: "npm:^5.0.2"
-  languageName: unknown
-  linkType: soft
-
 "@esp-group-one/db-client@workspace:^, @esp-group-one/db-client@workspace:packages/db-client":
   version: 0.0.0-use.local
   resolution: "@esp-group-one/db-client@workspace:packages/db-client"
@@ -1767,7 +1755,6 @@ __metadata:
   resolution: "@esp-group-one/frontend@workspace:packages/frontend"
   dependencies:
     "@esp-group-one/api-client": "workspace:^"
-    "@esp-group-one/config": "workspace:^"
     "@esp-group-one/eslint-config": "workspace:^"
     "@esp-group-one/types": "workspace:^"
     "@fortawesome/fontawesome-svg-core": "npm:^6.5.1"
