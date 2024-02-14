@@ -17,11 +17,11 @@ export function Tag({ sportName }: Tagging) {
 const getSportColorClass = (sportName: string) => {
   switch (sportName.toLowerCase()) {
     case "badminton":
-      return "bg-badminton-teal";
+      return "bg-badminton";
     case "tennis":
-      return "bg-tennis-green";
+      return "bg-tennis";
     case "squash":
-      return "bg-squash-yellow";
+      return "bg-squash";
   }
 };
 
