@@ -1,15 +1,15 @@
 const path = require("node:path");
 
-const project = path.resolve(process.cwd(), "tsconfig.json");
+const project = path.join(__dirname, "tsconfig.json");
 
 const resolvedExtends = [
   "@vercel/style-guide/eslint/node",
   "@vercel/style-guide/eslint/typescript",
   "@vercel/style-guide/eslint/browser",
-  "@vercel/style-guide/eslint/react",
   "eslint-config-turbo",
 ].map(require.resolve);
 
+/** @type {import("eslint").ESLint.ConfigData} */
 module.exports = {
   env: {
     es2022: true,
@@ -18,28 +18,18 @@ module.exports = {
   ignorePatterns: ["node_modules/", "dist/", "build/"],
   plugins: [],
   parserOptions: {
-    project,
     ecmaVersion: "latest",
     sourceType: "module",
   },
   rules: {
-    "import/no-default-export": "off",
+    "import/no-default-export": ["warn"],
     "no-console": "off",
-    "react/react-in-jsx-scope": [0],
-    "react/self-closing-comp": [
-      "error",
-      {
-        component: true,
-        html: true,
-      },
-    ],
     "turbo/no-undeclared-env-vars": "off",
     "unicorn/filename-case": [
       "error",
       {
         cases: {
           snakeCase: true,
-          pascalCase: true,
         },
         ignore: ["vite-env.d.ts"],
       },
