@@ -1,0 +1,10 @@
+name: "Test Build"
+on: ["push"]
+jobs:
+  lint:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/yarn-install
+      - name: Lint packages
+        run: yarn lint
