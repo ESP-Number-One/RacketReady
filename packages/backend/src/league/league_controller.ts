@@ -7,14 +7,14 @@ import {
 } from "@esp-group-one/types";
 import type { OptionalId } from "mongodb";
 import { ObjectId } from "mongodb";
-import { Body, Get, Path, Post, Route, SuccessResponse } from "tsoa";
+import { Body, Get, Path, Post, Route, Security, SuccessResponse } from "tsoa";
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
 import { ControllerWrap } from "../controller.js";
 
+@Security("auth0")
 @Route("league")
 export class LeaguesController extends ControllerWrap<League, LeagueCreation> {
-  // eslint-disable-next-line @typescript-eslint/require-await -- Stuck by parent
-  async creationToObj(proposal: LeagueCreation): Promise<OptionalId<League>> {
+  creationToObj(proposal: LeagueCreation): OptionalId<League> {
     return proposal;
   }
 

@@ -1,4 +1,5 @@
 export const USER_COLLECTION_NAME = "users";
+export const USER_MAP_COLLECTION_NAME = "user_map";
 export const LEAGUE_COLLECTION_NAME = "leagues";
 export const MATCH_COLLECTION_NAME = "matches";
 

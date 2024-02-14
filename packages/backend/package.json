@@ -6,19 +6,25 @@
   "type": "module",
   "scripts": {
     "build": "tsoa spec-and-routes && tsc",
-    "dev": "tsoa spec-and-routes && concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
+    "dev": "(run mongo:stop || true) && run mongo:start && DB_NAME=esp DB_CONN_STRING=mongodb://localhost:27017 run dev:tsoa",
+    "dev:tsoa": "tsoa spec-and-routes && concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
     "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts' '*.json'",
     "gen": "tsoa routes",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives",
     "lint:fix": "eslint src --ext ts,tsx --report-unused-disable-directives --fix",
-    "start": "node build/src/server.js"
+    "start": "node build/src/server.js",
+    "mongo:start": "mkdir -p mongo_data && docker run -d --rm -p 127.0.0.1:27017:27017 --name esp-mongo-test -v ./mongo_data:/data/db -v ./etc/mongod.conf:/etc/mongod.conf mongo:latest --config /etc/mongod.conf",
+    "mongo:stop": "docker stop $(docker ps -a --filter name=esp-mongo-test --format='{{.ID}}')"
   },
   "dependencies": {
+    "@esp-group-one/config": "workspace:^",
     "@esp-group-one/db-client": "workspace:^",
     "@tsoa/runtime": "^6.0.0",
+    "access-token-jwt": "https://github.com/ESP-Number-One/access-token-jwt",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "mongodb": "^6.3.0",
+    "oauth2-bearer": "https://github.com/ESP-Number-One/oauth2-bearer",
     "sharp": "^0.33.2",
     "swagger-ui-express": "^5.0.0",
     "tsoa": "^6.0.1"
@@ -28,6 +34,7 @@
     "@esp-group-one/types": "workspace:^",
     "@types/cors": "^2.8.15",
     "@types/express": "^4.17.20",
+    "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "^20.10.5",
     "@types/swagger-ui-express": "^4.1.6",
     "concurrently": "^8.2.2",

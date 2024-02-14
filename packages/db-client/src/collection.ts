@@ -24,6 +24,13 @@ export class CollectionWrap<T> {
   }
 
   /**
+   * @returns if there are more than one element with your specific query
+   */
+  public async exists(query: Filter<Document>): Promise<boolean> {
+    return (await this.page({ query, pageSize: 1 })).length > 0;
+  }
+
+  /**
    * This is mostly here for internal reasons, please consider to use the page
    * function instead to reduce load on the database, api and client
    */
@@ -31,8 +38,8 @@ export class CollectionWrap<T> {
     return (await this.collection.find(query).toArray()) as unknown[] as T[];
   }
 
-  public async get(id: ObjectId): Promise<T> {
-    return (await this.find({ id }))[0];
+  public async get(id: ObjectId): Promise<T | undefined> {
+    return (await this.page({ query: { _id: id }, pageSize: 1 })).at(0);
   }
 
   public insert(...items: OptionalId<T>[]): Promise<InsertManyResult> {
