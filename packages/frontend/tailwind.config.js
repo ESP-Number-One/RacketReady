@@ -2,17 +2,34 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    colors: {
-      "badminton-teal": "#16a085",
-      "tennis-green": "#2ecc71",
-      "squash-yellow": "#f1c40f",
-      "font-gray": "#1c3e50",
+    extend: {
+      colors: {
+        // Sports
+        badminton: "#16a085",
+        tennis: "#9B59B6",
+        squash: "#F1C40F",
+
+        // Ability levels
+        beginner: "#F39C12",
+
+        // Forms
+        "progress-blue": "#3498DB",
+
+        // Primaries
+        "p-green": { 100: "#2ECC71", 200: "#229553" },
+        "p-grey": {
+          100: "#bdc3c7",
+          200: "#95A5A6",
+          900: "#2C3E50",
+        },
+        "p-red": { 100: "#E74C3C", 200: "#C0392B" },
+        "p-blue": "#2980B9",
+      },
+      fontFamily: {
+        title: ['"Baloo Bhai 2"'],
+        body: ['"Baloo 2"'],
+      },
     },
-    fontFamily: {
-      title: ['"Baloo Bhai 2"'],
-      body: ['"Baloo 2"'],
-    },
-    extend: {},
   },
   plugins: [],
 };

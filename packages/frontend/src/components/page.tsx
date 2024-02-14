@@ -21,7 +21,7 @@ export function Page({ heading, children }: PageParams) {
   return (
     <div className="w-full">
       {heading}
-      <div className="px-3">{children}</div>
+      <div className="px-4">{children}</div>
     </div>
   );
 }
@@ -48,7 +48,9 @@ export function PageWithTitle({
 
   const title =
     typeof heading === "string" ? (
-      <h1 className="font-title text-4xl text-font-gray">{heading}</h1>
+      <h1 className="font-title font-semibold text-4xl text-p-grey-900">
+        {heading}
+      </h1>
     ) : (
       heading
     );
@@ -56,7 +58,7 @@ export function PageWithTitle({
 
   if (extra) parts.push(<div className="flex-initial w-8">{extra}</div>);
 
-  const headingNode = <div className="flex px-2">{parts}</div>;
+  const headingNode = <div className="flex px-3 py-2">{parts}</div>;
 
   return (
     <Page currPage={currPage} heading={headingNode}>
