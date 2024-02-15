@@ -3,45 +3,22 @@ import {
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { memo, useState } from "react";
+import { GenericCardList } from "./generic_card_list";
 
-function submitSearch(query: string) {
-  const data = `{
-    query: {
-      name: ${query},
-    },
-    sort: "",
-    pageStart: "0",
-    pageSize: "20",
-  }`;
-  // Request a list of censored users form backend
-  const req = new Request("http://localhost:3000/user/find", {
-    method: "POST",
-    body: data,
-  });
-  fetch(req)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP Error occurred, status ${response.status}`);
-      }
-      return response.blob();
-    })
-    .then((responseBlob) => {
-      console.log(responseBlob);
-    })
-    .catch((err) => {
-      console.log(`Error occurred ${err}`);
-    });
+interface searchProps {
+  onSubmit: (query: string) => void;
 }
 
-interface SearchBarProps {
-  id: number;
-}
-
-export function SearchCompetitor({ id }: SearchBarProps) {
+export const SearchCompetitor = memo(function SearchCompetitor({
+  onSubmit,
+}: searchProps) {
   const [hideSearch, setHideSearch] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
+  function onSubmitWrapper() {
+    onSubmit(searchQuery);
+  }
   return (
     <div className="display-flex">
       <button
@@ -54,7 +31,6 @@ export function SearchCompetitor({ id }: SearchBarProps) {
       </button>
       <div hidden={hideSearch}>
         <input
-          id={`searchbar-${id}`}
           inputMode="text"
           name="search"
           onChange={(i) => {
@@ -62,11 +38,11 @@ export function SearchCompetitor({ id }: SearchBarProps) {
           }}
           onKeyUp={(event) => {
             if (event.key === "Enter") {
-              submitSearch(searchQuery);
+              onSubmitWrapper();
             }
           }}
           onSubmit={() => {
-            submitSearch(searchQuery);
+            onSubmitWrapper();
           }}
           placeholder="Search for competitors..."
           required
@@ -74,10 +50,10 @@ export function SearchCompetitor({ id }: SearchBarProps) {
         />
         <button
           onClick={() => {
-            submitSearch(searchQuery);
+            onSubmitWrapper();
           }}
           onSubmit={() => {
-            submitSearch(searchQuery);
+            onSubmitWrapper();
           }}
           type="submit"
           value="Search"
@@ -85,6 +61,7 @@ export function SearchCompetitor({ id }: SearchBarProps) {
           <FontAwesomeIcon icon={faArrowRight} />
         </button>
       </div>
+      <GenericCardList cardSubjects={[]}></GenericCardList>
     </div>
   );
-}
+});
