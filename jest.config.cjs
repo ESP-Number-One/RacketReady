@@ -4,13 +4,17 @@ const config = {
   projects: [
     {
       rootDir: "packages/frontend",
+      displayName: "Frontend",
       preset: "ts-jest",
+      testEnvironment: "jsdom",
       transform: {
         ".(ts|tsx)": "ts-jest",
       },
+      testRegex: "\\.(test|spec)\\.(ts|tsx)$",
+      moduleFileExtensions: ["ts", "tsx", "js"],
     },
   ],
-  testRegex: "\\.(test|spec))\\.(ts|tsx|js)$",
+  testRegex: "\\.(test|spec)\\.(ts|tsx)$",
   moduleFileExtensions: ["ts", "tsx", "js"],
 };
 

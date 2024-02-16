@@ -9,7 +9,7 @@
     "build": "yarn workspaces foreach -Ap --topological-dev run build",
     "dev:frontend": "yarn workspace @esp-group-one/frontend dev",
     "dev": "yarn workspaces foreach -Aip run dev",
-    "test": "yarn workspaces foreach -Aip run test",
+    "test": "jest",
     "format": "run format:me && run format:ws",
     "format:ws": "yarn workspaces foreach -Ap --exclude @esp-group-one/matchyo-sports run format",
     "format:me": "prettier --write '*.md' '*.json' .prettierrc .eslintrc.cjs",
@@ -28,6 +28,7 @@
     "eslint-plugin-prettier": "^5.1.1",
     "eslint_d": "^13.1.2",
     "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "prettier": "^3.1.1",
     "typescript": "5.x"
   }

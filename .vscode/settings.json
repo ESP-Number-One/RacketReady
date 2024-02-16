@@ -13,11 +13,14 @@
   "prettier.prettierPath": ".yarn/sdks/prettier/index.cjs",
   "typescript.tsdk": ".yarn/sdks/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
+  "jest.debugMode": true,
   "jest.virtualFolders": [
     {
       "name": "frontend",
       "runMode": "on-demand",
-      "rootPath": "packages/frontend"
+      "rootPath": "packages/frontend",
+      "commandLine": "yarn jest --selectProjects Frontend",
+      "dashedArgs": true
     }
   ]
 }
