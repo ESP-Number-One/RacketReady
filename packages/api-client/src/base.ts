@@ -1,4 +1,4 @@
-import type { WithError } from "@esp-group-one/types";
+import { ObjectId, type WithError } from "@esp-group-one/types";
 import { API_URL } from "./constants.js";
 
 export class APIClientBase {
@@ -69,7 +69,7 @@ export class APIClientBase {
         throw Error(`Request failed with status ${res.status}`);
       }
 
-      return json.data;
+      return ObjectId.fromObj(json.data) as T;
     });
   }
 }

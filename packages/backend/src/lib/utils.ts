@@ -1,7 +1,7 @@
 import { DbClient } from "@esp-group-one/db-client";
+import type { ObjectId } from "@esp-group-one/types";
 import type { VerifyJwtResult } from "access-token-jwt";
 import type { Request } from "express";
-import type { ObjectId } from "mongodb";
 
 export async function getUserId(
   request: Request,

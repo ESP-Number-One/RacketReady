@@ -1,14 +1,16 @@
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
-import {
-  newAPIError,
-  newAPISuccess,
-  type WithError,
-  type QueryOptions,
+import { newAPIError, newAPISuccess } from "@esp-group-one/types";
+import type {
+  ObjectId,
+  MongoDBItem,
+  WithError,
+  User,
 } from "@esp-group-one/types";
-import type { ObjectId, OptionalId } from "mongodb";
+import type { OptionalId } from "mongodb";
 import type { Request } from "express";
 import { Controller } from "tsoa";
-import { getUserId } from "./utils.js";
+import { DbClient, type FilterOptions } from "@esp-group-one/db-client";
+import { getUserId } from "./lib/utils.js";
 
 /**
  * This class offers basically functions which implement the APIs for all
@@ -22,19 +24,17 @@ import { getUserId } from "./utils.js";
  * As well as all the API endpoints (however they should be able to simply
  * pass their arguments on to the functions below)
  */
-export class ControllerWrap<T, C> extends Controller {
-  /**
-   * Converts a creation type to the type without the id
-   */
-  creationToObj(_: C): OptionalId<T> {
-    throw Error("Unimplemented");
-  }
-
+export class ControllerWrap<T extends MongoDBItem> extends Controller {
   /**
    * @returns the collection which should be used for all operations
    */
   getCollection(): Promise<CollectionWrap<T>> {
     throw Error("Unimplemented");
+  }
+
+  protected notFound<R>(status?: number, message?: string): WithError<R> {
+    this.setStatus(status ?? 404);
+    return newAPIError(message ?? "Failed to get obj");
   }
 
   /**
@@ -49,9 +49,8 @@ export class ControllerWrap<T, C> extends Controller {
         return newAPISuccess(obj);
       })
       .catch((e) => {
-        this.setStatus(500);
         console.error(`Failed to get obj with id: ${objId.toString()}: ${e}`);
-        return newAPIError("Failed to get obj");
+        return this.notFound();
       });
   }
 
@@ -59,18 +58,18 @@ export class ControllerWrap<T, C> extends Controller {
    * Safely finds the information for the current endpoints collection, if
    * none is found it will just return an error
    */
-  protected async find(query: QueryOptions): Promise<WithError<T[]>> {
+  protected async find(query: FilterOptions<T>): Promise<WithError<T[]>> {
     return (await this.getCollection())
       .page(query)
       .then((objs): WithError<T[]> => {
         return newAPISuccess(objs);
       })
       .catch((e) => {
-        this.setStatus(500);
         console.error(
           `Failed to get with query: ${JSON.stringify(query)}: ${e}`,
         );
-        return newAPIError("Failed to get obj");
+
+        return this.notFound(500);
       });
   }
 
@@ -78,15 +77,17 @@ export class ControllerWrap<T, C> extends Controller {
    * Safely creates a new object for the controller. However does not check if
    * object exists already
    */
-  protected async create(requestBody: C): Promise<WithError<T>> {
+  protected async create(obj: OptionalId<T>): Promise<WithError<T>> {
     this.setStatus(201);
-    const obj = this.creationToObj(requestBody);
 
     return (await this.getCollection())
       .insert(obj)
       .then((res) => {
         this.setStatus(201);
-        return newAPISuccess({ ...obj, _id: res.insertedIds[0] } as T);
+        return newAPISuccess({
+          ...obj,
+          _id: res[0].toString(),
+        } as T);
       })
       .catch((e) => {
         this.setStatus(500);
@@ -124,5 +125,18 @@ export class ControllerWrap<T, C> extends Controller {
 
         return newAPIError("Unknown User");
       });
+  }
+
+  protected async withUser<R>(
+    req: Request,
+    callback: (user: User) => Promise<WithError<R>>,
+  ): Promise<WithError<R>> {
+    return this.withUserId(req, async (userId) => {
+      const db = new DbClient();
+      const userColl = await db.users();
+      const user = await userColl.get(userId);
+      if (user) return callback(user);
+      throw new Error("Could not get user");
+    });
   }
 }

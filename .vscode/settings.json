@@ -16,10 +16,31 @@
   "jest.debugMode": true,
   "jest.virtualFolders": [
     {
+      "name": "api-client",
+      "runMode": "on-demand",
+      "rootPath": "packages/api-client",
+      "commandLine": "yarn jest --selectProjects 'API Client'",
+      "dashedArgs": true
+    },
+    {
+      "name": "db-client",
+      "runMode": "on-demand",
+      "rootPath": "packages/db-client",
+      "commandLine": "yarn jest --selectProjects 'DB Client'",
+      "dashedArgs": true
+    },
+    {
       "name": "frontend",
       "runMode": "on-demand",
       "rootPath": "packages/frontend",
       "commandLine": "yarn jest --selectProjects Frontend",
+      "dashedArgs": true
+    },
+    {
+      "name": "types",
+      "runMode": "on-demand",
+      "rootPath": "packages/types",
+      "commandLine": "yarn jest --selectProjects 'Types'",
       "dashedArgs": true
     }
   ]

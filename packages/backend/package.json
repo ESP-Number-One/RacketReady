@@ -19,6 +19,7 @@
   "dependencies": {
     "@esp-group-one/config": "workspace:^",
     "@esp-group-one/db-client": "workspace:^",
+    "@esp-group-one/types": "workspace:^",
     "@tsoa/runtime": "^6.0.0",
     "access-token-jwt": "https://github.com/ESP-Number-One/access-token-jwt",
     "cors": "^2.8.5",
@@ -27,11 +28,11 @@
     "oauth2-bearer": "https://github.com/ESP-Number-One/oauth2-bearer",
     "sharp": "^0.33.2",
     "swagger-ui-express": "^5.0.0",
+    "ts-randomstring": "^1.0.8",
     "tsoa": "^6.0.1"
   },
   "devDependencies": {
     "@esp-group-one/eslint-config": "workspace:^",
-    "@esp-group-one/types": "workspace:^",
     "@types/cors": "^2.8.15",
     "@types/express": "^4.17.20",
     "@types/jsonwebtoken": "^9.0.5",

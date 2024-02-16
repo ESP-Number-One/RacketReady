@@ -2,7 +2,7 @@ import type * as express from "express";
 import { jwtVerifier, requiredScopes } from "access-token-jwt";
 import * as config from "@esp-group-one/config";
 import { getToken } from "oauth2-bearer";
-import { setUserId } from "./utils.js";
+import { setUserId } from "./lib/utils.js";
 
 // import pkg from "access-token-jwt";
 // const { jwtVerifier } = pkg;
