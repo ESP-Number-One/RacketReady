@@ -171,4 +171,32 @@ export class UsersController extends ControllerWrap<User, UserCreation> {
         return newAPIError("User exists");
       });
   }
+
+  /**
+   * The edits the current user's information with the given info
+   */
+  @Response<Error>("500", "Internal Server Error")
+  @Post("me/edit")
+  public async editUsers(
+    @Body() updateQuery: Partial<UserCreation>,
+    @Request() req: express.Request,
+  ): Promise<WithError<undefined>> {
+    return this.withUserId(req, async (currUser) => {
+      const setOp: Partial<UserCreation> = {};
+      if (updateQuery.description) setOp.description = updateQuery.description;
+      if (updateQuery.email) setOp.email = updateQuery.email;
+      if (updateQuery.name) setOp.name = updateQuery.name;
+      if (updateQuery.profilePicture)
+        setOp.profilePicture = updateQuery.profilePicture;
+      const coll = await this.getCollection();
+      const res: Promise<WithError<undefined>> = coll
+        .edit(currUser, setOp)
+        .then(() => newAPISuccess(undefined))
+        .catch((e) => {
+          console.log(e);
+          return newAPIError("Could not update user");
+        });
+      return res;
+    });
+  }
 }

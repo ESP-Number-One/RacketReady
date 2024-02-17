@@ -1,4 +1,4 @@
-import type {
+import {
   Collection,
   Document,
   Filter,
@@ -6,6 +6,7 @@ import type {
   ObjectId,
   OptionalId,
   Sort,
+  UpdateFilter,
 } from "mongodb";
 import type { QueryOptions } from "@esp-group-one/types";
 
@@ -55,5 +56,12 @@ export class CollectionWrap<T> {
     if (opts.sort) req.sort(opts.sort as Sort);
 
     return (await req.toArray()) as unknown[] as T[];
+  }
+
+  public async edit(
+    id: ObjectId,
+    update: UpdateFilter<T> | Partial<T>,
+  ): Promise<void> {
+    await this.collection.updateOne({ _id: id }, update);
   }
 }
