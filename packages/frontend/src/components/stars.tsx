@@ -35,10 +35,10 @@ export function Stars(props: {
       {[1, 2, 3, 4, 5].map((e) => (
         <StarButton
           currentRating={props.rating}
+          disabled={props.disabled}
           key={e}
           onClick={props.onRatingChange}
           rating={e}
-          disabled={props.disabled}
         />
       ))}
     </div>
