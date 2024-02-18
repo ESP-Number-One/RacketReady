@@ -4,29 +4,6 @@ const config = {
   reporters: ["default", "github-actions"],
   projects: [
     {
-      rootDir: "packages/frontend",
-      displayName: "Frontend",
-      preset: "ts-jest",
-      testEnvironment: "jsdom",
-      transform: {
-        ".(ts|tsx)": "ts-jest",
-      },
-      testRegex: "\\.(test|spec)\\.(ts|tsx)$",
-      moduleFileExtensions: ["ts", "tsx", "js"],
-    },
-    {
-      displayName: "DB Client",
-      moduleNameMapper: {
-        "^(\\.{1,2}/.*)\\.js$": "$1",
-      },
-      rootDir: "packages/db-client",
-      testEnvironment: "node",
-      testRegex: "\\.(test|spec)\\.(ts|tsx)$",
-      transform: {
-        ".ts": "ts-jest",
-      },
-    },
-    {
       displayName: "API Client",
       moduleNameMapper: {
         "^(\\.{1,2}/.*)\\.js$": "$1",
@@ -37,6 +14,30 @@ const config = {
       transform: {
         ".ts": "ts-jest",
       },
+    },
+    {
+      displayName: "DB Client",
+      moduleNameMapper: {
+        "^(\\.{1,2}/.*)\\.js$": "$1",
+      },
+      preset: "@shelf/jest-mongodb",
+      rootDir: "packages/db-client",
+      testEnvironment: "node",
+      testRegex: "\\.(test|spec)\\.(ts|tsx)$",
+      transform: {
+        ".ts": "ts-jest",
+      },
+    },
+    {
+      displayName: "Frontend",
+      preset: "ts-jest",
+      rootDir: "packages/frontend",
+      testEnvironment: "jsdom",
+      transform: {
+        ".(ts|tsx)": "ts-jest",
+      },
+      testRegex: "\\.(test|spec)\\.(ts|tsx)$",
+      moduleFileExtensions: ["ts", "tsx", "js"],
     },
     {
       displayName: "Types",

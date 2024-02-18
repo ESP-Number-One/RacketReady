@@ -26,7 +26,7 @@ export interface Availability {
 }
 
 export interface UserIdMap extends MongoDBItem {
-  userId: string;
+  auth0Id: string;
   internalId: ObjectId;
 }
 

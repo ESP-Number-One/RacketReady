@@ -1,9 +1,13 @@
 import { describe, expect, test } from "@jest/globals";
-import { ObjectId as FakeObjectId, MongoDBItem } from "@esp-group-one/types";
+import {
+  ObjectId as FakeObjectId,
+  MongoDBItem,
+  tests,
+} from "@esp-group-one/types";
 import { Document, Filter, ObjectId } from "mongodb";
 import { toInternal, toMongo } from "../src/types.js";
 
-const IDS = ["aaaaaaaaaaaaaaaaaaaaaaaa", "bbbbbbbbbbbbbbbbbbbbbbbb"];
+const { IDS } = tests;
 
 describe("Convert to MongoDB", () => {
   test("Single type", () => {

@@ -1,19 +1,12 @@
 import { describe, expect, test } from "@jest/globals";
 import { censorLeague } from "../src/league.js";
 import { ObjectId, Sport } from "../src/utils.js";
+import { IDS, getLeague } from "./utils.js";
 
 describe("Censor league", () => {
   test("public league", () => {
-    expect(
-      censorLeague({
-        _id: new ObjectId("test"),
-        name: "My custom League",
-        sport: Sport.Squash,
-        ownerIds: [new ObjectId("something")],
-        private: false,
-      }),
-    ).toStrictEqual({
-      _id: new ObjectId("test"),
+    expect(censorLeague(getLeague({ private: false }))).toStrictEqual({
+      _id: new ObjectId(IDS[0]),
       name: "My custom League",
       sport: Sport.Squash,
       private: false,
@@ -21,17 +14,8 @@ describe("Censor league", () => {
   });
 
   test("private league", () => {
-    expect(
-      censorLeague({
-        _id: new ObjectId("test"),
-        name: "My custom League",
-        sport: Sport.Squash,
-        ownerIds: [new ObjectId("something")],
-        private: true,
-        inviteCode: "yoooo",
-      }),
-    ).toStrictEqual({
-      _id: new ObjectId("test"),
+    expect(censorLeague(getLeague({ private: true }))).toStrictEqual({
+      _id: new ObjectId(IDS[0]),
       name: "My custom League",
       sport: Sport.Squash,
       private: true,

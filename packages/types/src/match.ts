@@ -9,12 +9,12 @@ export enum MatchStatus {
 
 export interface Message {
   sender: string;
-  date: Date;
+  date: string;
   text: string;
 }
 
 interface BaseMatch extends MongoDBItem {
-  date: Date;
+  date: string;
   messages: Message[];
   owner: ObjectId;
   players: ObjectId[];
@@ -43,7 +43,7 @@ type MatchWithStatus = MatchWithScore | MatchWithoutScore;
 export type Match = MatchWithStatus | LeagueMatch<MatchWithStatus>;
 
 interface BaseMatchProposal {
-  date: Date;
+  date: string;
   to: ObjectId;
   sport: Sport;
 }
@@ -59,7 +59,7 @@ export type MatchQuery = Query<{
 }>;
 
 export interface CensoredLeagueMatch {
-  date: Date;
+  date: string;
   league: ObjectId;
   round: number;
   players: ObjectId[];

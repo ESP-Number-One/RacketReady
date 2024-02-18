@@ -1,9 +1,11 @@
 import { describe, expect, test } from "@jest/globals";
 import { fetchMockEndpointOnce, runErrorTests } from "../lib/utils.js";
 import fetchMockImp, { FetchMock } from "jest-fetch-mock";
-import { newAPISuccess, ObjectId, Sport, User } from "@esp-group-one/types";
+import { newAPISuccess, ObjectId, tests } from "@esp-group-one/types";
 import { UserAPIClient } from "../../src/sub/user.js";
 import { APIClient } from "../../src/client.js";
+
+const { getUser } = tests;
 
 // TypeScript is weird and seems to believe the type is two different things
 // depending on running build/test
@@ -42,24 +44,7 @@ describe("me", () => {
     api = new APIClient("gimmeaccess").user();
   });
 
-  const resObj: User = {
-    _id: new ObjectId("yoo"),
-    name: "Test bot",
-    description: "Tester9000",
-    profilePicture: "AAAAAAAA",
-    email: "test@test.ts",
-    sports: [
-      { sport: Sport.Tennis, ability: "beginner" },
-      { sport: Sport.Squash, ability: "expert" },
-    ],
-    leagues: [new ObjectId("something")],
-    availability: [
-      {
-        timeStart: new Date().toLocaleString(),
-        timeEnd: new Date().toLocaleString(),
-      },
-    ],
-  };
+  const resObj = getUser({});
 
   const endpoint = "user/me";
   test("Normal", async () => {
