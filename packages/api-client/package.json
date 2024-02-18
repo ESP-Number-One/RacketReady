@@ -8,8 +8,8 @@
   "scripts": {
     "build": "tsc",
     "format": "prettier --write '**/*.tsx' '**/*.ts' '**/*.json'",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives",
-    "lint:fix": "eslint src --ext ts,tsx --report-unused-disable-directives --fix",
+    "lint": "eslint src tests --ext ts,tsx --report-unused-disable-directives",
+    "lint:fix": "eslint src tests --ext ts,tsx --report-unused-disable-directives --fix",
     "test": "jest"
   },
   "dependencies": {

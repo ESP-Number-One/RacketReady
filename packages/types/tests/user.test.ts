@@ -1,12 +1,12 @@
 import { expect, test } from "@jest/globals";
 import { censorUser } from "../src/user.js";
 import { ObjectId, Sport } from "../src/utils.js";
-import { getUser } from "./utils.js";
+import { getUser, IDS } from "./utils.js";
 
-test("public league", () => {
+test("user", () => {
   const user = getUser({});
   expect(censorUser(user)).toStrictEqual({
-    _id: new ObjectId("yoo"),
+    _id: new ObjectId(IDS[0]),
     name: "Test bot",
     description: "Tester9000",
     sports: [

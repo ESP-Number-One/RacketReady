@@ -39,17 +39,19 @@ export class CollectionWrap<T extends MongoDBItem> {
    */
   public async find(query: Filter<T>): Promise<T[]> {
     const q = toMongo(query) as unknown as Filter<Document>;
-    return (await this.collection.find(q).toArray()) as unknown[] as T[];
+    return toInternal<T[]>(
+      (await this.collection.find(q).toArray()) as unknown[] as ReplaceObjectId<
+        T[]
+      >,
+    );
   }
 
   /**
    * @returns the object with the given ObjectId
    */
   public async get(id: ObjectId): Promise<T | undefined> {
-    return toInternal<T | undefined>(
-      (await this.page({ query: { _id: toMongo(id) }, pageSize: 1 })).at(
-        0,
-      ) as ReplaceObjectId<T>,
+    return (await this.page({ query: { _id: toMongo(id) }, pageSize: 1 })).at(
+      0,
     );
   }
 

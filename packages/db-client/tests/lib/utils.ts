@@ -1,17 +1,15 @@
-import { Collection, Db, MongoClient, OptionalId } from "mongodb";
-import { toMongo } from "../../src/types.js";
+import type { Collection, Db, OptionalId } from "mongodb";
+import { MongoClient } from "mongodb";
 import { ObjectId } from "@esp-group-one/types";
+import { toMongo } from "../../src/types.js";
 
 export function setup() {
-  console.log(getMongoURL());
-  console.log(process.env["MONGO_DB_NAME"]);
-  console.log(process.env["MONGO_URL"]);
-  process.env["DB_CONN_STRING"] = getMongoURL();
-  process.env["DB_NAME"] = getMongoDBName();
+  process.env.DB_CONN_STRING = getMongoURL();
+  process.env.DB_NAME = getMongoDBName();
 }
 
 export async function getRawClient(): Promise<MongoClient> {
-  return await MongoClient.connect(getMongoURL());
+  return MongoClient.connect(getMongoURL());
 }
 
 export function getRawDb(client: MongoClient): Db {
@@ -19,12 +17,15 @@ export function getRawDb(client: MongoClient): Db {
 }
 
 export function getMongoURL(): string {
-  // return "mongodb://localhost:27017";
-  return (global as any).__MONGO_URI___ as string;
+  // Documentation is out of date :(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access -- sadly required
+  return ((global as any).__MONGO_URI___ ?? process.env.MONGO_URL) as string;
 }
 
 export function getMongoDBName(): string {
-  return (global as any).__MONGO_DB_NAME__ as string;
+  // Documentation is out of date :(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access -- sadly required
+  return ((global as any).__MONGO_DB_NAME__ ?? "esp") as string;
 }
 
 export async function reset(collection: string): Promise<void> {

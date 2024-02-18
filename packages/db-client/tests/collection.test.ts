@@ -1,4 +1,7 @@
+import type { Collection, OptionalId } from "mongodb";
+import type { MongoDBItem, SortQuery } from "@esp-group-one/types";
 import { describe, expect, test } from "@jest/globals";
+import { CollectionWrap } from "../src/collection.js";
 import {
   getRawClient,
   getRawDb,
@@ -6,9 +9,6 @@ import {
   reset,
   setup,
 } from "./lib/utils.js";
-import { MongoDBItem, Sort, SortQuery } from "@esp-group-one/types";
-import { CollectionWrap } from "../src/collection.js";
-import { Collection, MongoClient, OptionalId } from "mongodb";
 
 setup();
 
@@ -22,7 +22,7 @@ let coll: CollectionWrap<TestObj>;
 let mongoColl: Collection;
 
 beforeEach(async () => {
-  reset(COLLECTION);
+  await reset(COLLECTION);
   const client = await getRawClient();
   mongoColl = getRawDb(client).collection(COLLECTION);
   coll = new CollectionWrap<TestObj>(mongoColl);
@@ -61,9 +61,16 @@ test("get", async () => {
     { name: "Botter", num: 2000 },
   ]);
 
-  data.forEach(async (e) => {
-    expect(await coll.get(e._id)).toStrictEqual(e);
-  });
+  const res = [];
+  for (const e of data) {
+    res.push(
+      coll.get(e._id).then((r) => {
+        expect(r).toStrictEqual(e);
+      }),
+    );
+  }
+
+  await Promise.all(res);
 });
 
 test("insert", async () => {
@@ -75,9 +82,15 @@ test("insert", async () => {
 
   const res = await coll.insert(...data);
 
-  res.forEach(async (id, i) => {
-    expect(await coll.get(id)).toStrictEqual({ ...data[i], _id: id });
-  });
+  const checks = [];
+  for (let i = 0; i < checks.length; i++) {
+    checks.push(
+      coll.get(res[i]).then((r) => {
+        expect(r).toStrictEqual({ ...data[i], _id: res[i] });
+      }),
+    );
+  }
+  await Promise.all(checks);
 });
 
 describe("page", () => {
@@ -85,39 +98,48 @@ describe("page", () => {
     return { name: `Test ${99 - i}`, num: i };
   });
 
-  var data: TestObj[];
+  let data: TestObj[];
   beforeEach(async () => {
-    await insertMany<TestObj>(mongoColl, noIdData);
+    data = await insertMany<TestObj>(mongoColl, noIdData);
   });
 
   [0, 1, -1].forEach((sortDir) => {
     [10, 20, 30, 40, 50].forEach((pageSize) => {
       test(`with page size ${pageSize} and direction ${sortDir}`, async () => {
-        let start = 0;
+        let start = sortDir < 0 ? data.length : 0;
+        const checks = [];
         while (start < data.length) {
-          const expected = [];
+          const expected: TestObj[] = [];
 
           let sort: SortQuery<TestObj> | undefined;
-          if (sortDir == -1) {
+          if (sortDir === -1) {
             sort = { name: 1 };
 
-            const forStart = Math.min(start + pageSize, data.length) - start;
-            for (let i = forStart; i >= start; i--) {
+            for (let i = start; i >= start - pageSize && i >= 0; i--) {
               expected.push(data[start + i]);
             }
           } else {
-            if (sortDir == 1) sort = { num: 1 };
+            if (sortDir === 1) sort = { num: 1 };
 
             for (let i = 0; i < pageSize && start + i < data.length; i++) {
               expected.push(data[start + i]);
             }
           }
 
-          expect(coll.page({ pageSize, pageStart: start })).toStrictEqual(
-            expected,
+          checks.push(
+            coll.page({ pageSize, pageStart: start, sort }).then((r) => {
+              expect(r).toStrictEqual(expected);
+            }),
           );
-          start += pageSize;
+
+          if (sortDir < 0) {
+            start -= pageSize;
+          } else {
+            start += pageSize;
+          }
         }
+
+        await Promise.all(checks);
       });
     });
   });

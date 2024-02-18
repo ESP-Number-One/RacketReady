@@ -1,12 +1,14 @@
-import { describe, expect, test } from "@jest/globals";
+import { beforeAll, beforeEach, describe, expect, test } from "@jest/globals";
+import fetchMockImp, { type FetchMock } from "jest-fetch-mock";
+import type { Query } from "@esp-group-one/types";
+import { newAPISuccess, ObjectId } from "@esp-group-one/types";
 import { SubAPIClient } from "../../src/sub/base.js";
 import { fetchMockEndpointOnce, runErrorTests } from "../lib/utils.js";
-import fetchMockImp, { FetchMock } from "jest-fetch-mock";
-import { newAPISuccess, ObjectId, Query } from "@esp-group-one/types";
 
 // TypeScript is weird and seems to believe the type is two different things
 // depending on running build/test
-const fetchMock = (
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- two typescript versions colliding
+const fetchMock: FetchMock = (
   "default" in fetchMockImp ? fetchMockImp.default : fetchMockImp
 ) as FetchMock;
 

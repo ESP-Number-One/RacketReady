@@ -1,10 +1,10 @@
-import { describe, expect, test } from "@jest/globals";
+import { type Document, type Filter, ObjectId } from "mongodb";
 import {
   ObjectId as FakeObjectId,
-  MongoDBItem,
+  type MongoDBItem,
   tests,
 } from "@esp-group-one/types";
-import { Document, Filter, ObjectId } from "mongodb";
+import { describe, expect, test } from "@jest/globals";
 import { toInternal, toMongo } from "../src/types.js";
 
 const { IDS } = tests;

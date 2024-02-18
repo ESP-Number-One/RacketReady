@@ -1,6 +1,7 @@
-import { League } from "../src/league.js";
-import { Match, MatchStatus } from "../src/match.js";
-import { User, UserIdMap } from "../src/user.js";
+import type { League } from "../src/league.js";
+import type { Match } from "../src/match.js";
+import { MatchStatus } from "../src/match.js";
+import type { User, UserIdMap } from "../src/user.js";
 import { ObjectId, Sport } from "../src/utils.js";
 
 export const IDS = [
@@ -41,7 +42,7 @@ export function getMatch(obj: Partial<Match>): Match {
     sport: obj.sport ?? Sport.Squash,
   };
 
-  var match: Match;
+  let match: Match;
 
   if (obj.status === MatchStatus.Complete) {
     const score: Record<string, number> = {};
@@ -69,7 +70,7 @@ export function getMatch(obj: Partial<Match>): Match {
 
 export function getUser(obj: Partial<User>): User {
   return {
-    _id: obj._id ?? new ObjectId("yoo"),
+    _id: obj._id ?? new ObjectId(IDS[0]),
     name: obj.name ?? "Test bot",
     description: obj.description ?? "Tester9000",
     profilePicture: obj.profilePicture ?? "AAAAAAAA",
@@ -78,7 +79,7 @@ export function getUser(obj: Partial<User>): User {
       { sport: Sport.Tennis, ability: "beginner" },
       { sport: Sport.Squash, ability: "expert" },
     ],
-    leagues: obj.leagues ?? [new ObjectId("something")],
+    leagues: obj.leagues ?? [new ObjectId(IDS[1])],
     availability: obj.availability ?? [
       {
         timeStart: new Date().toLocaleString(),
