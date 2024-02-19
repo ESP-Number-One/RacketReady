@@ -10,7 +10,7 @@ export function App() {
       setAPI={console.log}
     >
       <p>I am the child</p>
-      <Button backgroundColor="red">Click me</Button>
+      <Button backgroundColor="p-green">Click me</Button>
     </PageWithTitle>
   );
 }
