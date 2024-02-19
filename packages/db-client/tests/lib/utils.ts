@@ -1,9 +1,11 @@
 import type { Collection, Db, OptionalId } from "mongodb";
 import { MongoClient } from "mongodb";
 import { ObjectId } from "@esp-group-one/types";
+// import { global } from "@jest/globals";
 import { toMongo } from "../../src/types.js";
 
 export function setup() {
+  console.log((globalThis as any).__MONGOD__);
   process.env.DB_CONN_STRING = getMongoURL();
   process.env.DB_NAME = getMongoDBName();
 }
@@ -28,9 +30,8 @@ export function getMongoDBName(): string {
   return ((global as any).__MONGO_DB_NAME__ ?? "esp") as string;
 }
 
-export async function reset(collection: string): Promise<void> {
-  const db = getRawDb(await getRawClient());
-  await db.collection(collection).deleteMany({});
+export async function reset(coll: Collection): Promise<void> {
+  await coll.deleteMany({});
 }
 
 export async function insertMany<T>(

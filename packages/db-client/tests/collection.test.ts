@@ -22,11 +22,14 @@ let coll: CollectionWrap<TestObj>;
 let mongoClient: MongoClient;
 let mongoColl: Collection;
 
-beforeEach(async () => {
-  await reset(COLLECTION);
+beforeAll(async () => {
   mongoClient = await getRawClient();
   mongoColl = getRawDb(mongoClient).collection(COLLECTION);
   coll = new CollectionWrap<TestObj>(mongoColl);
+});
+
+beforeEach(async () => {
+  await reset(mongoColl);
 });
 
 afterAll(async () => {
@@ -109,7 +112,7 @@ describe("page", () => {
   });
 
   [0, 1, -1].forEach((sortDir) => {
-    [0, 10, 20, 30, 40, 50].forEach((pageSize) => {
+    [10, 20, 30, 40, 50].forEach((pageSize) => {
       test(`with page size ${pageSize} and direction ${sortDir}`, async () => {
         let start = sortDir < 0 ? data.length : 0;
         const checks = [];

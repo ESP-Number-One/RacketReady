@@ -81,6 +81,7 @@ export class CollectionWrap<T extends MongoDBItem> {
    *   query
    */
   public async page(opts: FilterOptions<T>): Promise<T[]> {
+    // When page size is 0, it will use all the memory :(
     const req = this.collection
       .find(opts.query as Filter<Document>)
       .skip(opts.pageStart ?? 0)
