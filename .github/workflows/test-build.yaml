@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/yarn-install
       - name: Lint packages
-        run: yarn lint
+        run: yarn lint-ci
   test:
     runs-on: "ubuntu-latest"
     steps:

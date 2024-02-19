@@ -14,6 +14,7 @@
     "format:ws": "yarn workspaces foreach -Ap --exclude @esp-group-one/matchyo-sports run format",
     "format:me": "prettier --write '*.md' '*.json' .prettierrc .eslintrc.cjs",
     "lint": "yarn workspaces foreach -Ap run lint",
+    "lint-ci": "yarn workspaces foreach -Ap run lint --max-warnings 0",
     "lint:fix": "yarn workspaces foreach -Ap run lint:fix"
   },
   "devDependencies": {
