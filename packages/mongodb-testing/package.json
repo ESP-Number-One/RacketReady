@@ -1,0 +1,18 @@
+{
+  "name": "@esp-group-one/mongodb-testing",
+  "version": "0.0.1",
+  "main": "index.mjs",
+  "author": "Sammy99jsp",
+  "type": "module",
+  "types": "types.d.ts",
+  "private": true,
+  "dependencies": {
+    "@types/node": "^20.11.19",
+    "jest-environment-node": "^29.7.0",
+    "mongodb-memory-server": "^9.1.6"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "mongodb": "^6.3.0"
+  }
+}

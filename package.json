@@ -19,6 +19,7 @@
     "lint:fix": "yarn workspaces foreach -Ap run lint:fix"
   },
   "devDependencies": {
+    "@esp-group-one/mongodb-testing": "workspace:^",
     "@shelf/jest-mongodb": "^4.2.0",
     "@types/jest": "^29.5.12",
     "@vercel/style-guide": "^5.1.0",
