@@ -1,4 +1,4 @@
-import type { Collection, OptionalId } from "mongodb";
+import type { Collection, MongoClient, OptionalId } from "mongodb";
 import type { MongoDBItem, SortQuery } from "@esp-group-one/types";
 import { describe, expect, test } from "@jest/globals";
 import { CollectionWrap } from "../src/collection.js";
@@ -19,13 +19,18 @@ interface TestObj extends MongoDBItem {
 
 const COLLECTION = "test";
 let coll: CollectionWrap<TestObj>;
+let mongoClient: MongoClient;
 let mongoColl: Collection;
 
 beforeEach(async () => {
   await reset(COLLECTION);
-  const client = await getRawClient();
-  mongoColl = getRawDb(client).collection(COLLECTION);
+  mongoClient = await getRawClient();
+  mongoColl = getRawDb(mongoClient).collection(COLLECTION);
   coll = new CollectionWrap<TestObj>(mongoColl);
+});
+
+afterAll(async () => {
+  await mongoClient.close();
 });
 
 test("exists", async () => {
@@ -104,7 +109,7 @@ describe("page", () => {
   });
 
   [0, 1, -1].forEach((sortDir) => {
-    [10, 20, 30, 40, 50].forEach((pageSize) => {
+    [0, 10, 20, 30, 40, 50].forEach((pageSize) => {
       test(`with page size ${pageSize} and direction ${sortDir}`, async () => {
         let start = sortDir < 0 ? data.length : 0;
         const checks = [];

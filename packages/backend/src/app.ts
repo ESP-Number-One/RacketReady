@@ -8,7 +8,7 @@ import cors from "cors";
 import * as swaggerUi from "swagger-ui-express";
 import { ValidateError } from "tsoa";
 import { RegisterRoutes } from "../tsoa/routes.js";
-import swaggerConfig from "../tsoa/swagger.json" assert { type: "json" };
+import swaggerConfig from "../tsoa/swagger.json";
 
 export const app = express();
 

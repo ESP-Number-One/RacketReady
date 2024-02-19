@@ -16,6 +16,19 @@ const config = {
       },
     },
     {
+      displayName: "Backend",
+      moduleNameMapper: {
+        "^(\\.{1,2}/.*)\\.js$": "$1",
+      },
+      // preset: "@shelf/jest-mongodb",
+      rootDir: "packages/backend",
+      testEnvironment: "node",
+      testRegex: "\\.(test|spec)\\.(ts|tsx)$",
+      transform: {
+        ".ts": "ts-jest",
+      },
+    },
+    {
       displayName: "DB Client",
       moduleNameMapper: {
         "^(\\.{1,2}/.*)\\.js$": "$1",
