@@ -1,6 +1,7 @@
 /** @type {import('jest').Config} */
 const config = {
   verbose: true,
+  reporters: ["default", "github-actions"],
   projects: [
     {
       rootDir: "packages/frontend",
