@@ -2,13 +2,7 @@ import type { Collection, MongoClient, OptionalId } from "mongodb";
 import type { MongoDBItem, SortQuery } from "@esp-group-one/types";
 import { describe, expect, test } from "@jest/globals";
 import { CollectionWrap } from "../src/collection.js";
-import {
-  getRawClient,
-  getRawDb,
-  insertMany,
-  reset,
-  setup,
-} from "./lib/utils.js";
+import { getRawClient, getRawDb, insertMany, setup } from "./lib/utils.js";
 
 interface TestObj extends MongoDBItem {
   name: string;
@@ -21,7 +15,6 @@ let mongoClient: MongoClient;
 let mongoColl: Collection;
 
 beforeAll(async () => {
-  console.log(__MONGO_URI__);
   setup();
 
   mongoClient = await getRawClient();
@@ -30,7 +23,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  await reset(mongoColl);
+  await mongoColl.deleteMany();
 });
 
 afterAll(async () => {

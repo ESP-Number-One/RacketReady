@@ -12,7 +12,7 @@ const config = {
       testEnvironment: "node",
       testRegex: "\\.(test|spec)\\.(ts|tsx)$",
       transform: {
-        ".ts": "ts-jest",
+        "\\.ts$": "ts-jest",
       },
     },
     {
@@ -20,25 +20,28 @@ const config = {
       moduleNameMapper: {
         "^(\\.{1,2}/.*)\\.js$": "$1",
       },
-      // preset: "@shelf/jest-mongodb",
       rootDir: "packages/backend",
-      testEnvironment: "node",
+      testEnvironment: "@esp-group-one/mongodb-testing",
       testRegex: "\\.(test|spec)\\.(ts|tsx)$",
       transform: {
-        ".ts": "ts-jest",
+        "\\.ts$": "ts-jest",
+        "\\.m?jsx?$": "@esp-group-one/jest-esm-transformer",
       },
+      transformIgnorePatterns: [
+        "node_modules/(?!(jest-runtime|access-token-jwt|oauth2-bearer)/)",
+      ],
+      moduleFileExtensions: ["ts", "tsx", "js"],
     },
     {
       displayName: "DB Client",
       moduleNameMapper: {
         "^(\\.{1,2}/.*)\\.js$": "$1",
       },
-      testEnvironment: "@esp-group-one/mongodb-testing",
       rootDir: "packages/db-client",
-      testEnvironment: "node",
+      testEnvironment: "@esp-group-one/mongodb-testing",
       testRegex: "\\.(test|spec)\\.(ts|tsx)$",
       transform: {
-        ".ts": "ts-jest",
+        "\\.ts": "ts-jest",
       },
     },
     {
@@ -47,7 +50,7 @@ const config = {
       rootDir: "packages/frontend",
       testEnvironment: "jsdom",
       transform: {
-        ".(ts|tsx)": "ts-jest",
+        "\\.(ts|tsx)$": "ts-jest",
       },
       testRegex: "\\.(test|spec)\\.(ts|tsx)$",
       moduleFileExtensions: ["ts", "tsx", "js"],
@@ -61,7 +64,7 @@ const config = {
       testEnvironment: "node",
       testRegex: "\\.(test|spec)\\.(ts|tsx)$",
       transform: {
-        ".ts": "ts-jest",
+        "\\.ts$": "ts-jest",
       },
     },
   ],

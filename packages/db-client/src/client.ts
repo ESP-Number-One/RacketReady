@@ -27,6 +27,10 @@ export class DbClient {
     this.db = this.connect();
   }
 
+  public async close(): Promise<void> {
+    await this.client.close();
+  }
+
   public async leagues(): Promise<CollectionWrap<League>> {
     const db = await this.db;
 

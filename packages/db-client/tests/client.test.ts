@@ -14,13 +14,17 @@ import { getRawClient, getRawDb, setup } from "./lib/utils.js";
 
 const { getLeague, getMatch, getUser, getUserIdMap } = tests;
 
+let db: DbClient;
 let client: MongoClient;
 beforeAll(async () => {
   setup();
+
+  db = new DbClient();
   client = await getRawClient();
 });
 
 afterAll(async () => {
+  await db.close();
   await client.close();
 });
 
@@ -31,7 +35,6 @@ describe("collections", () => {
     const league: OptionalId<League> = getLeague({});
     await rawColl.insertOne(toMongo(league) as OptionalId<Document>);
 
-    const db = new DbClient();
     const coll = await db.leagues();
 
     expect(await coll.find({})).toStrictEqual([league]);
@@ -43,7 +46,6 @@ describe("collections", () => {
     const match: OptionalId<Match> = getMatch({});
     await rawColl.insertOne(toMongo(match) as OptionalId<Document>);
 
-    const db = new DbClient();
     const coll = await db.matches();
 
     expect(await coll.find({})).toStrictEqual([match]);
@@ -55,7 +57,6 @@ describe("collections", () => {
     const user: OptionalId<User> = getUser({});
     await rawColl.insertOne(toMongo(user) as OptionalId<Document>);
 
-    const db = new DbClient();
     const coll = await db.users();
 
     expect(await coll.find({})).toStrictEqual([user]);
@@ -67,7 +68,6 @@ describe("collections", () => {
     const userIdMap: OptionalId<UserIdMap> = getUserIdMap({});
     await rawColl.insertOne(toMongo(userIdMap) as OptionalId<Document>);
 
-    const db = new DbClient();
     const coll = await db.userMap();
 
     expect(await coll.find({})).toStrictEqual([userIdMap]);

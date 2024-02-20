@@ -85,7 +85,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.11.1, @babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3":
+"@babel/core@npm:^7.0.0-beta.42, @babel/core@npm:^7.11.1, @babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3":
   version: 7.23.9
   resolution: "@babel/core@npm:7.23.9"
   dependencies:
@@ -991,7 +991,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-modules-commonjs@npm:^7.23.3":
+"@babel/plugin-transform-modules-commonjs@npm:^7.0.0-beta.42, @babel/plugin-transform-modules-commonjs@npm:^7.23.3":
   version: 7.23.3
   resolution: "@babel/plugin-transform-modules-commonjs@npm:7.23.3"
   dependencies:
@@ -1770,6 +1770,8 @@ __metadata:
     "@esp-group-one/config": "workspace:^"
     "@esp-group-one/db-client": "workspace:^"
     "@esp-group-one/eslint-config": "workspace:^"
+    "@esp-group-one/jest-esm-transformer": "workspace:^"
+    "@esp-group-one/mongodb-testing": "workspace:^"
     "@esp-group-one/types": "workspace:^"
     "@jest/globals": "npm:^29.7.0"
     "@tsoa/runtime": "npm:^6.0.0"
@@ -1888,10 +1890,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@esp-group-one/jest-esm-transformer@workspace:^, @esp-group-one/jest-esm-transformer@workspace:packages/esm-transformer":
+  version: 0.0.0-use.local
+  resolution: "@esp-group-one/jest-esm-transformer@workspace:packages/esm-transformer"
+  dependencies:
+    "@babel/core": "npm:^7.0.0-beta.42"
+    "@babel/plugin-syntax-import-attributes": "npm:^7.23.3"
+    "@babel/plugin-transform-export-namespace-from": "npm:^7.23.4"
+    "@babel/plugin-transform-modules-commonjs": "npm:^7.0.0-beta.42"
+  languageName: unknown
+  linkType: soft
+
 "@esp-group-one/matchyo-sports@workspace:.":
   version: 0.0.0-use.local
   resolution: "@esp-group-one/matchyo-sports@workspace:."
   dependencies:
+    "@esp-group-one/jest-esm-transformer": "workspace:^"
     "@esp-group-one/mongodb-testing": "workspace:^"
     "@types/jest": "npm:^29.5.12"
     "@vercel/style-guide": "npm:^5.1.0"

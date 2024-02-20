@@ -16,10 +16,6 @@ declare global {
 }
 
 export function setup() {
-  // eslint-disable-next-line no-undef -- it is
-  console.log(__MONGO_URI__);
-  // eslint-disable-next-line no-undef -- it is
-  console.log(__MONGO_DB_NAME__);
   process.env.DB_CONN_STRING = getMongoURL();
   process.env.DB_NAME = getMongoDBName();
 }
@@ -33,19 +29,13 @@ export function getRawDb(client: MongoClient): Db {
 }
 
 export function getMongoURL(): string {
-  // Documentation is out of date :(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access -- sadly required
-  return ((global as any).__MONGO_URI__ ?? process.env.MONGO_URL) as string;
+  // eslint-disable-next-line no-undef -- it is
+  return __MONGO_URI__;
 }
 
 export function getMongoDBName(): string {
-  // Documentation is out of date :(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access -- sadly required
-  return ((global as any).__MONGO_DB_NAME__ ?? "esp") as string;
-}
-
-export async function reset(coll: Collection): Promise<void> {
-  await coll.deleteMany({});
+  // eslint-disable-next-line no-undef -- it is
+  return __MONGO_DB_NAME__;
 }
 
 export async function insertMany<T>(
