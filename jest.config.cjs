@@ -33,7 +33,7 @@ const config = {
       moduleNameMapper: {
         "^(\\.{1,2}/.*)\\.js$": "$1",
       },
-      preset: "@shelf/jest-mongodb",
+      testEnvironment: "@esp-group-one/mongodb-testing",
       rootDir: "packages/db-client",
       testEnvironment: "node",
       testRegex: "\\.(test|spec)\\.(ts|tsx)$",
