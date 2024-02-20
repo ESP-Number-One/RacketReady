@@ -1,5 +1,7 @@
+import { Sport } from "@esp-group-one/types";
+
 interface Tagging {
-  sportName: string;
+  sportName: Sport;
 }
 
 export function Tag({ sportName }: Tagging) {
@@ -14,13 +16,13 @@ export function Tag({ sportName }: Tagging) {
   );
 }
 
-const getSportColorClass = (sportName: string) => {
-  switch (sportName.toLowerCase()) {
-    case "badminton":
+function getSportColorClass(sportName: Sport) {
+  switch (sportName) {
+    case Sport.Badminton:
       return "bg-badminton";
-    case "tennis":
+    case Sport.Tennis:
       return "bg-tennis";
-    case "squash":
+    case Sport.Squash:
       return "bg-squash";
   }
-};
+}
