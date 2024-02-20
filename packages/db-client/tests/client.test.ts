@@ -14,10 +14,9 @@ import { getRawClient, getRawDb, setup } from "./lib/utils.js";
 
 const { getLeague, getMatch, getUser, getUserIdMap } = tests;
 
-setup();
-
 let client: MongoClient;
 beforeAll(async () => {
+  setup();
   client = await getRawClient();
 });
 

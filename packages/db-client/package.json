@@ -9,12 +9,11 @@
     "format": "prettier --write '**/*.tsx' '**/*.ts' '**/*.json'",
     "lint": "eslint src tests --ext ts,tsx --report-unused-disable-directives",
     "lint:fix": "eslint src tests --ext ts,tsx --report-unused-disable-directives --fix",
-    "test": "yarn node --experimental-vm-modules $(yarn bin jest)"
+    "test": "jest"
   },
   "devDependencies": {
     "@esp-group-one/eslint-config": "workspace:^",
     "@jest/globals": "^29.7.0",
-    "@shelf/jest-mongodb": "^4.2.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.7",
     "eslint": "^8.56.0",
@@ -25,6 +24,7 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
+    "@esp-group-one/mongodb-testing": "workspace:^",
     "@esp-group-one/types": "workspace:^",
     "mongodb": "^6.3.0"
   }

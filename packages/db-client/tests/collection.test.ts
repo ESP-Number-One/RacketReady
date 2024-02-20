@@ -10,8 +10,6 @@ import {
   setup,
 } from "./lib/utils.js";
 
-setup();
-
 interface TestObj extends MongoDBItem {
   name: string;
   num: number;
@@ -23,6 +21,9 @@ let mongoClient: MongoClient;
 let mongoColl: Collection;
 
 beforeAll(async () => {
+  console.log(__MONGO_URI__);
+  setup();
+
   mongoClient = await getRawClient();
   mongoColl = getRawDb(mongoClient).collection(COLLECTION);
   coll = new CollectionWrap<TestObj>(mongoColl);

@@ -1,11 +1,25 @@
 import type { Collection, Db, OptionalId } from "mongodb";
 import { MongoClient } from "mongodb";
 import { ObjectId } from "@esp-group-one/types";
-// import { global } from "@jest/globals";
 import { toMongo } from "../../src/types.js";
 
+declare global {
+  /**
+   * The URI of the test MongoDB server.
+   */
+  let __MONGO_URI__: string;
+
+  /**
+   * The name of the database you should connect to.
+   */
+  let __MONGO_DB_NAME__: string;
+}
+
 export function setup() {
-  console.log((globalThis as any).__MONGOD__);
+  // eslint-disable-next-line no-undef -- it is
+  console.log(__MONGO_URI__);
+  // eslint-disable-next-line no-undef -- it is
+  console.log(__MONGO_DB_NAME__);
   process.env.DB_CONN_STRING = getMongoURL();
   process.env.DB_NAME = getMongoDBName();
 }
@@ -21,7 +35,7 @@ export function getRawDb(client: MongoClient): Db {
 export function getMongoURL(): string {
   // Documentation is out of date :(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access -- sadly required
-  return ((global as any).__MONGO_URI___ ?? process.env.MONGO_URL) as string;
+  return ((global as any).__MONGO_URI__ ?? process.env.MONGO_URL) as string;
 }
 
 export function getMongoDBName(): string {
