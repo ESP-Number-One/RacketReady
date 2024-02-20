@@ -18,7 +18,6 @@ export function Button({
   backgroundColor = "bg-p-green-100",
   children,
   icon,
-  marginRemovalClasses = "", //This is used to remove the gap between buttons or pass in any other parameter to the button
   roundedCorners = {},
 }: ButtonProps) {
   // merge the provided roundedCorners prop with the default values
@@ -41,7 +40,7 @@ export function Button({
       type="button"
       className={`font-body text-2xl font-bold text-white ${backgroundColor} active:scale-95 focus:outline-none font-medium ${borderRadius} px-5 py-2.5 ${
         icon ? "justify-start" : "justify-center"
-      } inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 w-full transform transition duration-150 ease-in-out ${marginRemovalClasses}`}
+      } inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 w-full transform transition duration-150 ease-in-out m-0`}
     >
       {icon && <span className="mr-4 align-middle flex">{icon}</span>}
       {children}
