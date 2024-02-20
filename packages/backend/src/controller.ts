@@ -25,6 +25,12 @@ import { getUserId } from "./lib/utils.js";
  * pass their arguments on to the functions below)
  */
 export class ControllerWrap<T extends MongoDBItem> extends Controller {
+  private dbClient: DbClient | undefined;
+
+  async closeDb(): Promise<void> {
+    if (this.dbClient) await this.dbClient.close();
+  }
+
   /**
    * @returns the collection which should be used for all operations
    */
@@ -52,6 +58,14 @@ export class ControllerWrap<T extends MongoDBItem> extends Controller {
         console.error(`Failed to get obj with id: ${objId.toString()}: ${e}`);
         return this.notFound();
       });
+  }
+
+  /**
+   * @returns a DB client which then can be closed in tests (which is important)
+   */
+  protected getDb(): DbClient {
+    if (!this.dbClient) this.dbClient = new DbClient();
+    return this.dbClient;
   }
 
   /**
@@ -110,11 +124,11 @@ export class ControllerWrap<T extends MongoDBItem> extends Controller {
    * @returns A response object which the callback has returned or an error if
    *   we could not get the user id
    */
-  protected async withUserId<R>(
+  protected withUserId<R>(
     req: Request,
     callback: (user: ObjectId) => Promise<WithError<R>>,
   ): Promise<WithError<R>> {
-    return getUserId(req)
+    return getUserId(this.getDb(), req)
       .then((res) => {
         if (res) return callback(res);
         throw new Error("Could not get user");
@@ -127,12 +141,12 @@ export class ControllerWrap<T extends MongoDBItem> extends Controller {
       });
   }
 
-  protected async withUser<R>(
+  protected withUser<R>(
     req: Request,
     callback: (user: User) => Promise<WithError<R>>,
   ): Promise<WithError<R>> {
     return this.withUserId(req, async (userId) => {
-      const db = new DbClient();
+      const db = this.getDb();
       const userColl = await db.users();
       const user = await userColl.get(userId);
       if (user) return callback(user);

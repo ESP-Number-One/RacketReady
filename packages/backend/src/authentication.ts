@@ -4,9 +4,6 @@ import * as config from "@esp-group-one/config";
 import { getToken } from "oauth2-bearer";
 import { setUserId } from "./lib/utils.js";
 
-// import pkg from "access-token-jwt";
-// const { jwtVerifier } = pkg;
-
 export function expressAuthentication(
   request: express.Request,
   securityName: string,

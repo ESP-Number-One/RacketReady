@@ -13,3 +13,10 @@ describe("Catches 404s", () => {
     expect(res.statusCode).toBe(404);
   });
 });
+
+describe("Swagger does not error out", () => {
+  test("is 200", async () => {
+    const res = await request(app).get("/docs");
+    expect(res.statusCode).toBe(200);
+  });
+});

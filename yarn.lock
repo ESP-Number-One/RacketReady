@@ -1750,6 +1750,7 @@ __metadata:
   resolution: "@esp-group-one/api-client@workspace:packages/api-client"
   dependencies:
     "@esp-group-one/eslint-config": "workspace:^"
+    "@esp-group-one/jest-esm-transformer": "workspace:^"
     "@esp-group-one/types": "workspace:^"
     "@jest/globals": "npm:^29.7.0"
     "@types/jest": "npm:^29.5.12"
@@ -1819,6 +1820,7 @@ __metadata:
   resolution: "@esp-group-one/db-client@workspace:packages/db-client"
   dependencies:
     "@esp-group-one/eslint-config": "workspace:^"
+    "@esp-group-one/jest-esm-transformer": "workspace:^"
     "@esp-group-one/mongodb-testing": "workspace:^"
     "@esp-group-one/types": "workspace:^"
     "@jest/globals": "npm:^29.7.0"

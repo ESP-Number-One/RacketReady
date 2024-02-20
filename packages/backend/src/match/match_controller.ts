@@ -1,5 +1,4 @@
 import type { FilterOptions } from "@esp-group-one/db-client";
-import { DbClient } from "@esp-group-one/db-client";
 import {
   MatchStatus,
   ObjectId,
@@ -26,7 +25,7 @@ import { ControllerWrap } from "../controller.js";
 @Route("match")
 export class MatchsController extends ControllerWrap<Match> {
   getCollection(): Promise<CollectionWrap<Match>> {
-    const client = new DbClient();
+    const client = this.getDb();
     return client.matches();
   }
 

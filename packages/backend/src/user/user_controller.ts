@@ -1,5 +1,4 @@
 import type { FilterOptions } from "@esp-group-one/db-client";
-import { DbClient } from "@esp-group-one/db-client";
 import {
   censorUser,
   newAPIError,
@@ -37,7 +36,7 @@ import { getUserId, mapUser } from "../lib/utils.js";
 @Route("user")
 export class UsersController extends ControllerWrap<User> {
   getCollection(): Promise<CollectionWrap<User>> {
-    const client = new DbClient();
+    const client = this.getDb();
     return client.users();
   }
 
@@ -146,7 +145,7 @@ export class UsersController extends ControllerWrap<User> {
       }
     }
 
-    return getUserId(req)
+    return getUserId(this.getDb(), req)
       .then(async (currUser): Promise<WithError<User>> => {
         const db = await this.getCollection();
 
@@ -162,7 +161,7 @@ export class UsersController extends ControllerWrap<User> {
           ...requestBody,
         }).then(async (user) => {
           // Error should be passed up to the next catch
-          if (user.success) await mapUser(req, user.data._id);
+          if (user.success) await mapUser(this.getDb(), req, user.data._id);
 
           return user;
         });

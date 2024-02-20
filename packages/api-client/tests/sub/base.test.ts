@@ -8,6 +8,7 @@ import { fetchMockEndpointOnce, runErrorTests } from "../lib/utils.js";
 // TypeScript is weird and seems to believe the type is two different things
 // depending on running build/test
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- two typescript versions colliding
+// const fetchMock = fetchMockMod.default;
 const fetchMock: FetchMock = (
   "default" in fetchMockImp ? fetchMockImp.default : fetchMockImp
 ) as FetchMock;

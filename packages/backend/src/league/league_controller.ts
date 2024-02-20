@@ -1,5 +1,4 @@
 import type { FilterOptions } from "@esp-group-one/db-client";
-import { DbClient } from "@esp-group-one/db-client";
 import {
   censorLeague,
   newAPIError,
@@ -37,7 +36,7 @@ import { ControllerWrap } from "../controller.js";
 @Route("league")
 export class LeaguesController extends ControllerWrap<League> {
   getCollection(): Promise<CollectionWrap<League>> {
-    const client = new DbClient();
+    const client = this.getDb();
     return client.leagues();
   }
 

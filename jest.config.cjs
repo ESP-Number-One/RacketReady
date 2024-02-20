@@ -13,6 +13,7 @@ const config = {
       testRegex: "\\.(test|spec)\\.(ts|tsx)$",
       transform: {
         "\\.ts$": "ts-jest",
+        "\\.m?jsx?$": "@esp-group-one/jest-esm-transformer",
       },
     },
     {
@@ -42,6 +43,7 @@ const config = {
       testRegex: "\\.(test|spec)\\.(ts|tsx)$",
       transform: {
         "\\.ts": "ts-jest",
+        "\\.m?jsx?$": "@esp-group-one/jest-esm-transformer",
       },
     },
     {
