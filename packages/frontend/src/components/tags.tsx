@@ -9,7 +9,7 @@ export function Tag({ sportName }: Tagging) {
         sportName,
       )}`}
     >
-      {sportName}
+      {sportName.charAt(0).toUpperCase() + sportName.slice(1)}
     </div>
   );
 }
