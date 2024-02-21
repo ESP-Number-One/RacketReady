@@ -94,10 +94,19 @@ export class CollectionWrap<T extends MongoDBItem> {
     );
   }
 
+  /**
+   * Edits a given object with the id with the update filter
+   *
+   * @param id - the id of the object to update
+   * @param update - the update object to apply to the object
+   */
   public async edit(
     id: ObjectId,
     update: UpdateFilter<T> | Partial<T>,
   ): Promise<void> {
-    await this.collection.updateOne({ _id: id }, update);
+    await this.collection.updateOne(
+      { _id: toMongo(id) },
+      toMongo(update) as UpdateFilter<Document> | Partial<Document>,
+    );
   }
 }
