@@ -29,7 +29,7 @@ import {
 } from "tsoa";
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
 import * as express from "express";
-import { generateRandomString } from "ts-randomstring/lib";
+import { generateRandomString } from "ts-randomstring/lib/index.js";
 import { ControllerWrap } from "../controller.js";
 
 @Security("auth0")
