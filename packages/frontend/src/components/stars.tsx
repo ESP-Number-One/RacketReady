@@ -6,11 +6,11 @@ function StarButton(props: {
   onClick: (rating: number) => void;
   currentRating: number;
   rating: number;
-  disabled: boolean;
+  disabled?: boolean;
 }) {
   return (
     <button
-      disabled={props.disabled}
+      disabled={props.disabled ?? false}
       onClick={() => {
         props.onClick(props.rating);
       }}
