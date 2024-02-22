@@ -19,7 +19,7 @@ export const SearchButton = memo(function SearchButton({
   return (
     <div className="display-flex flex-row">
       <input
-        hidden={showInput}
+        hidden={!showInput}
         onChange={(e) => {
           setSearch(e.target.value);
         }}
