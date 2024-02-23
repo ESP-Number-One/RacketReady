@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { IconProps } from './icon';
 
 interface InputProps {
   type: 'text' | 'textarea' | 'time' | 'date';
