@@ -6,6 +6,7 @@
 
 # Jest Testing
 coverage
+report.json
 
 # Logs
 logs
