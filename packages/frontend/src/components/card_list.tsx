@@ -1,6 +1,6 @@
 import type { QueryOptions } from "@esp-group-one/types";
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface CardListProps<T extends ReactNode> {
   pageSize: number;
@@ -18,20 +18,8 @@ export function CardList<T extends ReactNode>({
   const [pageNum, setPageNum] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isLastPage, setIsLastPage] = useState(false);
-  let cards: T[] = [];
-  nextPage({
-    query,
-    sort,
-    pageStart: pageNum,
-    pageSize,
-  })
-    .then((result) => {
-      setIsLastPage(result.length === 0);
-      cards = cards.concat(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  const [shouldGetPage, setShouldGetPage] = useState(true);
+  let cards = useRef<T[]>([]);
 
   function nextPageWrapper() {
     setIsLoading(true);
@@ -39,15 +27,20 @@ export function CardList<T extends ReactNode>({
     nextPage({
       query,
       sort,
-      pageStart: pageNum + 1,
+      pageStart: pageNum,
       pageSize,
     })
       .then((result) => {
-        cards = cards.concat(result);
+        if (result.length == 0) {
+          setIsLastPage(true);
+        }
+        cards.current = cards.current.concat(result);
+        setShouldGetPage(false);
         setIsLoading(false);
       })
       .catch((err) => {
         console.error(err);
+        setShouldGetPage(false);
         setIsLoading(false);
       });
   }
@@ -59,9 +52,12 @@ export function CardList<T extends ReactNode>({
     ) {
       return;
     }
-    nextPageWrapper();
+    setShouldGetPage(true);
   }
 
+  useEffect(() => {
+    nextPageWrapper();
+  }, [shouldGetPage]);
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => {
@@ -69,8 +65,8 @@ export function CardList<T extends ReactNode>({
     };
   });
   return (
-    <div className="flex flex-col overflow-clip h-full">
-      {cards}
+    <div className="flex flex-col overflow-clip h-full m-1">
+      {cards.current}
       {isLoading ? <p>Loading!</p> : null}
       {isLastPage ? <p>No more results.</p> : null}
     </div>

@@ -17,8 +17,9 @@ export const SearchButton = memo(function SearchButton({
   }
 
   return (
-    <div className="display-flex flex-row">
+    <div className="display-flex flex-row w-full h-full">
       <input
+        className="font-body m-2 ml-1 p-1 w-fit bg-gray-100 rounded-lg h-fit text-xl"
         hidden={hidden}
         onChange={(e) => {
           setSearch(e.target.value);
@@ -31,6 +32,7 @@ export const SearchButton = memo(function SearchButton({
         placeholder="Search"
       />
       <button
+        className="m-2 ml-1 bg-gray-200 p-2 rounded-lg duration-100 hover:bg-gray-400 active:bg-gray-400 focus:ring focus:ring-gray-600"
         onClick={() => {
           onSubmitWrapper();
         }}
