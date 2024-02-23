@@ -1,6 +1,4 @@
-// components/Input.tsx
 import React, { useState } from 'react';
-import { Icon, IconProps } from './icon';
 
 interface InputProps {
   type: 'text' | 'textarea' | 'time' | 'date';
