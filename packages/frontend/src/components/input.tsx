@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { IconProps } from './icon';
+import React, { useState } from "react";
+import { IconProps } from "./icon";
 
 interface InputProps {
-  type: 'text' | 'textarea' | 'time' | 'date';
+  type: "text" | "textarea" | "time" | "date";
   placeholder: string;
   icon?: React.ReactElement<IconProps>;
   backgroundColor?: string;
@@ -13,13 +13,15 @@ const Input: React.FC<InputProps> = ({
   type,
   placeholder,
   icon,
-  backgroundColor = 'bg-p-grey-100',
-  textColor = 'text-white',
+  backgroundColor = "bg-p-grey-100",
+  textColor = "text-white",
 }) => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     setInputValue(e.target.value);
   };
 
@@ -28,28 +30,28 @@ const Input: React.FC<InputProps> = ({
   };
 
   const handleBlur = () => {
-    if (inputValue === '') {
+    if (inputValue === "") {
       setIsFocused(false);
     }
   };
 
   // Common styles for all input types
-  const commonStyles = `font-body text-2xl font-bold text-white w-full bg-transparent focus:outline-none pl-8
- inline-flex items-center w-full transform transition duration-150 ease-in-out m-0 ${
-    isFocused ? '' : 'placeholder-white'
-  }`;
+  const commonStyles = `font-body text-2xl font-bold text-white w-full bg-transparent focus:outline-none 
+  inline-flex items-center w-full transform transition duration-150 ease-in-out m-0 ${
+    isFocused ? "" : "placeholder-white"
+  } ${icon ? "pl-5" : "pl-6"}`;
 
   return (
-    <div className={`relative ${backgroundColor} ${textColor} rounded-md p-2`}>
+    <div className={`relative ${backgroundColor} ${textColor} rounded-lg p-2`}>
       {icon && (
         <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
           {icon}
         </div>
       )}
-      {type === 'text' && (
+      {type === "text" && (
         <input
           type="text"
-          placeholder={isFocused ? '' : placeholder}
+          placeholder={isFocused ? "" : placeholder}
           value={inputValue}
           onChange={handleInputChange}
           onFocus={handleFocus}
@@ -57,9 +59,9 @@ const Input: React.FC<InputProps> = ({
           className={commonStyles}
         />
       )}
-      {type === 'textarea' && (
+      {type === "textarea" && (
         <textarea
-          placeholder={isFocused ? '' : placeholder}
+          placeholder={isFocused ? "" : placeholder}
           value={inputValue}
           onChange={handleInputChange}
           onFocus={handleFocus}
@@ -67,7 +69,7 @@ const Input: React.FC<InputProps> = ({
           className={`${commonStyles} resize-none`}
         />
       )}
-      {type === 'time' && (
+      {type === "time" && (
         <input
           type="time"
           value={inputValue}
@@ -77,7 +79,7 @@ const Input: React.FC<InputProps> = ({
           className={commonStyles}
         />
       )}
-      {type === 'date' && (
+      {type === "date" && (
         <input
           type="date"
           value={inputValue}
