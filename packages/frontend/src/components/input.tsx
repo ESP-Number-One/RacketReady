@@ -1,70 +1,97 @@
-import React, { ReactNode } from "react";
+// components/Input.tsx
+import React, { useState } from 'react';
+import { Icon, IconProps } from './icon';
 
 interface InputProps {
-  type: "text" | "textarea" | "time";
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
+  type: 'text' | 'textarea' | 'time' | 'date';
+  placeholder: string;
+  icon?: React.ReactElement<IconProps>;
   backgroundColor?: string;
-  icon?: ReactNode;
-  textAlign?: "center" | "left" | "right";
+  textColor?: string;
 }
 
-export const Input: React.FC<InputProps> = ({
+const Input: React.FC<InputProps> = ({
   type,
-  value,
-  onChange,
   placeholder,
-  backgroundColor = "bg-p-grey-200",
   icon,
-  textAlign = "left",
+  backgroundColor = 'bg-p-grey-100',
+  textColor = 'text-white',
 }) => {
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    onChange(event.target.value);
+  const [inputValue, setInputValue] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setInputValue(e.target.value);
   };
 
-  const inputProps = {
-    value,
-    onChange: handleChange,
-    placeholder,
-    className: `w-full px-4 py-2.5 font-body text-2xl font-bold ${backgroundColor} focus:outline-none font-medium rounded-lg px-5 ${
-      icon ? "justify-start" : "justify-center"
-    } inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 w-full transform transition duration-150 ease-in-out m-0`,
-    style: {
-      color: value ? "white" : "rgba(255, 255, 255, 0.5)", // Set text color to white if there's a value, otherwise use a lighter shade of white for placeholder
-      textAlign: textAlign,
-    },
+  const handleFocus = () => {
+    setIsFocused(true);
   };
 
-  let InputComponent;
-  switch (type) {
-    case "text":
-      InputComponent = <input type="text" {...inputProps} />;
-      break;
-    case "textarea":
-      InputComponent = <textarea {...inputProps} />;
-      break;
-    case "time":
-      InputComponent = <input type="time" {...inputProps} />;
-      break;
-    default:
-      InputComponent = <input type="text" {...inputProps} />;
-      break;
-  }
+  const handleBlur = () => {
+    if (inputValue === '') {
+      setIsFocused(false);
+    }
+  };
+
+  // Common styles for all input types
+  const commonStyles = `font-body text-2xl font-bold text-white w-full bg-transparent focus:outline-none pl-8
+ inline-flex items-center w-full transform transition duration-150 ease-in-out m-0 ${
+    isFocused ? '' : 'placeholder-white'
+  }`;
 
   return (
-    <div className={`relative w-full rounded ${backgroundColor}`}>
-      <style>
-        {`
-          .input-white-placeholder::placeholder {
-            color: white;
-          }
-        `}
-      </style>
-      {InputComponent}
-      {icon && <span className="mr-4 align-middle flex">{icon}</span>}
+    <div className={`relative ${backgroundColor} ${textColor} rounded-md p-2`}>
+      {icon && (
+        <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
+          {icon}
+        </div>
+      )}
+      {type === 'text' && (
+        <input
+          type="text"
+          placeholder={isFocused ? '' : placeholder}
+          value={inputValue}
+          onChange={handleInputChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className={commonStyles}
+        />
+      )}
+      {type === 'textarea' && (
+        <textarea
+          placeholder={isFocused ? '' : placeholder}
+          value={inputValue}
+          onChange={handleInputChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className={`${commonStyles} resize-none`}
+        />
+      )}
+      {type === 'time' && (
+        <input
+          type="time"
+          value={inputValue}
+          onChange={handleInputChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className={commonStyles}
+        />
+      )}
+      {type === 'date' && (
+        <input
+          type="date"
+          value={inputValue}
+          onChange={handleInputChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className={commonStyles}
+        />
+      )}
     </div>
   );
 };
+
+export default Input; // Export the Input component as default
+
+export { Input }; // Export the Input component as named export
