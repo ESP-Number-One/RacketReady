@@ -4,12 +4,12 @@ import { memo, useState } from "react";
 
 interface SearchProps {
   onSubmit: (query: string) => void;
-  showInput: boolean;
+  hidden?: boolean;
 }
 
 export const SearchButton = memo(function SearchButton({
   onSubmit,
-  showInput,
+  hidden,
 }: SearchProps) {
   const [search, setSearch] = useState("");
   function onSubmitWrapper() {
@@ -19,12 +19,12 @@ export const SearchButton = memo(function SearchButton({
   return (
     <div className="display-flex flex-row">
       <input
-        hidden={!showInput}
+        hidden={hidden}
         onChange={(e) => {
           setSearch(e.target.value);
         }}
         onKeyUp={(e) => {
-          if (e.key === "13") {
+          if (e.key === "Enter") {
             onSubmitWrapper();
           }
         }}

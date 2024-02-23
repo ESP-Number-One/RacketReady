@@ -44,11 +44,12 @@ export function CardList<T extends ReactNode>({
     })
       .then((result) => {
         cards = cards.concat(result);
+        setIsLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
+        setIsLoading(false);
       });
-    setIsLoading(false);
   }
 
   function handleScroll() {
@@ -68,7 +69,7 @@ export function CardList<T extends ReactNode>({
     };
   });
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col overflow-clip h-full">
       {cards}
       {isLoading ? <p>Loading!</p> : null}
       {isLastPage ? <p>No more results.</p> : null}
