@@ -82,4 +82,15 @@ describe("Stars", () => {
       expect(icon).toHaveAttribute("data-prefix", "fas");
     });
   });
+
+  test("Default value test", () => {
+    // Testing the disabled.
+    const setRating = (_: number) => {
+      // Nothing.
+    };
+
+    const component = render(<Stars rating={0} onRatingChange={setRating} />);
+
+    expect(component.container).toBeInTheDocument();
+  });
 });
