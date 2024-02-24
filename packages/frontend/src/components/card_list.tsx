@@ -19,7 +19,7 @@ export function CardList<T extends ReactNode>({
   const [isLoading, setIsLoading] = useState(false);
   const [isLastPage, setIsLastPage] = useState(false);
   const [shouldGetPage, setShouldGetPage] = useState(true);
-  let cards = useRef<T[]>([]);
+  const cards = useRef<T[]>([]);
 
   function nextPageWrapper() {
     setIsLoading(true);
@@ -31,7 +31,7 @@ export function CardList<T extends ReactNode>({
       pageSize,
     })
       .then((result) => {
-        if (result.length == 0) {
+        if (result.length === 0) {
           setIsLastPage(true);
         }
         cards.current = cards.current.concat(result);

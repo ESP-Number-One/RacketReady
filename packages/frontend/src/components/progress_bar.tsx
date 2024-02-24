@@ -47,7 +47,7 @@ export function ProgressBar({
           className="font-title font-bold text-4xl fill-white"
           dominantBaseline="middle"
           dy="5%"
-          id="progress-bar-id"
+          id="progress-bar-text"
           textAnchor="middle"
           x="50%"
           y="50%"
