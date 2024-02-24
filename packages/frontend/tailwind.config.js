@@ -11,6 +11,8 @@ export default {
 
         // Ability levels
         beginner: "#F39C12",
+        intermediate: "#00B2FF",
+        advanced: "#4B0096",
 
         // Forms
         "progress-blue": "#3498DB",

@@ -1,4 +1,6 @@
 import type { Sport } from "@esp-group-one/types";
+import { useState } from "react";
+import { useEffect } from "react";
 import { Tag } from "./tags";
 
 interface Info {
@@ -12,22 +14,46 @@ interface SportInfo {
   sports: Info[];
 }
 
-export function ProfilePic({ sports }: SportInfo) {
+const getAbilityLevel = (sports: Info[]): string => {
+  const selectedSport = sports.find((sport) => sport.selected);
+
+  return selectedSport ? selectedSport.abilityLevel : "Beginner";
+};
+
+function getAbilityColour(abilityLevel: string) {
+  switch (abilityLevel) {
+    case "Beginner":
+      return "bg-beginner";
+    case "Intermediate":
+      return "bg-intermediate";
+    case "Advanced":
+      return "bg-advanced";
+  }
+}
+
+export function ProfilePic({
+  sports: initialSports,
+  image,
+}: SportInfo & { image: string }) {
+  const [sports, setSports] = useState<Info[]>(initialSports);
+  const [ability, setAbility] = useState(getAbilityLevel(sports));
+
+  useEffect(() => {
+    setAbility(getAbilityLevel(sports));
+  }, [sports]);
+
   const handleClick = (clickedIndex: number) => {
     const updatedData = sports.map((item, index) => ({
       ...item,
       selected: index === clickedIndex,
     }));
 
-    console.log(updatedData);
+    setSports(updatedData);
   };
 
   return (
     <div className="w-full aspect-square relative">
-      <img
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg"
-        alt="Italian Trulli"
-      />
+      <img src={image} />
       <div className="absolute top-0 left-0 right-0 bottom-0 flex flex-wrap items-center gap-4 p-2">
         {sports.map((sport, index) => (
           <Tag
@@ -40,8 +66,12 @@ export function ProfilePic({ sports }: SportInfo) {
           />
         ))}
       </div>
-      <div className="bg-beginner font-title text-white py-3 px-5 text-center text-xl font-bold">
-        Beginner
+      <div
+        className={`${getAbilityColour(
+          ability,
+        )} font-title text-white py-3 px-5 text-center text-xl font-bold`}
+      >
+        {getAbilityLevel(sports)}
       </div>
     </div>
   );
