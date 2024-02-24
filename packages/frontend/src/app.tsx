@@ -11,6 +11,10 @@ import { Auth, type AuthResult, handleApi } from "./state/auth.js";
 import { LoginButton } from "./components/auth.js";
 import { useAPIClient } from "./lib/auth.js";
 
+const handleClick = (clickedIndex: number) => {
+  console.log(clickedIndex);
+};
+
 export function App() {
   const [result, setResult] = useState({ type: "loading" } as AuthResult);
   const hasSetApi = useRef(false);
