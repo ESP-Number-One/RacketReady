@@ -2,9 +2,16 @@ import { Sport } from "@esp-group-one/types";
 import { useState } from "react";
 import type { ChangeEvent } from "react";
 
-export function SelectSport() {
-  const [sport, setSport] = useState("Tennis");
-  const [colour, setColour] = useState("tennis");
+interface SportListProps {
+  sports: Sport[];
+}
+
+export function SelectSport({
+  sports: sportsOptions,
+  currentSport,
+}: SportListProps & { currentSport: Sport }) {
+  const [sport, setSport] = useState(currentSport);
+  const [colour, setColour] = useState(currentSport);
 
   const options = [
     { colour: "tennis", label: "Tennis" },
@@ -13,14 +20,11 @@ export function SelectSport() {
   ];
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setSport(e.target.value);
-    if (e.target.value === "Tennis") {
-      setColour("tennis");
-    } else if (e.target.value === "Badminton") {
-      setColour("badminton");
-    } else {
-      setColour("squash");
+    switch (e.target.value) {
+      case "tennis":
     }
+    setSport(e.target.value);
+    setColour(getColour());
   };
 
   return (
