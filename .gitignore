@@ -4,6 +4,10 @@
 .pnp.cjs
 .pnp.loader.mjs
 
+# Jest Testing
+coverage
+report.json
+
 # Logs
 logs
 *.log

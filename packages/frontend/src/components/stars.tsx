@@ -28,7 +28,7 @@ function StarButton(props: {
 export function Stars(props: {
   rating: number;
   onRatingChange: (newRating: number) => void;
-  disabled: boolean;
+  disabled?: boolean;
 }) {
   return (
     <div className="space-x-2">
