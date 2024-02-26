@@ -1,21 +1,19 @@
-import type { QueryOptions } from "@esp-group-one/types";
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 
 interface CardListProps<T extends ReactNode> {
-  pageSize: number;
-  query: unknown;
-  sort: unknown;
-  nextPage: (nextQuery: QueryOptions) => Promise<T[]>;
+  nextPage: (nextPage: number) => Promise<T[]>;
+  startPage?: number;
 }
 
 export function CardList<T extends ReactNode>({
-  pageSize,
-  query,
-  sort,
   nextPage,
+  startPage,
 }: CardListProps<T>) {
   const [pageNum, setPageNum] = useState(0);
+  if (startPage !== undefined && startPage >= 0) {
+    setPageNum(startPage);
+  }
   const [isLoading, setIsLoading] = useState(false);
   const [isLastPage, setIsLastPage] = useState(false);
   const [shouldGetPage, setShouldGetPage] = useState(true);
@@ -24,12 +22,7 @@ export function CardList<T extends ReactNode>({
   function nextPageWrapper() {
     setIsLoading(true);
     setPageNum(pageNum + 1);
-    nextPage({
-      query,
-      sort,
-      pageStart: pageNum,
-      pageSize,
-    })
+    nextPage(pageNum)
       .then((result) => {
         if (result.length === 0) {
           setIsLastPage(true);
