@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Auth0Provider } from "@auth0/auth0-react";
 import * as config from "@esp-group-one/config";
 import { App } from "./app";
@@ -19,6 +20,11 @@ if (root) {
         domain={config.auth.domain}
         useRefreshTokens
       >
+        <BrowserRouter>
+          <Routes>
+            <Route path="/*" element={<App />} />
+          </Routes>
+        </BrowserRouter>
         <App />
       </Auth0Provider>
     </React.StrictMode>,
