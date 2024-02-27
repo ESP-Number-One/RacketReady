@@ -49,11 +49,11 @@ export function ProfilePic({
     <div className="w-full aspect-square relative">
       <img src={image} />
       <div className="absolute top-0 left-0 right-0 bottom-0 flex flex-wrap items-center gap-4 p-2">
-        {initialSports.map((sport, index) => (
+        {initialSports.map((sport) => (
           <Tag
             sportName={sport.sport}
             active={sport.sport === selectedSport}
-            key={index}
+            key={sport.sport}
             onClick={() => {
               handleClick(sport.sport);
             }}
