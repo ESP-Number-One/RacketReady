@@ -6,7 +6,7 @@ export namespace Cards {
   export function fromUsers(users: User[] | CensoredUser[]) {
     console.error("Not implemented");
     return users.map((user, _idx, _arr) => {
-      return <div key={user._id.toHexString()} />;
+      return <div key={user._id.toString()} />;
     });
   }
 
