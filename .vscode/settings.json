@@ -30,6 +30,13 @@
       "dashedArgs": true
     },
     {
+      "name": "db-client",
+      "runMode": "on-demand",
+      "rootPath": "packages/db-client",
+      "commandLine": "yarn jest --selectProjects 'DB Client'",
+      "dashedArgs": true
+    },
+    {
       "name": "frontend",
       "runMode": "on-demand",
       "rootPath": "packages/frontend",
