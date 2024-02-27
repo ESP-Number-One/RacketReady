@@ -1,8 +1,9 @@
-import type { WithError } from "@esp-group-one/types";
+import type { Success, WithError } from "@esp-group-one/types";
+import { ObjectId } from "@esp-group-one/types";
 import { API_URL } from "./constants.js";
 
 export class APIClientBase {
-  protected url = "";
+  public url = "";
   protected accessToken: string;
 
   constructor(accessToken: string, url?: string) {
@@ -61,15 +62,17 @@ export class APIClientBase {
     });
 
     return fetch(request).then(async (res) => {
-      const json = (await res.json()) as WithError<T>;
+      const json = (await res.json()) as Partial<WithError<T>>;
 
-      if (!json.success) {
+      if (json.success === false) {
         throw Error(`Request failed: ${json.error}`);
-      } else if (Math.floor(res.status / 100) !== 2) {
+      } else if (!json.success || Math.floor(res.status / 100) !== 2) {
+        // Note we check json.success again to catch any anomalities returned
+        // from the api
         throw Error(`Request failed with status ${res.status}`);
       }
 
-      return json.data;
+      return ObjectId.fromObj((json as Success<T>).data) as T;
     });
   }
 }

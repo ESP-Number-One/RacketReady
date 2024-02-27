@@ -19,3 +19,27 @@ jobs:
           package-manager: yarn
           annotations: coverage
           working-directory: packages/frontend
+      - uses: ArtiomTr/jest-coverage-report-action@v2
+        with:
+          test-script: yarn jest
+          package-manager: yarn
+          annotations: coverage
+          working-directory: packages/api-client
+      - uses: ArtiomTr/jest-coverage-report-action@v2
+        with:
+          test-script: yarn jest
+          package-manager: yarn
+          annotations: coverage
+          working-directory: packages/backend
+      - uses: ArtiomTr/jest-coverage-report-action@v2
+        with:
+          test-script: yarn jest
+          package-manager: yarn
+          annotations: coverage
+          working-directory: packages/db-client
+      - uses: ArtiomTr/jest-coverage-report-action@v2
+        with:
+          test-script: yarn jest
+          package-manager: yarn
+          annotations: coverage
+          working-directory: packages/types
