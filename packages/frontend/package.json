@@ -7,6 +7,7 @@
     "build": "tsc && vite build",
     "dev": "vite --port=3001",
     "format": "prettier --write '**/*.tsx' '**/*.ts' '**/*.json' '**/*.html' '*.config.js'",
+    "coverage": "jest --coverage",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives",
     "test": "jest",
     "lint:fix": "eslint src --ext ts,tsx --report-unused-disable-directives --fix",
