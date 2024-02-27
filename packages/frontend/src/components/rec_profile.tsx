@@ -1,26 +1,34 @@
+import type { Sport, SportInfo } from "@esp-group-one/types";
 import { ProfilePic } from "./profile_pic";
-import { Sport } from "@esp-group-one/types";
 
 const handleClick = () => {
   console.log("");
 };
 
-export function RecProfile() {
+interface Info {
+  sports: SportInfo[];
+  onClick: () => void;
+  selected: Sport;
+  image: string;
+  displayAbility: boolean;
+}
+
+export function RecProfile({
+  sports: initialSports,
+  selected,
+  image,
+  displayAbility,
+}: Info) {
   return (
     <div>
       <ProfilePic
-        image={
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg"
-        }
-        sports={[
-          { sport: Sport.Tennis, ability: "Beginner" },
-          { sport: Sport.Badminton, ability: "Intermediate" },
-        ]}
-        selected={Sport.Tennis}
+        image={image}
+        sports={initialSports}
+        selected={selected}
         onClick={() => {
           handleClick();
         }}
-        displayAbility={false}
+        displayAbility={displayAbility}
       />
       <div className="bg-slate-400">
         <h1 className="text-white font-title font-bold text-right px-5 text-3xl pt-3">
