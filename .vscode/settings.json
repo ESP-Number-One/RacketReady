@@ -42,6 +42,13 @@
       "rootPath": "packages/frontend",
       "commandLine": "yarn jest --selectProjects Frontend",
       "dashedArgs": true
+    },
+    {
+      "name": "types",
+      "runMode": "on-demand",
+      "rootPath": "packages/types",
+      "commandLine": "yarn jest --selectProjects Types",
+      "dashedArgs": true
     }
   ]
 }

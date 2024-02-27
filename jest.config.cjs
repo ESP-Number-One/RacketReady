@@ -68,8 +68,23 @@ const config = {
         "\\.(ts|tsx)$": "ts-jest",
       },
       testRegex: "\\.(test|spec)\\.(ts|tsx)$",
-      moduleFileExtensions: ["ts", "tsx", "js"],
-      coveragePathIgnorePatterns: ["<rootDir>/tests/utils.tsx"],
+    },
+    {
+      collectCoverageFrom: ["src/**/*.{js,jsx,ts,tsx}"],
+      coveragePathIgnorePatterns: [
+        "<rootDir>/src/index.ts",
+        "<rootDir>/src/db_client.ts",
+      ],
+      displayName: "Types",
+      moduleNameMapper: {
+        "^(\\.{1,2}/.*)\\.js$": "$1",
+      },
+      rootDir: "packages/types",
+      testEnvironment: "node",
+      testRegex: "\\.(test|spec)\\.(ts|tsx)$",
+      transform: {
+        "\\.ts$": "ts-jest",
+      },
     },
   ],
   moduleNameMapper: {

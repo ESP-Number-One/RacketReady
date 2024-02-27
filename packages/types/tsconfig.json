@@ -7,7 +7,6 @@
     "emitDecoratorMetadata": true,
     "module": "NodeNext",
     "noImplicitAny": true,
-    "removeComments": true,
     "declaration": true,
     "outDir": "build",
     "target": "es2022",
@@ -17,5 +16,5 @@
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
-  "include": ["src/**/*"]
+  "include": ["src", "tests"]
 }
