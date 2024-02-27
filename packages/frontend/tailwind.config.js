@@ -26,9 +26,6 @@ export default {
         },
         "p-red": { 100: "#E74C3C", 200: "#C0392B" },
         "p-blue": "#2980B9",
-
-        "pg-bar-blue": "#3498db",
-        "pg-bar-gray": "#95A5A6",
       },
       fontFamily: {
         title: ['"Baloo Bhai 2"'],
