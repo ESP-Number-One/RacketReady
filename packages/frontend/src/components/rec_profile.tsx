@@ -1,5 +1,9 @@
 import { ProfilePic } from "./profile_pic";
-import type { Sport } from "@esp-group-one/types";
+import { Sport } from "@esp-group-one/types";
+
+const handleClick = () => {
+  console.log("");
+};
 
 export function RecProfile() {
   return (
@@ -13,7 +17,9 @@ export function RecProfile() {
           { sport: Sport.Badminton, ability: "Intermediate" },
         ]}
         selected={Sport.Tennis}
-        onClick={() => }
+        onClick={() => {
+          handleClick();
+        }}
         displayAbility={false}
       />
       <div className="bg-slate-400">
