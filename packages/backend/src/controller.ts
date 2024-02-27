@@ -1,14 +1,12 @@
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
-import {
-  newAPIError,
-  newAPISuccess,
-  type WithError,
-  type QueryOptions,
-} from "@esp-group-one/types";
-import type { ObjectId, OptionalId } from "mongodb";
+import type { MongoDBItem, WithError, User } from "@esp-group-one/types";
+import { newAPIError, newAPISuccess, ObjectId } from "@esp-group-one/types";
+import type { OptionalId } from "mongodb";
 import type { Request } from "express";
 import { Controller } from "tsoa";
-import { getUserId } from "./utils.js";
+import type { DbClient, FilterOptions } from "@esp-group-one/db-client";
+import { getUserId } from "./lib/utils.js";
+import { getDb } from "./lib/db.js";
 
 /**
  * This class offers basically functions which implement the APIs for all
@@ -22,19 +20,15 @@ import { getUserId } from "./utils.js";
  * As well as all the API endpoints (however they should be able to simply
  * pass their arguments on to the functions below)
  */
-export class ControllerWrap<T, C> extends Controller {
-  /**
-   * Converts a creation type to the type without the id
-   */
-  creationToObj(_: C): OptionalId<T> {
-    throw Error("Unimplemented");
-  }
-
+export abstract class ControllerWrap<T extends MongoDBItem> extends Controller {
   /**
    * @returns the collection which should be used for all operations
    */
-  getCollection(): Promise<CollectionWrap<T>> {
-    throw Error("Unimplemented");
+  abstract getCollection(): Promise<CollectionWrap<T>>;
+
+  protected notFound<R>(status?: number, message?: string): WithError<R> {
+    this.setStatus(status ?? 404);
+    return newAPIError(message ?? "Failed to get obj");
   }
 
   /**
@@ -49,28 +43,34 @@ export class ControllerWrap<T, C> extends Controller {
         return newAPISuccess(obj);
       })
       .catch((e) => {
-        this.setStatus(500);
         console.error(`Failed to get obj with id: ${objId.toString()}: ${e}`);
-        return newAPIError("Failed to get obj");
+        return this.notFound();
       });
+  }
+
+  /**
+   * @returns a DB client which then can be closed in tests (which is important)
+   */
+  protected getDb(): DbClient {
+    return getDb();
   }
 
   /**
    * Safely finds the information for the current endpoints collection, if
    * none is found it will just return an error
    */
-  protected async find(query: QueryOptions): Promise<WithError<T[]>> {
+  protected async find(query: FilterOptions<T>): Promise<WithError<T[]>> {
     return (await this.getCollection())
       .page(query)
       .then((objs): WithError<T[]> => {
         return newAPISuccess(objs);
       })
       .catch((e) => {
-        this.setStatus(500);
         console.error(
           `Failed to get with query: ${JSON.stringify(query)}: ${e}`,
         );
-        return newAPIError("Failed to get obj");
+
+        return this.notFound(500);
       });
   }
 
@@ -78,15 +78,17 @@ export class ControllerWrap<T, C> extends Controller {
    * Safely creates a new object for the controller. However does not check if
    * object exists already
    */
-  protected async create(requestBody: C): Promise<WithError<T>> {
+  protected async create(obj: OptionalId<T>): Promise<WithError<T>> {
     this.setStatus(201);
-    const obj = this.creationToObj(requestBody);
 
     return (await this.getCollection())
       .insert(obj)
       .then((res) => {
         this.setStatus(201);
-        return newAPISuccess({ ...obj, _id: res.insertedIds[0] } as T);
+        return newAPISuccess({
+          ...obj,
+          _id: res[0],
+        } as T);
       })
       .catch((e) => {
         this.setStatus(500);
@@ -109,20 +111,82 @@ export class ControllerWrap<T, C> extends Controller {
    * @returns A response object which the callback has returned or an error if
    *   we could not get the user id
    */
-  protected async withUserId<R>(
+  protected withUserId<R>(
     req: Request,
     callback: (user: ObjectId) => Promise<WithError<R>>,
   ): Promise<WithError<R>> {
-    return getUserId(req)
+    return getUserId(this.getDb(), req)
       .then((res) => {
-        if (res) return callback(res);
+        if (res) return this.catchInternalServerError(callback(res));
         throw new Error("Could not get user");
       })
       .catch((e) => {
-        this.setStatus(500);
+        this.setStatus(404);
         console.error(`Error when running with User: ${e}`);
 
         return newAPIError("Unknown User");
       });
+  }
+
+  /**
+   * Gets the current user object and passes it into the callback
+   *
+   * @param req - The request made to the endpoint
+   * @param callback - The function to call with the current user
+   *
+   * @returns the response from the callback or an Error if we could not get the user
+   */
+  protected withUser<R>(
+    req: Request,
+    callback: (user: User) => Promise<WithError<R>>,
+  ): Promise<WithError<R>> {
+    return this.withUserId(req, async (userId) => {
+      const db = this.getDb();
+      const userColl = await db.users();
+      const user = await userColl.get(userId);
+      if (user) return callback(user);
+
+      this.setStatus(404);
+      return newAPIError("Could not get user");
+    });
+  }
+
+  /**
+   * Converts any ObjectIds in the parameter and verifies them
+   * @param p - the parameter to verify and convert recursively convert to ObjectIds
+   * @param callback - The function to call with the verified parameter
+   * @returns The output from the callback or an error if we could not convert the param
+   */
+  protected withVerifiedParam<P, R>(
+    p: P,
+    callback: (p: P) => Promise<WithError<R>>,
+  ): Promise<WithError<R>> {
+    let param;
+
+    try {
+      param = ObjectId.fromObj(p) as P;
+    } catch (e) {
+      this.setStatus(400);
+      return Promise.resolve(newAPIError("Invalid request"));
+    }
+
+    return this.catchInternalServerError(callback(param));
+  }
+
+  /**
+   * Catches any errors from a promise and returns Internal Server Error
+   * @param promise - promise to catch any internal error if rejected
+   * @returns The output
+   */
+  protected catchInternalServerError<R>(
+    promise: Promise<WithError<R>>,
+  ): Promise<WithError<R>> {
+    return promise.catch((e: Error) => {
+      console.error(
+        `An error occurred when evaluated an endpoint: ${e.toString()}`,
+      );
+      this.setStatus(500);
+      return newAPIError("Internal Server Error");
+    });
   }
 }

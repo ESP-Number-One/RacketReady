@@ -1,16 +1,13 @@
 import type * as express from "express";
-import { jwtVerifier, requiredScopes } from "access-token-jwt";
+import { jwtVerifier } from "access-token-jwt";
 import * as config from "@esp-group-one/config";
 import { getToken } from "oauth2-bearer";
-import { setUserId } from "./utils.js";
-
-// import pkg from "access-token-jwt";
-// const { jwtVerifier } = pkg;
+import { setUserId } from "./lib/utils.js";
 
 export function expressAuthentication(
   request: express.Request,
   securityName: string,
-  scopes?: string[],
+  _?: string[],
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     // Inspired from https://github.com/auth0/node-oauth2-jwt-bearer/blob/main/packages/express-oauth2-jwt-bearer/src/index.ts
@@ -29,29 +26,24 @@ export function expressAuthentication(
           issuerBaseURL: `https://${config.auth.domain}/`,
         });
 
-        let resPromise = verifyJwt(jwt);
-
-        if (scopes) {
-          const checker = requiredScopes(scopes);
-          resPromise = resPromise.then((res) => {
-            checker(res.payload);
-            return res;
-          });
-        }
+        const resPromise = verifyJwt(jwt);
 
         resPromise
           .then((res) => {
             setUserId(request, res);
           })
           .then(() => {
-            resolve(void true);
+            resolve(void 0);
           })
-          .catch((e) => {
+          .catch((e: Error) => {
+            console.warn(`Could not verify "${jwt}": ${e.message}`);
             reject(e);
           });
 
-        resolve(void 0);
+        return;
       } catch (e) {
+        const err = e as Error;
+        console.warn(`Could not verify request: ${err.name}: ${err.message}`);
         reject(e);
       }
     }

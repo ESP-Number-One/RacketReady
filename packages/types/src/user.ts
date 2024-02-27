@@ -1,5 +1,5 @@
-import type { ObjectId } from "mongodb";
-import type { Sport } from "./utils.js";
+import type { Query } from "./db_client.js";
+import type { DateTimeString, MongoDBItem, ObjectId, Sport } from "./utils.js";
 
 export enum AbilityLevel {
   Beginner = "beginner",
@@ -12,21 +12,25 @@ export interface SportInfo {
   ability: string;
 }
 
-export interface Availability {
-  timeStart: Date;
-  timeEnd: Date;
-  // TODO: Look into using "Duration" objects from Momentjs
-  recurring?: number;
+export interface Duration {
+  days?: number;
+  weeks?: number;
+  months?: number;
+  years?: number;
 }
 
-export interface UserIdMap {
-  _id: ObjectId;
-  userId: string;
+export interface Availability {
+  timeStart: DateTimeString;
+  timeEnd: DateTimeString;
+  recurring?: Duration;
+}
+
+export interface UserIdMap extends MongoDBItem {
+  auth0Id: string;
   internalId: ObjectId;
 }
 
-export interface User {
-  _id: ObjectId;
+export interface User extends MongoDBItem {
   name: string;
   description: string;
   profilePicture: string;
@@ -36,18 +40,10 @@ export interface User {
   availability: Availability[];
 }
 
-export interface CensoredUser {
-  _id: ObjectId;
+export interface CensoredUser extends MongoDBItem {
   name: string;
   description: string;
   sports: SportInfo[];
-}
-
-export interface UserCreation {
-  name: string;
-  description: string;
-  profilePicture: string;
-  email: string;
 }
 
 export function censorUser(user: User): CensoredUser {
@@ -58,3 +54,15 @@ export function censorUser(user: User): CensoredUser {
     sports: user.sports,
   };
 }
+
+export interface UserCreation {
+  name: string;
+  description: string;
+  email: string;
+  profilePicture: string;
+}
+
+export type UserQuery = Query<{
+  sports: string[];
+  leagues: ObjectId[];
+}> & { profileText?: string };

@@ -1,4 +1,9 @@
-import type { Match, MatchProposal } from "@esp-group-one/types";
+import type { Match, MatchProposal, MatchQuery } from "@esp-group-one/types";
 import { SubAPIClient } from "./base.js";
 
-export class MatchAPIClient extends SubAPIClient<Match, MatchProposal> {}
+export class MatchAPIClient extends SubAPIClient<
+  Match,
+  Match,
+  MatchProposal,
+  MatchQuery
+> {}

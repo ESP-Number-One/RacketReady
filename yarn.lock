@@ -1821,6 +1821,7 @@ __metadata:
     prettier: "npm:^3.1.1"
     sharp: "npm:^0.33.2"
     swagger-ui-express: "npm:^5.0.0"
+    ts-randomstring: "npm:^1.0.8"
     tsoa: "npm:^6.0.1"
     typescript: "npm:^5.x"
   languageName: unknown
@@ -1964,7 +1965,6 @@ __metadata:
     "@esp-group-one/eslint-config": "workspace:^"
     "@types/node": "npm:^20.10.6"
     eslint: "npm:^8.56.0"
-    mongodb: "npm:^6.3.0"
     prettier: "npm:^3.1.1"
     typescript: "npm:^5.0.2"
   languageName: unknown
@@ -3110,6 +3110,13 @@ __metadata:
   dependencies:
     undici-types: "npm:~5.26.4"
   checksum: be30609aae0bfe492097815f166ccc07f465220cb604647fa4e5ec05a1d16c012a41b82b5f11ecfe2485cbb479d4d20384b95b809ca0bcff6d94d5bbafa645bb
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^16.3.1":
+  version: 16.18.83
+  resolution: "@types/node@npm:16.18.83"
+  checksum: 2c2e2d0307db556e4849f62a444e2cbf6acf0bd90a877ae823fb4e631f711759ee9179436c5391f15a66718e7d051057f1b77bfe7ee85d4b86becdd1e0bddfbc
   languageName: node
   linkType: hard
 
@@ -10972,6 +10979,15 @@ __metadata:
   bin:
     ts-jest: cli.js
   checksum: c2f51f0241f89d127d41392decbcb83b5dfd5e57ab9d50220aa7b7e2f9b3f3b07ccdbba33311284df1c41941879e4ddfad44b15a9d0da4b74bd1b98702b729df
+  languageName: node
+  linkType: hard
+
+"ts-randomstring@npm:^1.0.8":
+  version: 1.0.8
+  resolution: "ts-randomstring@npm:1.0.8"
+  dependencies:
+    "@types/node": "npm:^16.3.1"
+  checksum: d07db281458a6650a85f7cde6e3977f6fd21b8130ad9b1a0552751e53b94bced7f8ff0c4a60f0c5101b825fcaaf965717b9e04b1e79fda0a57c9d28dc8b41cf5
   languageName: node
   linkType: hard
 
