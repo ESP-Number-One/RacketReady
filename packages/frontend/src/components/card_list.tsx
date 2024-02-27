@@ -10,10 +10,7 @@ export function CardList<T extends ReactNode>({
   nextPage,
   startPage,
 }: CardListProps<T>) {
-  const [pageNum, setPageNum] = useState(0);
-  if (startPage !== undefined && startPage >= 0) {
-    setPageNum(startPage);
-  }
+ const [pageNum, setPageNum] = useState((startPage !== undefined && startPage >= 0) ? startPage : 0);
   const [isLoading, setIsLoading] = useState(false);
   const [isLastPage, setIsLastPage] = useState(false);
   const [shouldGetPage, setShouldGetPage] = useState(true);
