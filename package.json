@@ -7,16 +7,17 @@
   ],
   "scripts": {
     "build": "yarn workspaces foreach -Ap --topological-dev run build",
+    "coverage": "yarn workspaces foreach -Ap run coverage",
     "dev:frontend": "yarn workspace @esp-group-one/frontend dev",
     "dev": "yarn workspaces foreach -Aip run dev",
-    "test": "jest",
     "format": "run format:me && run format:ws",
     "format:ws": "yarn workspaces foreach -Ap --exclude @esp-group-one/matchyo-sports run format",
     "format:me": "prettier --write '*.md' '*.json' .prettierrc .eslintrc.cjs",
     "lint": "yarn workspaces foreach -Ap run lint",
-    "coverage": "yarn workspaces foreach -Ap run coverage",
     "lint-ci": "yarn workspaces foreach -Ap run lint --max-warnings 0",
-    "lint:fix": "yarn workspaces foreach -Ap run lint:fix"
+    "lint:fix": "yarn workspaces foreach -Ap run lint:fix",
+    "test": "jest",
+    "test:linux": "act -j test"
   },
   "devDependencies": {
     "@esp-group-one/jest-esm-transformer": "workspace:^",
