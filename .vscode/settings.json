@@ -23,6 +23,13 @@
       "dashedArgs": true
     },
     {
+      "name": "backend",
+      "runMode": "on-demand",
+      "rootPath": "packages/backend",
+      "commandLine": "yarn jest --selectProjects Backend",
+      "dashedArgs": true
+    },
+    {
       "name": "frontend",
       "runMode": "on-demand",
       "rootPath": "packages/frontend",

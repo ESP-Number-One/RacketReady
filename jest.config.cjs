@@ -21,6 +21,28 @@ const config = {
     },
     {
       collectCoverageFrom: ["src/**/*.{js,jsx,ts,tsx}"],
+      coveragePathIgnorePatterns: [
+        "<rootDir>/src/server.ts",
+        "<rootDir>/src/app.ts",
+      ],
+      displayName: "Backend",
+      moduleNameMapper: {
+        "^(\\.{1,2}/.*)\\.js$": "$1",
+      },
+      rootDir: "packages/backend",
+      testEnvironment: "@esp-group-one/mongodb-testing",
+      testRegex: "\\.(test|spec)\\.(ts|tsx)$",
+      transform: {
+        "\\.ts$": "ts-jest",
+        "\\.m?jsx?$": "@esp-group-one/jest-esm-transformer",
+      },
+      transformIgnorePatterns: [
+        "node_modules/(?!(jest-runtime|access-token-jwt|oauth2-bearer)/)",
+      ],
+      moduleFileExtensions: ["ts", "tsx", "js"],
+    },
+    {
+      collectCoverageFrom: ["src/**/*.{js,jsx,ts,tsx}"],
       coveragePathIgnorePatterns: ["<rootDir>/tests/utils.tsx"],
       displayName: "Frontend",
       moduleFileExtensions: ["ts", "tsx", "js"],
