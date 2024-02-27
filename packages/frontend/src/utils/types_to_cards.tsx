@@ -19,7 +19,7 @@ export namespace Cards {
   export function fromMatches(matches: Match[]) {
     console.error("Not implemented");
     return matches.map((match, _idx, _arr) => {
-      return <div key={match._id.toHexString()} />;
+      return <div key={match._id.toString()} />;
     });
   }
 }
