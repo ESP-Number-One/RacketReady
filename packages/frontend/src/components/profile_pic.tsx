@@ -6,11 +6,12 @@ interface Info {
   sports: SportInfo[];
   onClick: () => void;
   selected: Sport;
+  image: string;
+  displayAbility: boolean;
 }
 
 const getAbilityLevel = (sports: SportInfo[], selected: Sport): string => {
   const selectedSport = sports.find((sport) => sport.sport === selected);
-  console.log(selectedSport ? selectedSport.ability : "Beginner");
 
   return selectedSport ? selectedSport.ability : "Beginner";
 };
@@ -30,7 +31,8 @@ export function ProfilePic({
   sports: initialSports,
   selected,
   image,
-}: Info & { image: string }) {
+  displayAbility,
+}: Info) {
   const [selectedSport, setSelectedSport] = useState(selected);
 
   const ability = useMemo(
@@ -58,11 +60,13 @@ export function ProfilePic({
           />
         ))}
       </div>
-      <div
-        className={`${colour} font-title text-white py-3 px-5 text-center text-xl font-bold`}
-      >
-        {getAbilityLevel(initialSports, selectedSport)}
-      </div>
+      {displayAbility && (
+        <div
+          className={`${colour} font-title text-white py-3 px-5 text-center text-xl font-bold`}
+        >
+          {getAbilityLevel(initialSports, selectedSport)}
+        </div>
+      )}
     </div>
   );
 }
