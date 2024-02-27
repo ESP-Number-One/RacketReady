@@ -16,6 +16,13 @@
   "jest.debugMode": true,
   "jest.virtualFolders": [
     {
+      "name": "api-client",
+      "runMode": "on-demand",
+      "rootPath": "packages/api-client",
+      "commandLine": "yarn jest --selectProjects 'API Client'",
+      "dashedArgs": true
+    },
+    {
       "name": "frontend",
       "runMode": "on-demand",
       "rootPath": "packages/frontend",
