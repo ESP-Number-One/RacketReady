@@ -1,23 +1,18 @@
-import type { Sport } from "@esp-group-one/types";
-import { useState } from "react";
-import { useEffect } from "react";
+import type { Sport, SportInfo } from "@esp-group-one/types";
+import { useMemo, useState } from "react";
 import { Tag } from "./tags";
 
 interface Info {
-  sportName: Sport;
-  selected: boolean;
-  abilityLevel: string;
+  sports: SportInfo[];
   onClick: () => void;
+  selected: Sport;
 }
 
-interface SportInfo {
-  sports: Info[];
-}
+const getAbilityLevel = (sports: SportInfo[], selected: Sport): string => {
+  const selectedSport = sports.find((sport) => sport.sport === selected);
+  console.log(selectedSport ? selectedSport.ability : "Beginner");
 
-const getAbilityLevel = (sports: Info[]): string => {
-  const selectedSport = sports.find((sport) => sport.selected);
-
-  return selectedSport ? selectedSport.abilityLevel : "Beginner";
+  return selectedSport ? selectedSport.ability : "Beginner";
 };
 
 function getAbilityColour(abilityLevel: string) {
@@ -33,45 +28,40 @@ function getAbilityColour(abilityLevel: string) {
 
 export function ProfilePic({
   sports: initialSports,
+  selected,
   image,
-}: SportInfo & { image: string }) {
-  const [sports, setSports] = useState<Info[]>(initialSports);
-  const [ability, setAbility] = useState(getAbilityLevel(sports));
+}: Info & { image: string }) {
+  const [selectedSport, setSelectedSport] = useState(selected);
 
-  useEffect(() => {
-    setAbility(getAbilityLevel(sports));
-  }, [sports]);
+  const ability = useMemo(
+    () => getAbilityLevel(initialSports, selectedSport),
+    [initialSports, selectedSport],
+  );
+  const colour = useMemo(() => getAbilityColour(ability), [ability]);
 
-  const handleClick = (clickedIndex: number) => {
-    const updatedData = sports.map((item, index) => ({
-      ...item,
-      selected: index === clickedIndex,
-    }));
-
-    setSports(updatedData);
+  const handleClick = (sport: Sport) => {
+    setSelectedSport(sport);
   };
 
   return (
     <div className="w-full aspect-square relative">
       <img src={image} />
       <div className="absolute top-0 left-0 right-0 bottom-0 flex flex-wrap items-center gap-4 p-2">
-        {sports.map((sport, index) => (
+        {initialSports.map((sport, index) => (
           <Tag
-            sportName={sport.sportName}
-            active={sport.selected}
+            sportName={sport.sport}
+            active={sport.sport === selectedSport}
             key={index}
             onClick={() => {
-              handleClick(index);
+              handleClick(sport.sport);
             }}
           />
         ))}
       </div>
       <div
-        className={`${getAbilityColour(
-          ability,
-        )} font-title text-white py-3 px-5 text-center text-xl font-bold`}
+        className={`${colour} font-title text-white py-3 px-5 text-center text-xl font-bold`}
       >
-        {getAbilityLevel(sports)}
+        {getAbilityLevel(initialSports, selectedSport)}
       </div>
     </div>
   );

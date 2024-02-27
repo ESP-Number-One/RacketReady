@@ -13,31 +13,13 @@ export function TestPage() {
           "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg"
         }
         sports={[
-          {
-            sportName: Sport.Tennis,
-            selected: true,
-            abilityLevel: "Beginner",
-            onClick: () => {
-              handleClick(0);
-            },
-          },
-          {
-            sportName: Sport.Badminton,
-            selected: false,
-            abilityLevel: "Intermediate",
-            onClick: () => {
-              handleClick(1);
-            },
-          },
-          {
-            sportName: Sport.Squash,
-            selected: false,
-            abilityLevel: "Advanced",
-            onClick: () => {
-              handleClick(2);
-            },
-          },
+          { sport: Sport.Tennis, ability: "Beginner" },
+          { sport: Sport.Badminton, ability: "Intermediate" },
         ]}
+        selected={Sport.Tennis}
+        onClick={() => {
+          handleClick;
+        }}
       />
     </>
   );
