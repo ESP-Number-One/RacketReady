@@ -13,7 +13,7 @@ export namespace Cards {
   export function fromLeagues(leagues: League[]) {
     console.error("Not implemented");
     return leagues.map((league, _idx, _arr) => {
-      return <div key={league._id.toHexString()} />;
+      return <div key={league._id.toString()} />;
     });
   }
   export function fromMatches(matches: Match[]) {
