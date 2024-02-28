@@ -35,6 +35,21 @@ describe("addAvailability", () => {
   runErrorTests(endpoint, () => api.addAvailability(availability));
 });
 
+describe("edit", () => {
+  const endpoint = "user/me/edit";
+
+  test("Normal", async () => {
+    const body = { name: "Test bot 10000" };
+
+    fetchMockEndpointOnce(endpoint, newAPISuccess(undefined), { body });
+
+    await expect(api.editMe(body)).resolves.toBe(undefined);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  runErrorTests(endpoint, () => api.editMe({ description: "Something" }));
+});
+
 describe("getProfilePic", () => {
   const id = OIDS[0];
   const resObj = "data:image/webp;base64,AAAAAAAA";
