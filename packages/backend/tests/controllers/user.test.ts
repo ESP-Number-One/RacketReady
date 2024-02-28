@@ -215,12 +215,14 @@ describe("find", () => {
 
 addCommonTests({
   prefix: "/user",
-  creation: {
-    name: "New Test Bot",
-    description: "bla bla bla",
-    profilePicture: "",
-    email: "new@test.com",
-  } as UserCreation,
+  getCreation: () => {
+    return {
+      name: "New Test Bot",
+      description: "bla bla bla",
+      profilePicture: "",
+      email: "new@test.com",
+    } as UserCreation;
+  },
   dontAddUserOnCreation: true,
   addObj: (db, _, creation) => addUser(db, generateRandomString(), creation),
   addCensoredObj: async (db) => {

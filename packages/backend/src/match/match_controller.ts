@@ -98,24 +98,42 @@ export class MatchsController extends ControllerWrap<Match> {
         return Promise.resolve(newAPIError("Invalid date"));
       }
 
-      return this.withUserId(req, (userId) => {
-        if (proposal.to.toString() === userId.toString()) {
+      return this.withUser(req, async (user) => {
+        const db = this.getDb();
+        const users = await db.users();
+
+        if (proposal.to.toString() === user._id.toString()) {
           this.setStatus(400);
           return Promise.resolve(
             newAPIError("You cannot propose a match with yourself!"),
+          );
+        } else if (!(await users.exists({ _id: proposal.to }))) {
+          this.setStatus(400);
+          return Promise.resolve(
+            newAPIError("You cannot propose a match with a non-existent user!"),
           );
         }
 
         let match: OptionalId<Match> = {
           status: MatchStatus.Request,
           messages: [],
-          owner: userId,
-          players: [userId, proposal.to],
+          owner: user._id,
+          players: [user._id, proposal.to],
           date: proposal.date,
           sport: proposal.sport,
         };
 
+        // TODO: Consider removing when we replace with the auto league assignment
         if ("league" in proposal) {
+          if (
+            !user.leagues
+              .map((l) => l.toString())
+              .includes(proposal.league.toString())
+          ) {
+            this.setStatus(400);
+            return newAPIError("You must be in the league to create a match");
+          }
+
           match = {
             ...match,
             league: proposal.league,
