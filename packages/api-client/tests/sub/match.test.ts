@@ -1,11 +1,11 @@
 import { beforeAll, beforeEach, describe, expect, test } from "@jest/globals";
 import fetchMockImp, { type FetchMock } from "jest-fetch-mock";
-import { newAPISuccess, Sport, tests } from "@esp-group-one/types";
+import { newAPISuccess, ObjectId, Sport, tests } from "@esp-group-one/types";
 import { fetchMockEndpointOnce, runErrorTests } from "../lib/utils.js";
 import { APIClient } from "../../src/client.js";
-import { MatchAPIClient } from "../../src/sub/match.js";
+import type { MatchAPIClient } from "../../src/sub/match.js";
 
-const { getMatch } = tests;
+const { getMatch, IDS } = tests;
 
 // TypeScript is weird and seems to believe the type is two different things
 // depending on running build/test
@@ -40,4 +40,18 @@ describe("findProposed", () => {
   });
 
   runErrorTests(endpoint, () => api.findProposed({}));
+});
+
+describe("accept", () => {
+  const id = new ObjectId(IDS[0]);
+  const resObj = undefined;
+  const endpoint = `match/${IDS[0]}/accept`;
+  test("Normal", async () => {
+    fetchMockEndpointOnce(endpoint, newAPISuccess(resObj));
+
+    await expect(api.accept(id)).resolves.toStrictEqual(resObj);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  runErrorTests(endpoint, () => api.accept(id));
 });

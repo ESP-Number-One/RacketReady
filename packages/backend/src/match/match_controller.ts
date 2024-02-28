@@ -5,6 +5,7 @@ import {
   ObjectId,
   PageOptions,
   newAPIError,
+  newAPISuccess,
 } from "@esp-group-one/types";
 import type { Match, WithError, MatchQuery } from "@esp-group-one/types";
 import {
@@ -32,11 +33,47 @@ export class MatchsController extends ControllerWrap<Match> {
   }
 
   /**
+   * Accepts the given match
+   */
+  @Post("{matchId}/accept")
+  public acceptMatch(
+    @Path() matchId: ID,
+    @Request() req: express.Request,
+  ): Promise<WithError<undefined>> {
+    const id = new ObjectId(matchId);
+
+    return this.withUserId(req, async (userId) => {
+      const res = await this.get(id);
+      if (res.success) {
+        if (
+          !res.data.players
+            .map((p) => p.toString())
+            .includes(userId.toString()) ||
+          res.data.owner.toString() === userId.toString()
+        ) {
+          return this.notFound();
+        }
+
+        if (res.data.status !== MatchStatus.Request) {
+          this.setStatus(400);
+          return newAPIError("The match is already accepted");
+        }
+
+        const coll = await this.getCollection();
+        await coll.edit(id, { $set: { status: MatchStatus.Accepted } });
+        return newAPISuccess(undefined);
+      }
+
+      return res;
+    });
+  }
+
+  /**
    * Gets a given match, validating the user is apart of the match, and returns
    * all its information
    */
   @Get("{matchId}")
-  public async getMatch(
+  public getMatch(
     @Path() matchId: ID,
     @Request() req: express.Request,
   ): Promise<WithError<Match>> {

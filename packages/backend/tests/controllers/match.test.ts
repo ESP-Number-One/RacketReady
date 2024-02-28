@@ -35,6 +35,100 @@ beforeEach(async () => {
   });
 });
 
+describe("accept", () => {
+  test("done", async () => {
+    await withDb(async (db) => {
+      const match = await addMatch(db, {
+        status: MatchStatus.Request,
+        players: [user._id, new ObjectId(IDS[0])],
+      });
+      const res = await requestWithAuth(app, auth0Id)
+        .post(`/match/${match._id.toString()}/accept`)
+        .set("Authorization", "Bearer test_api_token");
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toStrictEqual({
+        success: true,
+        data: undefined,
+      });
+
+      const matches = await db.matches();
+      const updateMatch = await matches.get(match._id);
+      expect(updateMatch?.status).toBe(MatchStatus.Accepted);
+    });
+  });
+
+  test("match already accepted", async () => {
+    await withDb(async (db) => {
+      const match = await addMatch(db, {
+        status: MatchStatus.Accepted,
+        players: [user._id, new ObjectId(IDS[0])],
+      });
+
+      const res = await requestWithAuth(app, auth0Id)
+        .post(`/match/${match._id.toString()}/accept`)
+        .set("Authorization", "Bearer test_api_token");
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toStrictEqual({
+        success: false,
+        error: "The match is already accepted",
+      });
+    });
+  });
+
+  test("match doesn't exist", async () => {
+    const res = await requestWithAuth(app, auth0Id)
+      .post(`/match/${IDS[0]}/accept`)
+      .set("Authorization", "Bearer test_api_token");
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toStrictEqual({
+      success: false,
+      error: "Failed to get obj",
+    });
+  });
+
+  test("user is owner", async () => {
+    await withDb(async (db) => {
+      const match = await addMatch(db, {
+        status: MatchStatus.Accepted,
+        players: [user._id, new ObjectId(IDS[0])],
+        owner: user._id,
+      });
+
+      const res = await requestWithAuth(app, auth0Id)
+        .post(`/match/${match._id.toString()}/accept`)
+        .set("Authorization", "Bearer test_api_token");
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toStrictEqual({
+        success: false,
+        error: "Failed to get obj",
+      });
+    });
+  });
+
+  test("user not in players", async () => {
+    await withDb(async (db) => {
+      const match = await addMatch(db, {
+        status: MatchStatus.Accepted,
+        players: [new ObjectId(IDS[0]), new ObjectId(IDS[1])],
+      });
+
+      const res = await requestWithAuth(app, auth0Id)
+        .post(`/match/${match._id.toString()}/accept`)
+        .set("Authorization", "Bearer test_api_token");
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toStrictEqual({
+        success: false,
+        error: "Failed to get obj",
+      });
+    });
+  });
+});
+
 describe("new", () => {
   test("with yourself", async () => {
     const res = await requestWithAuth(app, auth0Id)
@@ -139,13 +233,6 @@ describe("get", () => {
 });
 
 describe("find/proposed", () => {
-  const auth0Id = "github|123456";
-  let user: User;
-
-  beforeEach(async () => {
-    user = await withDb((db) => addUser(db, auth0Id));
-  });
-
   test("general", async () => {
     await withDb(async (db) => {
       const matches: Match[] = [];
