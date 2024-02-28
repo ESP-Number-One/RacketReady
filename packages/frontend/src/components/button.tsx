@@ -12,6 +12,7 @@ interface ButtonProps {
     bottomLeft?: boolean;
     bottomRight?: boolean;
   };
+  onClick?: () => void;
 }
 
 export function Button({
@@ -19,6 +20,7 @@ export function Button({
   children,
   icon,
   roundedCorners = {},
+  onClick = () => void 0,
 }: ButtonProps) {
   // merge the provided roundedCorners prop with the default values
   const defaultRoundedCorners = {
@@ -41,6 +43,7 @@ export function Button({
       className={`font-body text-2xl font-bold text-white ${backgroundColor} active:scale-95 focus:outline-none ${borderRadius} px-5 py-2.5 ${
         icon ? "justify-start" : "justify-center"
       } inline-flex items-center w-full transform transition duration-150 ease-in-out m-0`}
+      onClick={onClick}
     >
       {icon && <span className="mr-4 align-middle flex">{icon}</span>}
       {children}
