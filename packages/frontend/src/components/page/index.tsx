@@ -22,13 +22,13 @@ function PageImpl({
     <div className="root-page flex h-screen w-screen flex-col">
       {header !== undefined ? (
         <div className="w-full p-5 bg-slate-500 text-white font-title text-2xl font-bold">
-          <div className="relative flex w-full">header</div>
+          <div className="relative flex w-full">{header}</div>
         </div>
       ) : null}
       <div className="h-full">{body}</div>
       {footer !== undefined ? (
         <div className="w-full p-5 bg-slate-400 text-white font-title justify-end">
-          footer
+          {footer}
         </div>
       ) : null}
     </div>

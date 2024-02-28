@@ -3,7 +3,7 @@ import { type MutableRefObject, createContext } from "react";
 import { isNewUser } from "../lib/auth";
 
 /* Global-ish state for React.  */
-export const Auth = createContext(undefined as unknown as APIClient);
+export const API = createContext(undefined as unknown as APIClient);
 
 export type AuthResult =
   | { type: "loading" }

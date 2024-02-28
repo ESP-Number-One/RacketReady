@@ -7,7 +7,7 @@ import { Page } from "./components/page/index.js";
 import { Header } from "./components/page/header.js";
 import { TestPage } from "./pages/test.js";
 import { AnotherTestPage } from "./pages/another_test.js";
-import { Auth, type AuthResult, handleApi } from "./state/auth.js";
+import { API, type AuthResult, handleApi } from "./state/auth.js";
 import { LoginButton } from "./components/auth.js";
 import { useAPIClient } from "./lib/auth.js";
 
@@ -53,7 +53,7 @@ export function App() {
   console.log({ ok });
 
   return ok.authenticated ? (
-    <Auth.Provider value={ok.client}>
+    <API.Provider value={ok.client}>
       <Page>
         <Page.Header>
           <Header.Back />
@@ -85,7 +85,7 @@ export function App() {
           </button>
         </Page.Footer>
       </Page>
-    </Auth.Provider>
+    </API.Provider>
   ) : (
     <div className="flex min-h-screen px-3 items-center place-content-center">
       <LoginButton />
