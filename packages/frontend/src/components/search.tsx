@@ -44,7 +44,7 @@ export const Search = memo(function Search({ onSubmit, hidden }: SearchProps) {
           onClick={() => {
             onSubmitWrapper();
           }}
-          type="button"
+          type="submit"
         >
           <FontAwesomeIcon icon={faMagnifyingGlass} />
         </button>
