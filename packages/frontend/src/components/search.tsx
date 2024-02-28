@@ -19,7 +19,7 @@ export const Search = memo(function Search({ onSubmit, hidden }: SearchProps) {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          onSubmit(search);
+          onSubmitWrapper();
         }}
       >
         <input
