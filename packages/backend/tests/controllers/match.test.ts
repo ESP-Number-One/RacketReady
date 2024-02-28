@@ -1,4 +1,5 @@
 import type {
+  Match,
   MatchProposal,
   MatchQuery,
   PageOptions,
@@ -132,6 +133,54 @@ describe("get", () => {
       expect(res.body).toStrictEqual({
         success: false,
         error: "Failed to get obj",
+      });
+    });
+  });
+});
+
+describe("find/proposed", () => {
+  const auth0Id = "github|123456";
+  let user: User;
+
+  beforeEach(async () => {
+    user = await withDb((db) => addUser(db, auth0Id));
+  });
+
+  test("general", async () => {
+    await withDb(async (db) => {
+      const matches: Match[] = [];
+      matches.push(
+        await addMatch(db, {
+          status: MatchStatus.Accepted,
+          owner: user._id,
+          players: [user._id, new ObjectId(IDS[0])],
+        }),
+      );
+
+      matches.push(
+        await addMatch(db, {
+          status: MatchStatus.Accepted,
+          owner: new ObjectId(IDS[0]),
+          players: [user._id, new ObjectId(IDS[0])],
+        }),
+      );
+
+      matches.push(
+        await addMatch(db, {
+          status: MatchStatus.Accepted,
+          owner: new ObjectId(IDS[0]),
+          players: [new ObjectId(IDS[0]), new ObjectId(IDS[1])],
+        }),
+      );
+
+      const res = await requestWithAuth(app, auth0Id)
+        .post(`/match/find/proposed`)
+        .set("Authorization", "Bearer test_api_token");
+
+      expect(res.statusCode).toBe(200);
+      expectAPIRes(res.body).toStrictEqual({
+        success: true,
+        data: [matches[1]],
       });
     });
   });

@@ -82,6 +82,27 @@ export class MatchsController extends ControllerWrap<Match> {
   }
 
   /**
+   * Finds given matches with the given query, validating the user is in those
+   * matches
+   */
+  @Post("find/proposed")
+  public async findProposedMatchs(
+    @Body() requestBody: PageOptions<undefined>,
+    @Request() req: express.Request,
+  ): Promise<WithError<Match[]>> {
+    return this.withVerifiedParam(requestBody, (opts) =>
+      this.withUserId(req, async (userId) => {
+        return this.find({
+          ...opts,
+          query: {
+            $and: [{ owner: { $not: { $eq: userId } } }, { players: userId }],
+          },
+        });
+      }),
+    );
+  }
+
+  /**
    * Proposes a new match with the specified player, setting the user to the
    * owner and adding them to the match
    */
