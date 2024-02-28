@@ -27,6 +27,7 @@
     "access-token-jwt": "https://github.com/ESP-Number-One/access-token-jwt",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "moment": "^2.30.1",
     "mongodb": "^6.3.0",
     "oauth2-bearer": "https://github.com/ESP-Number-One/oauth2-bearer",
     "sharp": "^0.33.2",
