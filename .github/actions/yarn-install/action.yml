@@ -17,7 +17,7 @@ runs:
 
     - name: DEBUG
       shell: bash
-      run: "find /tmp/xfs-*/pack.log -type f -print -exec cat {} \;"
+      run: "find /tmp/xfs-*/pack.log -type f -print -exec cat {} \\;"
 
     - name: Build all packages
       run: yarn build
