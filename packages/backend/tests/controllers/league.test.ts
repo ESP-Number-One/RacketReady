@@ -22,7 +22,7 @@ describe("get", () => {
     await withDb(async (db) => {
       const league = await addLeague(db, { private: true });
       const auth0Id = "github|123456";
-      const _ = await addUser(db, auth0Id);
+      await addUser(db, auth0Id);
 
       const res = await requestWithAuth(app, auth0Id)
         .get(`/league/${league._id.toString()}`)
