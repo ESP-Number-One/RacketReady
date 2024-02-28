@@ -29,11 +29,6 @@ export const Search = memo(function Search({ onSubmit, hidden }: SearchProps) {
           onChange={(e) => {
             setSearch(e.target.value);
           }}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") {
-              onSubmitWrapper();
-            }
-          }}
           placeholder="Search"
           required
           type="text"
