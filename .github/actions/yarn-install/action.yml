@@ -13,6 +13,11 @@ runs:
     - name: Install packages
       run: yarn install --immutable
       shell: bash
+      id: install_packages
+
+    - name: DEBUG
+      shell: bash
+      run: "find /tmp/xfs-*/pack.log -type f -print -exec cat {} \;"
 
     - name: Build all packages
       run: yarn build
