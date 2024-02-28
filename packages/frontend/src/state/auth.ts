@@ -1,5 +1,5 @@
 import type { APIClient } from "@esp-group-one/api-client";
-import { MutableRefObject, createContext } from "react";
+import { type MutableRefObject, createContext } from "react";
 import { isNewUser } from "../lib/auth";
 
 /* Global-ish state for React.  */
