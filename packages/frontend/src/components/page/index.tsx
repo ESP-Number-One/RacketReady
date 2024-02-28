@@ -20,15 +20,17 @@ function PageImpl({
 
   return (
     <div className="root-page flex h-screen w-screen flex-col">
-      <div className="w-full p-5 bg-slate-500 text-white font-title text-2xl font-bold">
-        <div className="relative flex w-full">
-          {header !== null ? header : null}
+      {header !== undefined ? (
+        <div className="w-full p-5 bg-slate-500 text-white font-title text-2xl font-bold">
+          <div className="relative flex w-full">header</div>
         </div>
-      </div>
+      ) : null}
       <div className="h-full">{body}</div>
-      <div className="w-full p-5 bg-slate-400 text-white font-title justify-end">
-        {footer !== null ? footer : null}
-      </div>
+      {footer !== undefined ? (
+        <div className="w-full p-5 bg-slate-400 text-white font-title justify-end">
+          footer
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -40,7 +42,7 @@ PageImpl.Body = function Body({
   style,
 }: {
   children: ReactNode;
-  style: CSSProperties;
+  style?: CSSProperties;
 }) {
   return <div style={style}>{children}</div>;
 };
@@ -52,7 +54,7 @@ PageImpl.Footer = function Footer({ children }: { children: ReactNode }) {
 interface PageT {
   (_: { children: ReactNode }): JSX.Element;
   Header: (_: { children: ReactNode }) => JSX.Element;
-  Body: (_: { children: ReactNode; style: CSSProperties }) => JSX.Element;
+  Body: (_: { children: ReactNode; style?: CSSProperties }) => JSX.Element;
   Footer: (_: { children: ReactNode }) => JSX.Element;
 }
 

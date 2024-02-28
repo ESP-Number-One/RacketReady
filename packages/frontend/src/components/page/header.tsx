@@ -30,11 +30,11 @@ function HeaderImpl({
 
   return (
     <>
-      {back !== null ? (
+      {back !== undefined ? (
         <div className="absolute left-0 h-full">{back}</div>
       ) : null}
       <div className="flex flex-grow w-full justify-center">{other}</div>
-      {action !== null ? (
+      {action !== undefined ? (
         <div className="absolute right-0 h-full">{action}</div>
       ) : null}
     </>

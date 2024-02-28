@@ -40,7 +40,7 @@ export namespace Slot {
   export function find<P, Slot extends JSXElementConstructor<any>>(
     fromChildren: ReactNode[],
     slot: Slot,
-  ): ReactElement<P, Slot> | null {
+  ): ReactElement<P, Slot> | undefined {
     return fromChildren.find(
       (child) => isValidElement(child) && child.type === slot,
     ) as ReactElement<P, Slot>;
