@@ -1,27 +1,29 @@
+import { useMemo } from "react";
+
 const CORNER_RADIUS = "15";
 const BAR_HEIGHT = "61px";
 
 interface ProgressBarProps {
-  progress: number;
+  currentProgress: number;
   pageNames: string[];
 }
 
-export function ProgressBar({
-  progress: current,
-  pageNames: names,
-}: ProgressBarProps) {
+export function ProgressBar({ currentProgress, pageNames }: ProgressBarProps) {
+  const progress = useMemo(() => {
+    return Math.min(Math.max(1, currentProgress), pageNames.length);
+  }, [currentProgress]);
   return (
     <div
       aria-labelledby="progress-bar-id"
-      aria-valuemax={names.length}
+      aria-valuemax={pageNames.length}
       aria-valuemin={1}
-      aria-valuenow={current}
+      aria-valuenow={progress}
       className="font-title"
       role="progressbar"
     >
       <svg
         aria-label={`Progress bar at ${Math.round(
-          (current * 100) / names.length,
+          (progress * 100) / pageNames.length,
         )}%`}
         aria-labelledby="progress-bar-lbl"
         height={BAR_HEIGHT}
@@ -38,10 +40,12 @@ export function ProgressBar({
         <rect
           className="fill-progress-blue transition: duration-200"
           clipPath={`inset(0 0 0 0 round ${CORNER_RADIUS} ${
-            current === names.length ? CORNER_RADIUS : 0
-          } ${current === names.length ? CORNER_RADIUS : 0} ${CORNER_RADIUS})`}
+            progress === pageNames.length ? CORNER_RADIUS : 0
+          } ${
+            progress === pageNames.length ? CORNER_RADIUS : 0
+          } ${CORNER_RADIUS})`}
           height="100%"
-          width={`${100 * (current / names.length)}%`}
+          width={`${100 * (progress / pageNames.length)}%`}
         />
         <text
           className="font-title font-bold text-4xl fill-white"
@@ -52,7 +56,7 @@ export function ProgressBar({
           x="50%"
           y="50%"
         >
-          {names[current - 1]}
+          {pageNames[progress - 1]}
         </text>
       </svg>
     </div>
