@@ -16,9 +16,13 @@ export const Search = memo(function Search({ onSubmit, hidden }: SearchProps) {
 
   return (
     <div className="display-flex flex-row w-full h-full">
-      <form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit(search);
+        }}
+      >
         <input
-          autoFocus
           className="font-body m-2 ml-1 p-1 w-fit bg-gray-100 rounded-lg h-fit text-xl"
           data-testid="search-input"
           hidden={hidden}
