@@ -1,3 +1,42 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --page-transition: 500ms;
+}
+
+@keyframes slide-from-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0%);
+  }
+}
+
+@keyframes slide-to-left {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+::view-transition-old(root) {
+  animation: none;
+}
+
+::view-transition-old(body-content) {
+  animation: var(--page-transition) cubic-bezier(0.4, 0, 0.2, 1) both
+    slide-to-left;
+}
+
+::view-transition-new(root) {
+  animation: none;
+}
+::view-transition-new(body-content) {
+  animation: var(--page-transition) cubic-bezier(0.4, 0, 0.2, 1) both
+    slide-from-right;
+}

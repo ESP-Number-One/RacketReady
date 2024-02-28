@@ -10,23 +10,22 @@ const root = document.getElementById("root");
 if (root) {
   ReactDOM.createRoot(root).render(
     <React.StrictMode>
-      <Auth0Provider
-        authorizationParams={{
-          redirect_uri: window.location.origin,
-          audience: config.auth.apiIdentifier,
-        }}
-        cacheLocation="localstorage"
-        clientId={config.auth.clientId}
-        domain={config.auth.domain}
-        useRefreshTokens
-      >
-        <BrowserRouter>
+      <BrowserRouter>
+        <Auth0Provider
+          authorizationParams={{
+            redirect_uri: window.location.origin,
+            audience: config.auth.apiIdentifier,
+          }}
+          cacheLocation="localstorage"
+          clientId={config.auth.clientId}
+          domain={config.auth.domain}
+          useRefreshTokens
+        >
           <Routes>
             <Route path="/*" element={<App />} />
           </Routes>
-        </BrowserRouter>
-        <App />
-      </Auth0Provider>
+        </Auth0Provider>
+      </BrowserRouter>
     </React.StrictMode>,
   );
 }
