@@ -27,12 +27,22 @@ it("calls submit once on clicking button with nonempty input", () => {
   expect(onSubmit.mock.calls[0]).toContain("ABC");
 });
 
-it("calls submit once on releashing enter key with nonempty input", () => {
+it("calls submit once with nonempty input on submitting", () => {
   const onSubmit: jest.Mock = jest.fn();
   const { getByTestId } = render(<Search onSubmit={onSubmit} />);
 
   fireEvent.change(getByTestId("search-input"), { target: { value: "ABC" } });
-  fireEvent.keyUp(getByTestId("search-input"), { key: "Enter", code: "Enter" });
+  fireEvent.submit(getByTestId("search-input"));
+  expect(onSubmit.mock.calls.length).toBe(1);
+  expect(onSubmit.mock.calls[0]).toContain("ABC");
+});
+
+it("calls submit once with nonempty input on clicking submit button", () => {
+  const onSubmit: jest.Mock = jest.fn();
+  const { getByTestId } = render(<Search onSubmit={onSubmit} />);
+
+  fireEvent.change(getByTestId("search-input"), { target: { value: "ABC" } });
+  fireEvent.click(getByTestId("search-button"));
   expect(onSubmit.mock.calls.length).toBe(1);
   expect(onSubmit.mock.calls[0]).toContain("ABC");
 });
