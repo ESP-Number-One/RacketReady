@@ -1,5 +1,6 @@
 import { beforeAll, beforeEach, describe, expect, test } from "@jest/globals";
 import fetchMockImp, { type FetchMock } from "jest-fetch-mock";
+import type { Scores } from "@esp-group-one/types";
 import { newAPISuccess, ObjectId, Sport, tests } from "@esp-group-one/types";
 import { fetchMockEndpointOnce, runErrorTests } from "../lib/utils.js";
 import { APIClient } from "../../src/client.js";
@@ -54,4 +55,24 @@ describe("accept", () => {
   });
 
   runErrorTests(endpoint, () => api.accept(id));
+});
+
+describe("complete", () => {
+  const id = new ObjectId(IDS[0]);
+  const resObj = undefined;
+  const endpoint = `match/${IDS[0]}/complete`;
+  test("Normal", async () => {
+    const body: Scores = {};
+    body[id.toString()] = 20;
+    body[IDS[1]] = 5;
+
+    fetchMockEndpointOnce(endpoint, newAPISuccess(resObj), {
+      body,
+    });
+
+    await expect(api.complete(id, body)).resolves.toStrictEqual(resObj);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  runErrorTests(endpoint, () => api.complete(id, {}));
 });
