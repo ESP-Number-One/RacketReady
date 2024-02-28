@@ -39,8 +39,10 @@ export function CardList<T extends ReactNode>({
 
   function handleScroll() {
     if (
-      window.innerHeight + document.documentElement.scrollTop !==
-      document.documentElement.offsetHeight
+      window.innerHeight + document.documentElement.scrollTop <
+        document.documentElement.offsetHeight - 30 ||
+      isLastPage ||
+      isLoading
     ) {
       return;
     }
