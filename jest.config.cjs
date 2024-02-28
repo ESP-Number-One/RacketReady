@@ -67,6 +67,7 @@ const config = {
       transform: {
         "\\.(ts|tsx)$": "ts-jest",
       },
+      setupFilesAfterEnv: ["<rootDir>/tests/__setup__.ts"],
       testRegex: "\\.(test|spec)\\.(ts|tsx)$",
     },
     {

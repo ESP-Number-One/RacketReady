@@ -1,5 +1,4 @@
 import { fireEvent, render } from "@testing-library/react";
-import "@testing-library/jest-dom";
 import { Stars } from "../src/components/stars";
 import { track } from "./utils";
 
