@@ -36,9 +36,6 @@ export const Search = memo(function Search({ onSubmit, hidden }: SearchProps) {
         <button
           className="m-2 ml-1 bg-gray-200 p-2 rounded-lg duration-100 hover:bg-gray-400 active:bg-gray-400 focus:ring focus:ring-gray-600"
           data-testid="search-button"
-          onClick={() => {
-            onSubmitWrapper();
-          }}
           type="submit"
         >
           <FontAwesomeIcon icon={faMagnifyingGlass} />
