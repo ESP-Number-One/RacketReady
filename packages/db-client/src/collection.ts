@@ -34,8 +34,21 @@ export class CollectionWrap<T extends MongoDBItem> {
     id: ObjectId,
     update: UpdateFilter<T> | Partial<T>,
   ): Promise<void> {
+    await this.editWithQuery({ _id: id }, update);
+  }
+
+  /**
+   * Edits a given object with the id with the update filter
+   *
+   * @param query - the query to get the objects to edit
+   * @param update - the update object to apply to the object
+   */
+  public async editWithQuery(
+    query: Filter<T>,
+    update: UpdateFilter<T> | Partial<T>,
+  ): Promise<void> {
     await this.collection.updateOne(
-      { _id: toMongo(id) },
+      toMongo(query) as Filter<Document>,
       toMongo(update) as UpdateFilter<Document> | Partial<Document>,
     );
   }
