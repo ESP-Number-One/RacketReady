@@ -52,6 +52,7 @@ export function getMatch(obj: Partial<Match>): Match {
     match = {
       ...base,
       status: MatchStatus.Complete,
+      usersRated: obj.usersRated ?? [],
       score,
     };
   } else {
