@@ -177,6 +177,7 @@ export class UsersController extends ControllerWrap<User> {
             sports: [],
             leagues: [],
             availability: [],
+            rating: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
             ...userCreation,
           }).then(async (user) => {
             // Error should be passed up to the next catch
