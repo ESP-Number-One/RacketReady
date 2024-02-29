@@ -1,6 +1,13 @@
 import { type Db, MongoClient } from "mongodb";
-import type { League, Match, User, UserIdMap } from "@esp-group-one/types";
+import type {
+  League,
+  Match,
+  User,
+  UserIdMap,
+  AvailabilityCache,
+} from "@esp-group-one/types";
 import {
+  AVAILABILITY_CACHE_COLLECTION_NAME,
   LEAGUE_COLLECTION_NAME,
   MATCH_COLLECTION_NAME,
   USER_COLLECTION_NAME,
@@ -20,6 +27,7 @@ export class DbClient {
   private usersMapCache?: CollectionWrap<UserIdMap>;
   private leaguesCache?: CollectionWrap<League>;
   private matchesCache?: CollectionWrap<Match>;
+  private availabilityCacheCache?: CollectionWrap<AvailabilityCache>;
 
   constructor(url?: string, dbName?: string) {
     this.url = url ?? getUrl();
@@ -91,5 +99,18 @@ export class DbClient {
     await this.client.connect();
 
     return this.client.db(this.dbName);
+  }
+
+  public async availabilityCaches(): Promise<
+    CollectionWrap<AvailabilityCache>
+  > {
+    const db = await this.db;
+    if (!this.availabilityCacheCache) {
+      this.availabilityCacheCache = new CollectionWrap(
+        db.collection(AVAILABILITY_CACHE_COLLECTION_NAME),
+      );
+    }
+
+    return this.availabilityCacheCache;
   }
 }
