@@ -9,7 +9,12 @@ import {
   Scores,
   ID,
 } from "@esp-group-one/types";
-import type { Match, WithError, MatchQuery } from "@esp-group-one/types";
+import type {
+  Match,
+  WithError,
+  MatchQuery,
+  StarCount,
+} from "@esp-group-one/types";
 import {
   Body,
   Get,
@@ -21,8 +26,9 @@ import {
   SuccessResponse,
 } from "tsoa";
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
-import type { Filter, OptionalId } from "mongodb";
+import type { Filter, OptionalId, UpdateFilter } from "mongodb";
 import * as express from "express";
+import type { User } from "@esp-group-one/db-client/build/src/types.js";
 import { ControllerWrap } from "../controller.js";
 
 @Security("auth0")
@@ -124,6 +130,69 @@ export class MatchsController extends ControllerWrap<Match> {
           },
         });
 
+        return newAPISuccess(undefined);
+      }
+
+      return res;
+    });
+  }
+
+  /**
+   * Allows a single user to rate a given match, which will affect the ratings
+   * of all other players in the match.
+   *
+   * They can only do this once
+   */
+  @Post("{matchId}/rate")
+  public rateMatch(
+    @Path() matchId: ID,
+    @Body() rating: { stars: StarCount },
+    @Request() req: express.Request,
+  ): Promise<WithError<undefined>> {
+    const id = new ObjectId(matchId);
+
+    return this.withUserId(req, async (userId) => {
+      const res = await this.get(id);
+      if (res.success) {
+        if (
+          !res.data.players.map((p) => p.toString()).includes(userId.toString())
+        ) {
+          return this.notFound();
+        }
+
+        if (res.data.status !== MatchStatus.Complete) {
+          this.setStatus(400);
+          return newAPIError("The match has not completed");
+        }
+
+        console.log(JSON.stringify(res.data.usersRated));
+
+        console.log(
+          JSON.stringify(res.data.usersRated.map((p) => p.toString())),
+        );
+        if (
+          res.data.usersRated
+            .map((p) => p.toString())
+            .includes(userId.toString())
+        ) {
+          this.setStatus(400);
+          return newAPIError("You have already rated the match!");
+        }
+
+        const playersBeingRated = res.data.players.filter(
+          (p) => p.toString() !== userId.toString(),
+        );
+
+        const users = await this.getDb().users();
+        const ratingQuery: UpdateFilter<User> = {};
+        ratingQuery[`rating.${rating.stars}`] = 1;
+        await users.editWithQuery(
+          { _id: { $in: playersBeingRated } },
+          { $inc: ratingQuery },
+        );
+
+        const coll = await this.getCollection();
+        await coll.edit(id, { $push: { usersRated: userId } });
         return newAPISuccess(undefined);
       }
 
