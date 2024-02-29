@@ -62,7 +62,6 @@ export function CardList<T extends ReactNode>({
     if (isLoading) {
       refreshMessagesWrapper();
       console.log("refreshing done");
-      setIsLoading(false);
     }
   };
 
@@ -134,10 +133,11 @@ export function CardList<T extends ReactNode>({
       <FontAwesomeIcon
         className={
           isLoading
-            ? "translate-y-48 duration-100"
-            : "-translate-y-48 duration-100"
+            ? "translate-y-24 duration-300 bg-white p-4 rounded-full flex self-center -rotate-180"
+            : "-translate-y-72 duration-300 bg-white p-4 rounded-full flex self-center rotate-180"
         }
         icon={faRefresh}
+        size="lg"
       />
       {cards.current}
       {isLoading ? <p>Loading!</p> : null}

@@ -5,14 +5,15 @@ import { CardList } from "../src/components/card_list";
 afterEach(cleanup);
 
 const PageGenerator = async function* (maxPage: number) {
-  let page = 0;
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- necessary for generator
   while (true) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Need this to pass parameters through next(...)
+    const page = yield;
     // eslint-disable-next-line no-await-in-loop -- This should be allowed
     await new Promise((res) => {
       setTimeout(res, 1000 * (0.5 + Math.random()));
     });
-    // eslint-disable-next-line no-await-in-loop, @typescript-eslint/no-loop-func -- This should be allowed
+    // eslint-disable-next-line no-await-in-loop -- This should be allowed
     yield await new Promise<ReactNode[]>((res) => {
       console.log(`${page}/${maxPage}`);
       res(
@@ -29,7 +30,6 @@ const PageGenerator = async function* (maxPage: number) {
           : [],
       );
     });
-    page++;
   }
 };
 
