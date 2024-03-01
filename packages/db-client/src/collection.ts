@@ -34,7 +34,7 @@ export class CollectionWrap<T extends MongoDBItem> {
     id: ObjectId,
     update: UpdateFilter<T> | Partial<T>,
   ): Promise<void> {
-    await this.editWithQuery({ _id: id }, update);
+    await this.collection.updateOne(toMongo({ _id: id }), toMongo(update));
   }
 
   /**
@@ -47,7 +47,7 @@ export class CollectionWrap<T extends MongoDBItem> {
     query: Filter<T>,
     update: UpdateFilter<T> | Partial<T>,
   ): Promise<void> {
-    await this.collection.updateOne(
+    await this.collection.updateMany(
       toMongo(query) as Filter<Document>,
       toMongo(update) as UpdateFilter<Document> | Partial<Document>,
     );

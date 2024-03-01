@@ -55,6 +55,30 @@ test("exists", async () => {
   );
 });
 
+test("editWithQuery", async () => {
+  const data = await insertMany<TestObj>(mongoColl, [
+    { name: "Test Bot", num: 9000 },
+    { name: "Test Bot 9", num: 9000 },
+    { name: "Test Bot 8", num: 8000 },
+  ]);
+
+  await expect(
+    coll.editWithQuery({ num: 9000 }, { $set: { num: 7000 } }),
+  ).resolves.not.toThrow();
+
+  await expect(mongoColl.find({}).toArray()).resolves.toStrictEqual([
+    {
+      ...toMongo(data[0]),
+      num: 7000,
+    },
+    {
+      ...toMongo(data[1]),
+      num: 7000,
+    },
+    toMongo(data[2]),
+  ]);
+});
+
 test("find", async () => {
   const data = await insertMany(mongoColl, [
     { name: "Test Bot", num: 9000 },
