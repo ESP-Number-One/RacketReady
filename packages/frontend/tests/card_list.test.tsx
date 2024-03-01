@@ -4,39 +4,62 @@ import { CardList } from "../src/components/card_list";
 
 afterEach(cleanup);
 
-const PageGenerator = async function* (maxPage: number) {
-  let page = 0;
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- necessary for generator
-  while (true) {
-    // eslint-disable-next-line no-await-in-loop -- This should be allowed
-    await new Promise((res) => {
-      setTimeout(res, 1000 * (0.5 + Math.random()));
-    });
-    // eslint-disable-next-line no-await-in-loop, @typescript-eslint/no-loop-func -- This should be allowed
-    yield await new Promise<ReactNode[]>((res) => {
-      console.log(`${page}/${maxPage}`);
+class MockPaginator implements AsyncGenerator {
+  #maxPage: number;
+  #page: number;
+
+  constructor(maxPage: number) {
+    this.#maxPage = maxPage;
+    this.#page = 0;
+  }
+  next(...args: [] | [number]): Promise<IteratorResult<ReactNode[], []>> {
+    if (args[0] !== undefined) {
+      this.#page = args[0];
+    }
+    console.log(`Request for page ${args[0]}`);
+    return new Promise<IteratorResult<ReactNode[], []>>((res) => {
       res(
-        page < maxPage
-          ? [...Array<ReactNode>(20)].map((_, j) => {
-              return (
-                <div
-                  data-testid={`card-${j + page * 20}`}
-                  className="p-4 rounded-lg m-2 bg-p-green-100"
-                  key={`card-${j + page * 20}`}
-                >{`card ${j + page * 20}`}</div>
-              );
-            })
-          : [],
+        this.#page < this.#maxPage
+          ? {
+              value: [...Array<ReactNode>(20)].map((_, j) => {
+                return (
+                  <div
+                    data-testid={`card-${j + this.#page * 20}`}
+                    className="p-4 rounded-lg m-2 bg-p-green-100"
+                    key={`card-${j + this.#page * 20}`}
+                  >{`card ${j + this.#page * 20}`}</div>
+                );
+              }),
+              done: false,
+            }
+          : { value: [], done: false },
       );
     });
-    page += 1;
   }
-};
+  return(_: number): Promise<IteratorResult<ReactNode[], []>> {
+    return new Promise<IteratorResult<ReactNode[], []>>((res) => {
+      res({ value: [], done: true });
+    });
+  }
+  throw(e: Error): Promise<IteratorResult<[], []>> {
+    console.error(e);
+    return new Promise((res) => {
+      res({ value: [], done: false });
+    });
+  }
+  [Symbol.asyncIterator](): AsyncGenerator<ReactNode, [], number> {
+    return this[Symbol.asyncIterator]();
+  }
 
-const generator = PageGenerator(15);
+  reset() {
+    this.#page = 0;
+  }
+}
 
-const nextPage = jest.fn(async (_: number) => {
-  const res = (await generator.next()).value;
+const generator = new MockPaginator(15);
+
+const nextPage = jest.fn(async (p: number) => {
+  const res = (await generator.next(p)).value;
   return res;
 });
 

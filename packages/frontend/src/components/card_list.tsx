@@ -17,30 +17,37 @@ export function CardList<T extends ReactNode>({
   );
   const [isLoading, setIsLoading] = useState(false);
   const [isLastPage, setIsLastPage] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [shouldGetPage, setShouldGetPage] = useState(true);
   const cards = useRef<T[]>([]);
 
-  function refreshMessagesWrapper() {
-    cards.current = [];
-    for (let p = 0; p < pageNum; p++) {
-      setIsLoading(true);
-      nextPage(p)
-        .then((result) => {
-          console.log(result);
+  let y1: number;
+  let y2: number;
+
+  function refreshWrapper() {
+    let newCards: T[] = [];
+    setIsLoading(true);
+    const promises = [...Array<number>(pageNum)].map((_, i) => {
+      return nextPage(i);
+    });
+
+    Promise.all(promises)
+      .then((results) => {
+        for (const result of results) {
           if (result.length === 0) {
             setIsLastPage(true);
           }
-          cards.current = cards.current.concat(result);
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
+          newCards = newCards.concat(result);
+        }
+        cards.current = newCards;
+        setIsRefreshing(false);
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        console.error(e);
+        setIsRefreshing(false);
+      });
   }
-
-  let y1: number;
-  let y2: number;
 
   const touchStart = (e: TouchEvent) => {
     y1 = e.touches[0].pageY;
@@ -49,19 +56,20 @@ export function CardList<T extends ReactNode>({
   const touchMove = (e: TouchEvent) => {
     y2 = e.touches[0].pageY;
     if (
-      document.scrollingElement?.scrollTop === 0 &&
-      y2 > y1 + 120 &&
-      !isLoading
+      document.scrollingElement?.scrollTop === 0 && // view is at top of screen
+      y2 > y1 + 120 && // touch scrolled down by 120px
+      !isLoading && // Don't update if already loading stuff
+      !shouldGetPage // and don't update if already about to load stuff
     ) {
-      setIsLoading(true);
+      setIsRefreshing(true);
+      setIsLastPage(false);
       console.log("Refreshing messages");
     }
   };
 
   const touchEnd = (_e: TouchEvent) => {
-    if (isLoading) {
-      refreshMessagesWrapper();
-      console.log("refreshing done");
+    if (isRefreshing && !(isLoading || shouldGetPage)) {
+      refreshWrapper();
     }
   };
 
@@ -91,16 +99,15 @@ export function CardList<T extends ReactNode>({
     setPageNum(pageNum + 1);
     nextPage(pageNum)
       .then((result) => {
+        console.log(`Made request for page ${pageNum}`);
         if (result.length === 0) {
           setIsLastPage(true);
         }
         cards.current = cards.current.concat(result);
-        setShouldGetPage(false);
         setIsLoading(false);
       })
       .catch((err) => {
         console.error(err);
-        setShouldGetPage(false);
         setIsLoading(false);
       });
   }
@@ -119,7 +126,10 @@ export function CardList<T extends ReactNode>({
   }
 
   useEffect(() => {
-    nextPageWrapper();
+    if (!isLoading && !isLastPage) {
+      nextPageWrapper();
+    }
+    setShouldGetPage(false);
   }, [shouldGetPage]);
 
   useEffect(() => {
@@ -129,19 +139,21 @@ export function CardList<T extends ReactNode>({
     };
   });
   return (
-    <div className="flex flex-col overflow-clip h-full m-1">
+    <div className="flex flex-col h-full m-1">
       <FontAwesomeIcon
         className={
-          isLoading
-            ? "translate-y-24 duration-300 bg-white p-4 rounded-full flex self-center -rotate-180"
-            : "-translate-y-72 duration-300 bg-white p-4 rounded-full flex self-center rotate-180"
+          isRefreshing || isLoading
+            ? "translate-y-24 duration-300 bg-white p-4 rounded-full flex self-center -rotate-180 shadow"
+            : "-translate-y-72 duration-300 bg-white p-4 rounded-full flex self-center rotate-180 shadow"
         }
         icon={faRefresh}
         size="lg"
       />
       {cards.current}
-      {isLoading ? <p>Loading!</p> : null}
-      {isLastPage ? <p>No more results.</p> : null}
+      {isLoading ? <p className="self-center font-body">Loading!</p> : null}
+      {isLastPage ? (
+        <p className="self-center font-body">No more results.</p>
+      ) : null}
     </div>
   );
 }
