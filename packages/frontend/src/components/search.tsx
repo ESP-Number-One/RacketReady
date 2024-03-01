@@ -1,6 +1,6 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { memo, useState } from "react";
+import { Icon } from "./icon";
 
 interface SearchProps {
   onSubmit: (query: string) => void;
@@ -38,7 +38,7 @@ export const Search = memo(function Search({ onSubmit, hidden }: SearchProps) {
           data-testid="search-button"
           type="submit"
         >
-          <FontAwesomeIcon icon={faMagnifyingGlass} />
+          <Icon icon={faMagnifyingGlass} />
         </button>
       </form>
     </div>

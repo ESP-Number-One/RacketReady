@@ -1,7 +1,7 @@
 import { faRefresh } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
+import { Icon } from "./icon";
 
 interface CardListProps<T extends ReactNode> {
   nextPage: (nextPage: number) => Promise<T[]>;
@@ -140,7 +140,7 @@ export function CardList<T extends ReactNode>({
   });
   return (
     <div className="flex flex-col h-full m-1">
-      <FontAwesomeIcon
+      <Icon
         className={
           isRefreshing || isLoading
             ? "translate-y-24 duration-300 bg-white p-4 rounded-full flex self-center -rotate-180 shadow"
