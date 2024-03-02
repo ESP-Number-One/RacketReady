@@ -48,6 +48,29 @@ export async function mapUser(
 }
 
 /**
+ * Makes it so an attacker cannot use the stupid method of calculating a
+ * password by looking at the time it takes for a string to be check against
+ * the other
+ *
+ * This instead has a roughly constant time output for a given string length
+ *
+ * @param a - A string to check is equal to b
+ * @param b - A string to check is equal to a
+ *
+ * @returns true if the strings are equal
+ */
+export function safeEqual(a: string, b: string): boolean {
+  const len = a.length;
+
+  let res = a.length === b.length;
+  for (let i = 0; i < len; i++) {
+    res = res && a[i] === b[i];
+  }
+
+  return res;
+}
+
+/**
  * Store the user id inside the given request so it can be passed to the endpoints
  * @param request - The request to set user id to
  * @param verifier - The result from the request to Auth0

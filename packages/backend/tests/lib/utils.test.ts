@@ -2,7 +2,12 @@ import { describe, expect, test } from "@jest/globals";
 import { ObjectId, tests } from "@esp-group-one/types";
 import type { Request } from "express";
 import type { VerifyJwtResult } from "access-token-jwt";
-import { getUserId, mapUser, setUserId } from "../../src/lib/utils.js";
+import {
+  getUserId,
+  mapUser,
+  safeEqual,
+  setUserId,
+} from "../../src/lib/utils.js";
 import { addUser } from "../helpers/utils.js";
 import { setup, withDb } from "../helpers/controller.js";
 
@@ -81,5 +86,22 @@ describe("setUserId", () => {
   test("throws without id", () => {
     const req = {} as Request;
     expect(() => setUserId(req, { payload: {} } as VerifyJwtResult)).toThrow();
+  });
+});
+
+describe("safeEqual", () => {
+  const myTests: [string, string, boolean][] = [
+    ["s", "s", true],
+    ["", "", true],
+    ["hi", "no", false],
+    ["hello there how are you", "", false],
+    ["", "hi there", false],
+    ["hi there", "hi there", true],
+  ];
+
+  myTests.forEach(([a, b, res]) => {
+    test(`cmp "${a}" === "${b}"`, () => {
+      expect(safeEqual(a, b)).toBe(res);
+    });
   });
 });

@@ -62,7 +62,7 @@ export function addCommonTests<
   Creation,
 >({
   prefix,
-  creation,
+  getCreation,
   dontAddUserOnCreation,
   skipNewExists,
   addObj,
@@ -70,7 +70,7 @@ export function addCommonTests<
   validateCreation,
 }: {
   prefix: string;
-  creation: Creation;
+  getCreation: () => Creation;
   dontAddUserOnCreation?: boolean;
   skipNewExists?: boolean;
   addObj: (db: DbClient, currUser: User, creation?: Creation) => Promise<T>;
@@ -175,6 +175,7 @@ export function addCommonTests<
   describe("new", () => {
     if (!skipNewExists) {
       test("already exists", async () => {
+        const creation = getCreation();
         if (dontAddUserOnCreation) await resetCollections();
 
         await addObj(db, currUser, creation);
@@ -190,6 +191,7 @@ export function addCommonTests<
     }
 
     test("succeeded", async () => {
+      const creation = getCreation();
       if (dontAddUserOnCreation) await resetCollections();
 
       const res = await requestWithAuth(app, TEST_AUTH0_ID)

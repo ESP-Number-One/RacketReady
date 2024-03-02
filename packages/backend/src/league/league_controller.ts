@@ -31,6 +31,7 @@ import * as express from "express";
 import { generateRandomString } from "ts-randomstring/lib/index.js";
 import { ControllerWrap } from "../controller.js";
 import { ID } from "../lib/types.js";
+import { safeEqual } from "../lib/utils.js";
 
 @Security("auth0")
 @Route("league")
@@ -177,8 +178,8 @@ export class LeaguesController extends ControllerWrap<League> {
         const league = await (await this.getCollection()).get(id);
         if (
           league &&
-          // TODO: use safe equality check
-          (!league.private || league.inviteCode === body?.inviteCode)
+          (!league.private ||
+            (body?.inviteCode && safeEqual(league.inviteCode, body.inviteCode)))
         ) {
           await (
             await this.getDb().users()

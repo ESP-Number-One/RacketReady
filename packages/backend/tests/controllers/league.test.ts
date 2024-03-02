@@ -22,7 +22,7 @@ describe("get", () => {
     await withDb(async (db) => {
       const league = await addLeague(db, { private: true });
       const auth0Id = "github|123456";
-      const _ = await addUser(db, auth0Id);
+      await addUser(db, auth0Id);
 
       const res = await requestWithAuth(app, auth0Id)
         .get(`/league/${league._id.toString()}`)
@@ -438,11 +438,13 @@ describe("edit", () => {
 
 addCommonTests({
   prefix: "/league",
-  creation: {
-    name: "Test League",
-    sport: Sport.Tennis,
-    private: false,
-  } as LeagueCreation,
+  getCreation: () => {
+    return {
+      name: "Test League",
+      sport: Sport.Tennis,
+      private: false,
+    } as LeagueCreation;
+  },
   addObj: (db, _, creation) => addLeague(db, creation),
   addCensoredObj: async (db) =>
     censorLeague(await addLeague(db, { name: generateRandomString() })),

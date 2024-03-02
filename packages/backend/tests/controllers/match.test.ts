@@ -19,21 +19,22 @@ const { IDS } = tests;
 
 setup();
 
-// TODO:
-// Add check to see if league exists
-
 jest.mock("access-token-jwt");
 
 const creationStartDate = new Date().toString();
 
-describe("new", () => {
-  const auth0Id = "github|123456";
-  let user: User;
+const auth0Id = "github|111112";
+let user: User;
+let opponent: User;
 
-  beforeEach(async () => {
-    user = await withDb((db) => addUser(db, auth0Id));
+beforeEach(async () => {
+  await withDb(async (db) => {
+    user = await addUser(db, auth0Id);
+    opponent = await addUser(db, auth0Id);
   });
+});
 
+describe("new", () => {
   test("with yourself", async () => {
     const res = await requestWithAuth(app, auth0Id)
       .post("/match/new")
@@ -60,37 +61,66 @@ describe("new", () => {
     });
   });
 
-  test("in league", async () => {
+  test("opponent doesn't exist", async () => {
     const res = await requestWithAuth(app, auth0Id)
       .post("/match/new")
-      .send(getMatchProposal({ league: new ObjectId(IDS[1]), round: 0 }))
+      .send(getMatchProposal({ to: new ObjectId(IDS[0]) }))
       .set("Authorization", "Bearer test_api_thing");
 
-    expect(res.status).toBe(201);
-    expectAPIRes(res.body).toEqual({
-      success: true,
-      data: {
-        _id: expect.any(ObjectId),
-        date: creationStartDate,
-        messages: [],
-        owner: user._id,
-        players: [user._id, new ObjectId(IDS[0])],
-        sport: Sport.Tennis,
-        status: MatchStatus.Request,
-        league: new ObjectId(IDS[1]),
-        round: 0,
-      },
+    expect(res.status).toBe(400);
+    expect(res.body).toStrictEqual({
+      error: "You cannot propose a match with a non-existent user!",
+      success: false,
+    });
+  });
+
+  describe("with league", () => {
+    test("user in league", async () => {
+      await withDb(async (db) => {
+        const users = await db.users();
+        await users.edit(user._id, {
+          $set: { leagues: [new ObjectId(IDS[1])] },
+        });
+      });
+
+      const res = await requestWithAuth(app, auth0Id)
+        .post("/match/new")
+        .send(getMatchProposal({ league: new ObjectId(IDS[1]), round: 0 }))
+        .set("Authorization", "Bearer test_api_thing");
+
+      expect(res.status).toBe(201);
+      expectAPIRes(res.body).toEqual({
+        success: true,
+        data: {
+          _id: expect.any(ObjectId),
+          date: creationStartDate,
+          messages: [],
+          owner: user._id,
+          players: [user._id, opponent._id],
+          sport: Sport.Tennis,
+          status: MatchStatus.Request,
+          league: new ObjectId(IDS[1]),
+          round: 0,
+        },
+      });
+    });
+
+    test("user not in league", async () => {
+      const res = await requestWithAuth(app, auth0Id)
+        .post("/match/new")
+        .send(getMatchProposal({ league: new ObjectId(IDS[0]), round: 0 }))
+        .set("Authorization", "Bearer test_api_thing");
+
+      expect(res.status).toBe(400);
+      expectAPIRes(res.body).toEqual({
+        success: false,
+        error: "You must be in the league to create a match",
+      });
     });
   });
 });
 
 describe("get", () => {
-  const auth0Id = "github|123456";
-
-  beforeEach(async () => {
-    const _ = await withDb((db) => addUser(db, auth0Id));
-  });
-
   test("not your match", async () => {
     await withDb(async (db) => {
       const match = await addMatch(db);
@@ -108,13 +138,6 @@ describe("get", () => {
 });
 
 describe("find", () => {
-  const auth0Id = "github|123456";
-  let user: User;
-
-  beforeEach(async () => {
-    user = await withDb((db) => addUser(db, auth0Id));
-  });
-
   test("not your match", async () => {
     await withDb(async (db) => {
       const _ = await addMatch(db);
@@ -157,12 +180,12 @@ describe("find", () => {
 
 addCommonTests({
   prefix: "/match",
-  creation: getMatchProposal({}),
+  getCreation: () => getMatchProposal({}),
   skipNewExists: true,
   addObj: (db, _, creation) => addMatch(db, creation),
   addCensoredObj: (db, currUser) =>
-    addMatch(db, { players: [currUser._id, new ObjectId(IDS[0])] }),
-  validateCreation: async (db, user) => {
+    addMatch(db, { players: [currUser._id, opponent._id] }),
+  validateCreation: async (db, currUser) => {
     const coll = await db.matches();
     const res = await coll.find({});
     expect(res).toStrictEqual([
@@ -170,8 +193,8 @@ addCommonTests({
         _id: expect.any(ObjectId),
         date: creationStartDate,
         messages: [],
-        owner: user._id,
-        players: [user._id, new ObjectId(IDS[0])],
+        owner: currUser._id,
+        players: [currUser._id, opponent._id],
         sport: Sport.Tennis,
         status: MatchStatus.Request,
       },
@@ -182,7 +205,7 @@ addCommonTests({
 function getMatchProposal(inp: Partial<MatchProposal>): MatchProposal {
   const base: MatchProposal = {
     date: inp.date ?? creationStartDate,
-    to: inp.to ?? new ObjectId(IDS[0]),
+    to: inp.to ?? opponent._id,
     sport: inp.sport ?? Sport.Tennis,
   };
 
