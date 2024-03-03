@@ -6,10 +6,10 @@ export function VersusMatchCard(props: { score: Record<string, number> }) {
     <div className="bg-gray-400 text-center w-min rounded-lg text-white overflow-hidden">
       <div
         className={`${
-          firstValue <= secondValue ? "bg-p-green-200" : ""
+          secondValue <= firstValue ? "bg-p-green-200" : ""
         } flex justify-between whitespace-nowrap text-xl font-bold items-center`}
       >
-        <p className="m-2">{firstKey} </p>
+        <p className="m-2">{firstKey}</p>
         <p className="ml-2 p-2">{firstValue}</p>
       </div>
       <div className="grid grid-cols-3 items-center">
@@ -22,7 +22,7 @@ export function VersusMatchCard(props: { score: Record<string, number> }) {
           firstValue <= secondValue ? "bg-p-green-200" : ""
         } flex justify-between whitespace-nowrap text-xl font-bold items-center`}
       >
-        <p className="m-2">{secondKey} </p>
+        <p className="m-2">{secondKey}</p>
         <p className="ml-2 p-2">{secondValue}</p>
       </div>
     </div>
