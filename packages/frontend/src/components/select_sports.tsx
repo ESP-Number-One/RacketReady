@@ -5,12 +5,13 @@ import { sportToColour } from "../../util/sport";
 
 interface SportListProps {
   sports: Sport[];
+  currentSport: Sport;
 }
 
 export function SelectSport({
   sports: sportsOptions,
   currentSport,
-}: SportListProps & { currentSport: Sport }) {
+}: SportListProps) {
   const [sport, setSport] = useState(currentSport.toString());
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
