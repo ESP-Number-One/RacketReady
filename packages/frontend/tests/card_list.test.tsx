@@ -1,4 +1,4 @@
-import { cleanup, render } from "@testing-library/react";
+import { cleanup, fireEvent, render } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { CardList } from "../src/components/card_list";
 
@@ -16,7 +16,6 @@ class MockPaginator implements AsyncGenerator {
     if (args[0] !== undefined) {
       this.#page = args[0];
     }
-    console.log(`Request for page ${args[0]}`);
     return new Promise<IteratorResult<ReactNode[], []>>((res) => {
       res(
         this.#page < this.#maxPage
@@ -56,11 +55,19 @@ class MockPaginator implements AsyncGenerator {
   }
 }
 
-const generator = new MockPaginator(15);
+let generator: MockPaginator;
+let nextPage: jest.Mock<Promise<[] | ReactNode[]>>;
 
-const nextPage = jest.fn(async (p: number) => {
-  const res = (await generator.next(p)).value;
-  return res;
+beforeEach(() => {
+  generator = new MockPaginator(15);
+  nextPage = jest.fn(async (p: number) => {
+    await new Promise((res) => {
+      setTimeout(res, (Math.random() + 0.5) * 1000);
+      res(true);
+    });
+    const res = (await generator.next(p)).value;
+    return res;
+  });
 });
 
 it("should render without crashing", () => {
@@ -69,5 +76,35 @@ it("should render without crashing", () => {
 
 it("should call the next page function", () => {
   render(<CardList nextPage={nextPage} />);
-  expect(nextPage.mock.calls.length).toBeGreaterThan(0);
+  expect(nextPage).toHaveBeenCalledTimes(1);
+  expect(nextPage.mock.calls).toStrictEqual([[0]]);
+});
+
+it("should call the next page once after scrolling to the bottom", async () => {
+  const { container } = render(<CardList nextPage={nextPage} />);
+  const divOrNull = container
+    .getElementsByClassName("grid-flow-row grid overflow-scroll max-h-[60vh]")
+    .item(0);
+  const cardsDiv = divOrNull === null ? container : divOrNull;
+
+  await new Promise((res) => {
+    setTimeout(res, 2000);
+  });
+
+  // cardsDiv.scroll(0, 9999);
+  cardsDiv.scrollTop = 9999;
+  fireEvent.scroll(cardsDiv, {
+    target: { scrollY: 9999, scrollTop: 9999, top: 9999 },
+  });
+
+  await new Promise((res) => {
+    setTimeout(res, 2000);
+  });
+
+  expect(
+    container.getElementsByClassName("p-4 rounded-lg m-2 bg-p-green-100")
+      .length,
+  ).toBeGreaterThan(20);
+  expect(nextPage).toHaveBeenCalledTimes(2);
+  expect(nextPage.mock.calls).toStrictEqual([[0], [1]]);
 });

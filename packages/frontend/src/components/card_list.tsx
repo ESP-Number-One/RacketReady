@@ -1,15 +1,17 @@
 import { faRefresh } from "@fortawesome/free-solid-svg-icons";
-import type { ReactNode } from "react";
+import type { ReactNode, UIEvent } from "react";
 import { useEffect, useRef, useState } from "react";
-import { Icon } from "./icon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface CardListProps<T extends ReactNode> {
   nextPage: (nextPage: number) => Promise<T[]>;
+  refreshPage?: () => void;
   startPage?: number;
 }
 
 export function CardList<T extends ReactNode>({
   nextPage,
+  refreshPage,
   startPage,
 }: CardListProps<T>) {
   const [pageNum, setPageNum] = useState(
@@ -19,6 +21,7 @@ export function CardList<T extends ReactNode>({
   const [isLastPage, setIsLastPage] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [shouldGetPage, setShouldGetPage] = useState(true);
+  const blockNextPage = useRef<boolean>(false);
   const cards = useRef<T[]>([]);
 
   let y1: number;
@@ -30,6 +33,10 @@ export function CardList<T extends ReactNode>({
     const promises = [...Array<number>(pageNum)].map((_, i) => {
       return nextPage(i);
     });
+
+    if (refreshPage) {
+      refreshPage();
+    }
 
     Promise.all(promises)
       .then((results) => {
@@ -99,7 +106,6 @@ export function CardList<T extends ReactNode>({
     setPageNum(pageNum + 1);
     nextPage(pageNum)
       .then((result) => {
-        console.log(`Made request for page ${pageNum}`);
         if (result.length === 0) {
           setIsLastPage(true);
         }
@@ -112,10 +118,12 @@ export function CardList<T extends ReactNode>({
       });
   }
 
-  function handleScroll() {
+  const handleScroll = (event: UIEvent<HTMLDivElement>) => {
+    const target: EventTarget = event.target;
+    const targetDiv: HTMLDivElement = target as HTMLDivElement;
     if (
-      window.innerHeight + document.documentElement.scrollTop <
-        document.documentElement.offsetHeight - 30 ||
+      targetDiv.scrollTop + targetDiv.clientHeight <
+        targetDiv.scrollHeight - 30 ||
       isLastPage ||
       isLoading ||
       shouldGetPage
@@ -123,28 +131,30 @@ export function CardList<T extends ReactNode>({
       return;
     }
     setShouldGetPage(true);
-  }
+    blockNextPage.current = false;
+  };
 
   useEffect(() => {
-    if (!isLoading && !isLastPage) {
+    if (!isLoading && !isLastPage && !blockNextPage.current) {
       nextPageWrapper();
+      blockNextPage.current = true;
     }
     setShouldGetPage(false);
   }, [shouldGetPage]);
 
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  });
   return (
-    <div className="flex flex-col h-full m-1">
-      <Icon
+    <div
+      className="grid-flow-row grid overflow-scroll max-h-[60vh]"
+      id="card-list"
+      onScroll={(e) => {
+        handleScroll(e);
+      }}
+    >
+      <FontAwesomeIcon
         className={
           isRefreshing || isLoading
-            ? "translate-y-24 duration-300 bg-white p-4 rounded-full flex self-center -rotate-180 shadow"
-            : "-translate-y-72 duration-300 bg-white p-4 rounded-full flex self-center rotate-180 shadow"
+            ? "translate-y-24 duration-300 bg-white p-4 rounded-full self-center -rotate-180 shadow place-self-center"
+            : "-translate-y-72 duration-300 bg-white p-4 rounded-full self-center rotate-180 shadow hidden"
         }
         icon={faRefresh}
         size="lg"
