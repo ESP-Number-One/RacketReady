@@ -21,13 +21,13 @@ function PageImpl({
   return (
     <div className="root-page flex h-screen w-screen flex-col">
       {header !== undefined ? (
-        <div className="w-full p-5 bg-slate-500 text-white font-title text-2xl font-bold">
+        <div className="flex-none w-full p-5 bg-slate-500 text-white font-title text-2xl font-bold">
           <div className="relative flex w-full">{header}</div>
         </div>
       ) : null}
-      <div className="h-full">{body}</div>
+      <div className="flex-1 min-h-0 h-full px-2">{body}</div>
       {footer !== undefined ? (
-        <div className="w-full p-5 bg-slate-400 text-white font-title justify-end">
+        <div className="flex-none w-full p-5 bg-slate-400 text-white font-title justify-end">
           {footer}
         </div>
       ) : null}
@@ -35,16 +35,23 @@ function PageImpl({
   );
 }
 
+interface BodyProps {
+  children: ReactNode;
+  className?: string;
+  style?: CSSProperties;
+}
+
 PageImpl.Header = Header;
 
-PageImpl.Body = function Body({
-  children,
-  style,
-}: {
-  children: ReactNode;
-  style?: CSSProperties;
-}) {
-  return <div style={style}>{children}</div>;
+PageImpl.Body = function Body({ children, className }: BodyProps) {
+  return (
+    <div
+      className={`h-full ${className}`}
+      style={{ viewTransitionName: "body-content" }}
+    >
+      {children}
+    </div>
+  );
 };
 
 PageImpl.Footer = function Footer({ children }: { children: ReactNode }) {
@@ -54,7 +61,7 @@ PageImpl.Footer = function Footer({ children }: { children: ReactNode }) {
 interface PageT {
   (_: { children: ReactNode }): JSX.Element;
   Header: (_: { children: ReactNode }) => JSX.Element;
-  Body: (_: { children: ReactNode; style?: CSSProperties }) => JSX.Element;
+  Body: (_: BodyProps) => JSX.Element;
   Footer: (_: { children: ReactNode }) => JSX.Element;
 }
 
