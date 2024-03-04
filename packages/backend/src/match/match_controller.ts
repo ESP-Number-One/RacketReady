@@ -5,6 +5,9 @@ import {
   ObjectId,
   PageOptions,
   newAPIError,
+  newAPISuccess,
+  Scores,
+  ID,
 } from "@esp-group-one/types";
 import type { Match, WithError, MatchQuery } from "@esp-group-one/types";
 import {
@@ -21,7 +24,6 @@ import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collecti
 import type { Filter, OptionalId } from "mongodb";
 import * as express from "express";
 import { ControllerWrap } from "../controller.js";
-import { ID } from "../lib/types.js";
 
 @Security("auth0")
 @Route("match")
@@ -32,11 +34,109 @@ export class MatchsController extends ControllerWrap<Match> {
   }
 
   /**
+   * Accepts the given match
+   */
+  @Post("{matchId}/accept")
+  public acceptMatch(
+    @Path() matchId: ID,
+    @Request() req: express.Request,
+  ): Promise<WithError<undefined>> {
+    const id = new ObjectId(matchId);
+
+    return this.withUserId(req, async (userId) => {
+      const res = await this.get(id);
+      if (res.success) {
+        if (
+          !res.data.players
+            .map((p) => p.toString())
+            .includes(userId.toString()) ||
+          res.data.owner.toString() === userId.toString()
+        ) {
+          return this.notFound();
+        }
+
+        if (res.data.status !== MatchStatus.Request) {
+          this.setStatus(400);
+          return newAPIError("The match is already accepted");
+        }
+
+        const coll = await this.getCollection();
+        await coll.edit(id, { $set: { status: MatchStatus.Accepted } });
+        return newAPISuccess(undefined);
+      }
+
+      return res;
+    });
+  }
+
+  /**
+   * Accepts the given match
+   */
+  @Post("{matchId}/complete")
+  public completeMatch(
+    @Path() matchId: ID,
+    @Body() scores: Scores,
+    @Request() req: express.Request,
+  ): Promise<WithError<undefined>> {
+    const id = new ObjectId(matchId);
+
+    return this.withUserId(req, async (userId) => {
+      const res = await this.get(id);
+      if (res.success) {
+        if (
+          !res.data.players.map((p) => p.toString()).includes(userId.toString())
+        ) {
+          return this.notFound();
+        }
+
+        if (res.data.status !== MatchStatus.Accepted) {
+          this.setStatus(400);
+          return newAPIError("The match is not in accepted state");
+        }
+
+        if (new Date() <= new Date(res.data.date)) {
+          this.setStatus(400);
+          return newAPIError("The match has not started");
+        }
+
+        /* SCORES VALIDATION */
+        const players = Object.keys(scores);
+        const matchPlayers = res.data.players.map((p) => p.toString());
+
+        // Get players which aren't in the match
+        const difference = players.filter(
+          (x) => !matchPlayers.includes(x.toString()),
+        );
+
+        if (
+          res.data.players.length !== Object.keys(scores).length ||
+          difference.length > 0
+        ) {
+          this.setStatus(400);
+          return newAPIError("The number of scores + players does not match");
+        }
+
+        const coll = await this.getCollection();
+        await coll.edit(id, {
+          $set: {
+            status: MatchStatus.Complete,
+            score: scores,
+          },
+        });
+
+        return newAPISuccess(undefined);
+      }
+
+      return res;
+    });
+  }
+
+  /**
    * Gets a given match, validating the user is apart of the match, and returns
    * all its information
    */
   @Get("{matchId}")
-  public async getMatch(
+  public getMatch(
     @Path() matchId: ID,
     @Request() req: express.Request,
   ): Promise<WithError<Match>> {
@@ -77,6 +177,27 @@ export class MatchsController extends ControllerWrap<Match> {
         };
 
         return this.find(newOpts);
+      }),
+    );
+  }
+
+  /**
+   * Finds given matches with the given query, validating the user is in those
+   * matches
+   */
+  @Post("find/proposed")
+  public async findProposedMatchs(
+    @Body() requestBody: PageOptions<undefined>,
+    @Request() req: express.Request,
+  ): Promise<WithError<Match[]>> {
+    return this.withVerifiedParam(requestBody, (opts) =>
+      this.withUserId(req, async (userId) => {
+        return this.find({
+          ...opts,
+          query: {
+            $and: [{ owner: { $not: { $eq: userId } } }, { players: userId }],
+          },
+        });
       }),
     );
   }

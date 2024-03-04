@@ -1,5 +1,11 @@
 import type { Query } from "./db_client.js";
-import type { DateTimeString, MongoDBItem, ObjectId, Sport } from "./utils.js";
+import type {
+  DateTimeString,
+  ID,
+  MongoDBItem,
+  ObjectId,
+  Sport,
+} from "./utils.js";
 
 export enum MatchStatus {
   Request = "requested",
@@ -25,9 +31,10 @@ interface MatchWithoutScore extends BaseMatch {
   status: MatchStatus.Accepted | MatchStatus.Request;
 }
 
+export type Scores = Record<ID, number>;
 interface MatchWithScore extends BaseMatch {
   // Maps player id to score
-  score: Record<string, number>;
+  score: Scores;
   status: MatchStatus.Complete;
 }
 

@@ -6,6 +6,7 @@ import {
   LeagueCreation,
   ObjectId,
   PageOptions,
+  ID,
 } from "@esp-group-one/types";
 import type {
   Error,
@@ -30,7 +31,6 @@ import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collecti
 import * as express from "express";
 import { generateRandomString } from "ts-randomstring/lib/index.js";
 import { ControllerWrap } from "../controller.js";
-import { ID } from "../lib/types.js";
 import { safeEqual } from "../lib/utils.js";
 
 @Security("auth0")

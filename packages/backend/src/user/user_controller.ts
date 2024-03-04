@@ -6,6 +6,7 @@ import {
   ObjectId,
   UserCreation,
   PageOptions,
+  ID,
 } from "@esp-group-one/types";
 import type {
   UserQuery,
@@ -31,7 +32,6 @@ import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collecti
 import * as express from "express";
 import { ControllerWrap } from "../controller.js";
 import { getUserId, mapUser } from "../lib/utils.js";
-import { ID } from "../lib/types.js";
 
 @Security("auth0")
 @Route("user")

@@ -1,10 +1,11 @@
 import type { League } from "../src/league.js";
-import type { Match } from "../src/match.js";
+import type { Match, Scores } from "../src/match.js";
 import { MatchStatus } from "../src/match.js";
 import type { User, UserIdMap } from "../src/user.js";
+import type { ID } from "../src/utils.js";
 import { ObjectId, Sport } from "../src/utils.js";
 
-export const IDS = [
+export const IDS: ID[] = [
   "aaaaaaaaaaaaaaaaaaaaaaaa",
   "bbbbbbbbbbbbbbbbbbbbbbbb",
   "cccccccccccccccccccccccc",
@@ -45,7 +46,7 @@ export function getMatch(obj: Partial<Match>): Match {
   let match: Match;
 
   if (obj.status === MatchStatus.Complete) {
-    const score: Record<string, number> = {};
+    const score: Scores = {};
     score[IDS[0]] = 10;
     score[IDS[1]] = 5;
     match = {

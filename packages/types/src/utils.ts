@@ -1,5 +1,11 @@
 /* eslint-disable tsdoc/syntax -- tsoa has custom tags */
 
+/**
+ * @minLength 24 input must be a 24 character hex string
+ * @maxLength 24 input must be a 24 character hex string
+ */
+export type ID = string;
+
 export enum Sport {
   Badminton = "badminton",
   Tennis = "tennis",
@@ -11,9 +17,9 @@ export class ObjectId {
    * @minLength 24 input must be a 24 character hex string
    * @maxLength 24 input must be a 24 character hex string
    */
-  public mongoDbId: string;
+  public mongoDbId: ID;
 
-  constructor(id: string) {
+  constructor(id: ID) {
     this.mongoDbId = id.toLowerCase();
     if (!this.verify()) throw Error("Input must be a 24 character hex string");
   }

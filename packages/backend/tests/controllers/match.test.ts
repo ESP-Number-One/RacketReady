@@ -1,7 +1,10 @@
 import type {
+  ID,
+  Match,
   MatchProposal,
   MatchQuery,
   PageOptions,
+  Scores,
   User,
 } from "@esp-group-one/types";
 import { MatchStatus, ObjectId, Sport, tests } from "@esp-group-one/types";
@@ -31,6 +34,302 @@ beforeEach(async () => {
   await withDb(async (db) => {
     user = await addUser(db, auth0Id);
     opponent = await addUser(db, auth0Id);
+  });
+});
+
+describe("accept", () => {
+  test("done", async () => {
+    await withDb(async (db) => {
+      const match = await addMatch(db, {
+        status: MatchStatus.Request,
+        players: [user._id, new ObjectId(IDS[0])],
+      });
+      const res = await requestWithAuth(app, auth0Id)
+        .post(`/match/${match._id.toString()}/accept`)
+        .set("Authorization", "Bearer test_api_token");
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toStrictEqual({
+        success: true,
+      });
+
+      const matches = await db.matches();
+      const updateMatch = await matches.get(match._id);
+      expect(updateMatch?.status).toBe(MatchStatus.Accepted);
+    });
+  });
+
+  test("match already accepted", async () => {
+    await withDb(async (db) => {
+      const match = await addMatch(db, {
+        status: MatchStatus.Accepted,
+        players: [user._id, new ObjectId(IDS[0])],
+      });
+
+      const res = await requestWithAuth(app, auth0Id)
+        .post(`/match/${match._id.toString()}/accept`)
+        .set("Authorization", "Bearer test_api_token");
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toStrictEqual({
+        success: false,
+        error: "The match is already accepted",
+      });
+    });
+  });
+
+  test("match doesn't exist", async () => {
+    const res = await requestWithAuth(app, auth0Id)
+      .post(`/match/${IDS[0]}/accept`)
+      .set("Authorization", "Bearer test_api_token");
+
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toStrictEqual({
+      success: false,
+      error: "Failed to get obj",
+    });
+  });
+
+  test("user is owner", async () => {
+    await withDb(async (db) => {
+      const match = await addMatch(db, {
+        status: MatchStatus.Accepted,
+        players: [user._id, new ObjectId(IDS[0])],
+        owner: user._id,
+      });
+
+      const res = await requestWithAuth(app, auth0Id)
+        .post(`/match/${match._id.toString()}/accept`)
+        .set("Authorization", "Bearer test_api_token");
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body).toStrictEqual({
+        success: false,
+        error: "Failed to get obj",
+      });
+    });
+  });
+
+  test("user not in players", async () => {
+    await withDb(async (db) => {
+      const match = await addMatch(db, {
+        status: MatchStatus.Accepted,
+        players: [new ObjectId(IDS[0]), new ObjectId(IDS[1])],
+      });
+
+      const res = await requestWithAuth(app, auth0Id)
+        .post(`/match/${match._id.toString()}/accept`)
+        .set("Authorization", "Bearer test_api_token");
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body).toStrictEqual({
+        success: false,
+        error: "Failed to get obj",
+      });
+    });
+  });
+});
+
+describe("complete", () => {
+  test("success", async () => {
+    await withDb(async (db) => {
+      const match = await addMatch(db, {
+        status: MatchStatus.Accepted,
+        players: [user._id, opponent._id],
+      });
+
+      const scores: Scores = newScores([
+        [user._id.toString(), 10],
+        [opponent._id.toString(), 5],
+      ]);
+
+      const res = await requestWithAuth(app, auth0Id)
+        .post(`/match/${match._id.toString()}/complete`)
+        .send(scores)
+        .set("Authorization", "Bearer test_api_token");
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toStrictEqual({
+        success: true,
+      });
+
+      const matches = await db.matches();
+      const updateMatch = await matches.get(match._id);
+      expect(updateMatch?.status).toBe(MatchStatus.Complete);
+      if (updateMatch?.status === MatchStatus.Complete) {
+        expect(updateMatch.score).toStrictEqual(scores);
+      }
+    });
+  });
+
+  test("doesn't exist", async () => {
+    const scores: Scores = newScores([
+      [user._id.toString(), 10],
+      [IDS[0], 5],
+    ]);
+    const res = await requestWithAuth(app, auth0Id)
+      .post(`/match/${IDS[1]}/complete`)
+      .send(scores)
+      .set("Authorization", "Bearer test_api_token");
+
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toStrictEqual({
+      success: false,
+      error: "Failed to get obj",
+    });
+  });
+
+  test("not in players", async () => {
+    await withDb(async (db) => {
+      const match = await addMatch(db, {
+        status: MatchStatus.Accepted,
+      });
+
+      const scores: Scores = newScores([
+        [user._id.toString(), 10],
+        [opponent._id.toString(), 5],
+      ]);
+
+      const res = await requestWithAuth(app, auth0Id)
+        .post(`/match/${match._id.toString()}/complete`)
+        .send(scores)
+        .set("Authorization", "Bearer test_api_token");
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body).toStrictEqual({
+        success: false,
+        error: "Failed to get obj",
+      });
+    });
+  });
+
+  describe("not in accepting state", () => {
+    [MatchStatus.Complete, MatchStatus.Request].forEach((status) => {
+      test(status.toString(), async () => {
+        await withDb(async (db) => {
+          const match = await addMatch(db, {
+            status,
+            players: [user._id, opponent._id],
+          });
+
+          const scores: Scores = newScores([
+            [user._id.toString(), 10],
+            [opponent._id.toString(), 5],
+          ]);
+
+          const res = await requestWithAuth(app, auth0Id)
+            .post(`/match/${match._id.toString()}/complete`)
+            .send(scores)
+            .set("Authorization", "Bearer test_api_token");
+
+          expect(res.statusCode).toBe(400);
+          expect(res.body).toStrictEqual({
+            success: false,
+            error: "The match is not in accepted state",
+          });
+        });
+      });
+    });
+  });
+
+  test("before completion date", async () => {
+    await withDb(async (db) => {
+      const match = await addMatch(db, {
+        status: MatchStatus.Accepted,
+        players: [user._id, opponent._id],
+        date: new Date(Date.now() + 12096e5).toString(),
+      });
+
+      const scores: Scores = newScores([
+        [user._id.toString(), 10],
+        [opponent._id.toString(), 5],
+      ]);
+
+      const res = await requestWithAuth(app, auth0Id)
+        .post(`/match/${match._id.toString()}/complete`)
+        .send(scores)
+        .set("Authorization", "Bearer test_api_token");
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toStrictEqual({
+        success: false,
+        error: "The match has not started",
+      });
+    });
+  });
+
+  describe("invalid scores", () => {
+    test("duplicate players", async () => {
+      await withDb(async (db) => {
+        const match = await addMatch(db, {
+          status: MatchStatus.Accepted,
+          players: [user._id, opponent._id],
+        });
+
+        const scores: Scores = newScores([
+          [user._id.toString(), 10],
+          [user._id.toString(), 5],
+        ]);
+
+        const res = await requestWithAuth(app, auth0Id)
+          .post(`/match/${match._id.toString()}/complete`)
+          .send(scores)
+          .set("Authorization", "Bearer test_api_token");
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body).toStrictEqual({
+          success: false,
+          error: "The number of scores + players does not match",
+        });
+      });
+    });
+
+    test("with players not in match", async () => {
+      await withDb(async (db) => {
+        const match = await addMatch(db, {
+          status: MatchStatus.Accepted,
+          players: [user._id, opponent._id],
+        });
+
+        const scores: Scores = newScores([
+          [user._id.toString(), 10],
+          [IDS[1], 5],
+        ]);
+
+        const res = await requestWithAuth(app, auth0Id)
+          .post(`/match/${match._id.toString()}/complete`)
+          .send(scores)
+          .set("Authorization", "Bearer test_api_token");
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body).toStrictEqual({
+          success: false,
+          error: "The number of scores + players does not match",
+        });
+      });
+    });
+
+    test("with less players", async () => {
+      await withDb(async (db) => {
+        const match = await addMatch(db, {
+          status: MatchStatus.Accepted,
+          players: [user._id, opponent._id],
+        });
+
+        const scores: Scores = newScores([[user._id.toString(), 10]]);
+
+        const res = await requestWithAuth(app, auth0Id)
+          .post(`/match/${match._id.toString()}/complete`)
+          .send(scores)
+          .set("Authorization", "Bearer test_api_token");
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body).toStrictEqual({
+          success: false,
+          error: "The number of scores + players does not match",
+        });
+      });
+    });
   });
 });
 
@@ -137,10 +436,51 @@ describe("get", () => {
   });
 });
 
+describe("find/proposed", () => {
+  test("general", async () => {
+    await withDb(async (db) => {
+      const matches: Match[] = [];
+      matches.push(
+        await addMatch(db, {
+          status: MatchStatus.Accepted,
+          owner: user._id,
+          players: [user._id, new ObjectId(IDS[0])],
+        }),
+      );
+
+      matches.push(
+        await addMatch(db, {
+          status: MatchStatus.Accepted,
+          owner: new ObjectId(IDS[0]),
+          players: [user._id, new ObjectId(IDS[0])],
+        }),
+      );
+
+      matches.push(
+        await addMatch(db, {
+          status: MatchStatus.Accepted,
+          owner: new ObjectId(IDS[0]),
+          players: [new ObjectId(IDS[0]), new ObjectId(IDS[1])],
+        }),
+      );
+
+      const res = await requestWithAuth(app, auth0Id)
+        .post(`/match/find/proposed`)
+        .set("Authorization", "Bearer test_api_token");
+
+      expect(res.statusCode).toBe(200);
+      expectAPIRes(res.body).toStrictEqual({
+        success: true,
+        data: [matches[1]],
+      });
+    });
+  });
+});
+
 describe("find", () => {
   test("not your match", async () => {
     await withDb(async (db) => {
-      const _ = await addMatch(db);
+      await addMatch(db);
       const res = await requestWithAuth(app, auth0Id)
         .post(`/match/find`)
         .send({})
@@ -161,7 +501,7 @@ describe("find", () => {
         owner: user._id,
         players: [user._id, new ObjectId(IDS[0])],
       });
-      const _ = await addMatch(db);
+      await addMatch(db);
       const res = await requestWithAuth(app, auth0Id)
         .post(`/match/find`)
         .send({
@@ -218,4 +558,8 @@ function getMatchProposal(inp: Partial<MatchProposal>): MatchProposal {
   }
 
   return base;
+}
+
+function newScores(scores: [ID, number][]): Scores {
+  return Object.fromEntries(scores);
 }
