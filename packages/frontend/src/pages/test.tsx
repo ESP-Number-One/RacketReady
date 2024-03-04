@@ -19,7 +19,7 @@ export function TestPage() {
           <FontAwesomeIcon icon={faPlus} />
         </Header.Right>
       </Page.Header>
-      <Page.Body style={{ viewTransitionName: "body-content" }}>
+      <Page.Body>
         <p className=" bg-progress-blue">First page!</p>
         <Stars rating={rating} onRatingChange={setRating} />
       </Page.Body>

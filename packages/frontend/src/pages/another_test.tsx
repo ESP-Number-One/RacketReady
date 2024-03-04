@@ -25,7 +25,7 @@ export function AnotherTestPage() {
           <FontAwesomeIcon icon={faPlus} />
         </Header.Right>
       </Page.Header>
-      <Page.Body style={{ viewTransitionName: "body-content" }}>
+      <Page.Body>
         {user !== undefined ? (
           <div className=" bg-red-700">{JSON.stringify(user)}</div>
         ) : (

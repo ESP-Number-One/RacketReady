@@ -43,9 +43,12 @@ interface BodyProps {
 
 PageImpl.Header = Header;
 
-PageImpl.Body = function Body({ children, className, style }: BodyProps) {
+PageImpl.Body = function Body({ children, className }: BodyProps) {
   return (
-    <div className={`h-full ${className}`} style={style}>
+    <div
+      className={`h-full ${className}`}
+      style={{ viewTransitionName: "body-content" }}
+    >
       {children}
     </div>
   );
