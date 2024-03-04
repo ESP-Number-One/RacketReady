@@ -52,6 +52,7 @@ export function getMatch(obj: Partial<Match>): Match {
     match = {
       ...base,
       status: MatchStatus.Complete,
+      usersRated: obj.usersRated ?? [],
       score,
     };
   } else {
@@ -87,6 +88,7 @@ export function getUser(obj: Partial<User>): User {
         timeEnd: new Date().toLocaleString(),
       },
     ],
+    rating: obj.rating ?? { 1: 5, 2: 10, 3: 20, 4: 50, 5: 10 },
   };
 }
 

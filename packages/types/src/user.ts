@@ -7,6 +7,9 @@ export enum AbilityLevel {
   Advanced = "advanced",
 }
 
+export type StarCount = 1 | 2 | 3 | 4 | 5;
+export type Ratings = Record<StarCount, number>;
+
 export interface SportInfo {
   sport: Sport;
   ability: string;
@@ -38,12 +41,14 @@ export interface User extends MongoDBItem {
   sports: SportInfo[];
   leagues: ObjectId[];
   availability: Availability[];
+  rating: Ratings;
 }
 
 export interface CensoredUser extends MongoDBItem {
   name: string;
   description: string;
   sports: SportInfo[];
+  rating: Ratings;
 }
 
 export function censorUser(user: User): CensoredUser {
@@ -52,6 +57,7 @@ export function censorUser(user: User): CensoredUser {
     name: user.name,
     description: user.description,
     sports: user.sports,
+    rating: user.rating,
   };
 }
 
@@ -66,3 +72,12 @@ export type UserQuery = Query<{
   sports: string[];
   leagues: ObjectId[];
 }> & { profileText?: string };
+
+export function calculateAverageRating(rate: Ratings): number {
+  const count = Object.values(rate).reduce((a, b) => a + b, 0);
+  const sum = Object.entries(rate)
+    .map(([stars, ratings]) => Number(stars) * ratings)
+    .reduce((a, b) => a + b, 0);
+
+  return sum / count;
+}

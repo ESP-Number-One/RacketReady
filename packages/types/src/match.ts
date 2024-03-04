@@ -36,6 +36,7 @@ interface MatchWithScore extends BaseMatch {
   // Maps player id to score
   score: Scores;
   status: MatchStatus.Complete;
+  usersRated: ObjectId[];
 }
 
 interface LeagueInfo {

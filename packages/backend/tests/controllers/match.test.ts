@@ -518,6 +518,133 @@ describe("find", () => {
   });
 });
 
+describe("rate", () => {
+  test("done", async () => {
+    await withDb(async (db) => {
+      const users = await db.users();
+      await users.edit(user._id, {
+        $set: { rating: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 } },
+      });
+      await users.edit(opponent._id, {
+        $set: { rating: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 } },
+      });
+
+      const match = await addMatch(db, {
+        status: MatchStatus.Complete,
+        players: [user._id, opponent._id],
+      });
+      const res = await requestWithAuth(app, auth0Id)
+        .post(`/match/${match._id.toString()}/rate`)
+        .send({ stars: 5 })
+        .set("Authorization", "Bearer test_api_token");
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toStrictEqual({
+        success: true,
+      });
+
+      const matches = await db.matches();
+      const updateMatch = await matches.get(match._id);
+      expect(updateMatch?.status).toBe(MatchStatus.Complete);
+      if (updateMatch?.status === MatchStatus.Complete) {
+        expect(updateMatch.usersRated).toStrictEqual([user._id]);
+      }
+
+      const updateUser = await users.get(user._id);
+      expect(updateUser?.rating).toStrictEqual({
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+      });
+
+      const updateOpponent = await users.get(opponent._id);
+      expect(updateOpponent?.rating).toStrictEqual({
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 1,
+      });
+    });
+  });
+
+  test("match not completed", async () => {
+    await withDb(async (db) => {
+      const match = await addMatch(db, {
+        status: MatchStatus.Accepted,
+        players: [user._id, new ObjectId(IDS[0])],
+      });
+
+      const res = await requestWithAuth(app, auth0Id)
+        .post(`/match/${match._id.toString()}/rate`)
+        .send({ stars: 5 })
+        .set("Authorization", "Bearer test_api_token");
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toStrictEqual({
+        success: false,
+        error: "The match has not completed",
+      });
+    });
+  });
+
+  test("match already rated", async () => {
+    await withDb(async (db) => {
+      const match = await addMatch(db, {
+        status: MatchStatus.Complete,
+        players: [user._id, new ObjectId(IDS[0])],
+        usersRated: [user._id],
+      });
+
+      const res = await requestWithAuth(app, auth0Id)
+        .post(`/match/${match._id.toString()}/rate`)
+        .send({ stars: 5 })
+        .set("Authorization", "Bearer test_api_token");
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toStrictEqual({
+        success: false,
+        error: "You have already rated the match!",
+      });
+    });
+  });
+
+  test("match doesn't exist", async () => {
+    const res = await requestWithAuth(app, auth0Id)
+      .post(`/match/${IDS[0]}/rate`)
+      .send({ stars: 5 })
+      .set("Authorization", "Bearer test_api_token");
+
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toStrictEqual({
+      success: false,
+      error: "Failed to get obj",
+    });
+  });
+
+  test("user not in players", async () => {
+    await withDb(async (db) => {
+      const match = await addMatch(db, {
+        status: MatchStatus.Complete,
+        players: [new ObjectId(IDS[0]), new ObjectId(IDS[1])],
+      });
+
+      const res = await requestWithAuth(app, auth0Id)
+        .post(`/match/${match._id.toString()}/rate`)
+        .send({ stars: 5 })
+        .set("Authorization", "Bearer test_api_token");
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body).toStrictEqual({
+        success: false,
+        error: "Failed to get obj",
+      });
+    });
+  });
+});
+
 addCommonTests({
   prefix: "/match",
   getCreation: () => getMatchProposal({}),
