@@ -1,4 +1,6 @@
 import { type ReactElement, type JSXElementConstructor, useState } from "react";
+import { type APIClient } from "@esp-group-one/api-client";
+import { API } from "../../src/state/auth";
 
 /**
  * Track the effect of a particular prop on a JSX element.
@@ -49,5 +51,64 @@ export function track<Props>(_: JSXElementConstructor<Props>) {
     }) as ReactElement;
 
     return <>{newChild}</>;
+  };
+}
+
+type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
+  : T;
+
+/**
+ * Define a partial implmentation of a type,
+ * then pretend it's the full type.
+ *
+ * @typeParam T - The type in question.
+ */
+export function partiallyImpl<T>(a: DeepPartial<T>): T {
+  return a as unknown as T;
+}
+
+/**
+ * ## Client API Mocking
+ *
+ * Allows you to test your API-dependent components,
+ * with sensible fake data.
+ *
+ * @example
+ * ```tsx
+ * import { render } from "@testing-library/react";
+ * import { MockAPI } from "./utils";
+ * import { Example } from "../src/components/example";
+ *
+ * describe("Example", () => {
+ *  const MockedAPI = MockAPI({
+ *    user() {
+ *      return {
+ *        me: () => Promise.resolve({ _id: "1", name: "Bot1", ... }),
+ *      }
+ *    }
+ *  });
+ *
+ *  test("Render", () => {
+ *    const component = render(
+ *      <MockedAPI>
+ *        <Example />
+ *      </MockedAPI>
+ *    );
+ *
+ *    expect(component.container).toHaveTextContent("Hello, world!");
+ *  });
+ * });
+ * ```
+ */
+export function MockAPI(api: DeepPartial<APIClient>) {
+  return function __({ children }: { children: ReactElement }) {
+    return (
+      <API.Provider value={api as unknown as APIClient}>
+        {children}
+      </API.Provider>
+    );
   };
 }

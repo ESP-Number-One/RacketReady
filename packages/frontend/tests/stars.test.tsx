@@ -1,6 +1,6 @@
 import { fireEvent, render } from "@testing-library/react";
 import { Stars } from "../src/components/stars";
-import { track } from "./utils";
+import { track } from "./helpers/utils";
 
 /* Jest + React Guides: https://jestjs.io/docs/tutorial-react */
 

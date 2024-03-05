@@ -1,6 +1,6 @@
 import type { ReactNode, JSX } from "react";
 import { render } from "@testing-library/react";
-import { Slot } from "../../src/lib/slotting";
+import { Slot } from "../../../src/lib/slotting";
 
 describe("Slotting Pattern", () => {
   function Starter({
