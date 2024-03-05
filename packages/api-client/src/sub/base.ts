@@ -1,16 +1,33 @@
-import type { QueryOptions } from "@esp-group-one/types";
+import type { ObjectId, QueryOptions } from "@esp-group-one/types";
 import { APIClientBase } from "../base.js";
 
-export class SubAPIClient<T, C> extends APIClientBase {
-  public getId(id: string): Promise<T> {
-    return this.get<T>(id, {});
+export class SubAPIClient<
+  FullType,
+  Censored,
+  Creation,
+  Query,
+> extends APIClientBase {
+  /**
+   * Creates the given object
+   *
+   * @param obj - The object to define the creation
+   * @returns the full type
+   */
+  public create(obj: Creation): Promise<FullType> {
+    return this.post("new", obj);
   }
 
-  public find(query: QueryOptions): Promise<T[]> {
-    return this.post<T[]>("find", query as Record<string, unknown>);
+  /**
+   * @returns the censored object matching the given id
+   */
+  public getId(id: ObjectId): Promise<Censored> {
+    return this.get(id.toString(), {});
   }
 
-  public create(obj: C): Promise<T> {
-    return this.post<T>("new", obj);
+  /**
+   * @returns all users found matching the query
+   */
+  public find(query: QueryOptions<Query>): Promise<Censored[]> {
+    return this.post("find", query);
   }
 }

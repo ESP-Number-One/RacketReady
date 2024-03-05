@@ -13,6 +13,7 @@ import { CollectionWrap } from "./collection.js";
 export class DbClient {
   public dbName = "";
   private client: MongoClient;
+  private closed: boolean;
   private db: Promise<Db>;
   private url = "";
   private usersCache?: CollectionWrap<User>;
@@ -25,6 +26,18 @@ export class DbClient {
     this.dbName = dbName ?? getDbName();
     this.client = new MongoClient(this.url);
     this.db = this.connect();
+    this.closed = false;
+  }
+
+  public async close(): Promise<void> {
+    // This makes sure we don't have any async process left
+    await this.db;
+    await this.client.close();
+    this.closed = true;
+  }
+
+  public isClosed(): boolean {
+    return this.closed;
   }
 
   public async leagues(): Promise<CollectionWrap<League>> {

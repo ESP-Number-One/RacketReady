@@ -1,24 +1,48 @@
-import { Sport } from "@esp-group-one/types";
-import moment from "moment";
-import { MatchCard } from "./components/matchcard.js";
-import { PageWithTitle } from "./components/page.js";
+import { Route, Routes } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+import { TestPage } from "./pages/test.js";
+import { AnotherTestPage } from "./pages/another_test.js";
+import { API, type AuthResult, handleApi } from "./state/auth.js";
+import { LoginButton } from "./components/auth.js";
+import { useAPIClient } from "./lib/auth.js";
 
 export function App() {
-  return (
-    <PageWithTitle
-      currPage="home"
-      disableAuth
-      heading="Testing"
-      setAPI={console.log}
-    >
-      <MatchCard
-        sportsTag={Sport.Squash}
-        profilePic="https://trello.com/1/cards/65d51a05435c78cb5cb4eacf/attachments/65d51a18f3adf7a593ce5788/download/image.png"
-        name="Sammy N"
-        startTime={moment("2024-02-22 15:15:00")} //assuming times passed from backend is formatted correctly
-        endTime={moment("2024-02-22 17:15:00")}
-        link="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-      />
-    </PageWithTitle>
+  const [result, setResult] = useState({ type: "loading" } as AuthResult);
+  const hasSetApi = useRef(false);
+  const { isAuthenticated } = useAuth0();
+  const api = useAPIClient(isAuthenticated);
+
+  useEffect(() => {
+    console.log("Ran!");
+    console.log({ isAuthenticated, hasSetApi });
+    api.then(handleApi(hasSetApi, setResult)).catch((err: string) => {
+      setResult({ type: "err", err: err.toString() });
+    });
+  }, [isAuthenticated]);
+
+  if (result.type === "loading" || !hasSetApi.current) {
+    return <></>;
+  }
+
+  if (result.type === "err") {
+    return <p>{result.err}</p>;
+  }
+
+  const { ok } = result;
+
+  console.log({ ok });
+
+  return ok.authenticated ? (
+    <API.Provider value={ok.client}>
+      <Routes>
+        <Route index element={<TestPage />} />
+        <Route path="/another" element={<AnotherTestPage />} />
+      </Routes>
+    </API.Provider>
+  ) : (
+    <div className="flex min-h-screen px-3 items-center place-content-center">
+      <LoginButton />
+    </div>
   );
 }

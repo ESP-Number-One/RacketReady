@@ -1,12 +1,16 @@
 import { faStar as faSolidStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faRegStar } from "@fortawesome/free-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  FontAwesomeIcon,
+  type FontAwesomeIconProps,
+} from "@fortawesome/react-fontawesome";
 
 function StarButton(props: {
   onClick: (rating: number) => void;
   currentRating: number;
   rating: number;
   disabled?: boolean;
+  size?: FontAwesomeIconProps["size"];
 }) {
   return (
     <button
@@ -16,19 +20,19 @@ function StarButton(props: {
       }}
       type="button"
     >
-      {props.currentRating >= props.rating ? (
-        <FontAwesomeIcon icon={faSolidStar} size="2x" />
-      ) : (
-        <FontAwesomeIcon icon={faRegStar} size="2x" />
-      )}
+      <FontAwesomeIcon
+        icon={props.currentRating >= props.rating ? faSolidStar : faRegStar}
+        size={props.size ?? "2x"}
+      />
     </button>
   );
 }
 
 export function Stars(props: {
   rating: number;
-  onRatingChange: (newRating: number) => void;
+  onRatingChange?: (newRating: number) => void;
   disabled?: boolean;
+  size?: FontAwesomeIconProps["size"];
 }) {
   return (
     <div className="space-x-2">
@@ -37,8 +41,9 @@ export function Stars(props: {
           currentRating={props.rating}
           disabled={props.disabled}
           key={e}
-          onClick={props.onRatingChange}
+          onClick={props.onRatingChange ?? (() => void 0)}
           rating={e}
+          size={props.size}
         />
       ))}
     </div>

@@ -1,5 +1,11 @@
-import type { ObjectId } from "mongodb";
-import type { Sport } from "./utils.js";
+import type { Query } from "./db_client.js";
+import type {
+  DateTimeString,
+  ID,
+  MongoDBItem,
+  ObjectId,
+  Sport,
+} from "./utils.js";
 
 export enum MatchStatus {
   Request = "requested",
@@ -9,27 +15,63 @@ export enum MatchStatus {
 
 export interface Message {
   sender: string;
-  date: Date;
+  date: string;
   text: string;
 }
 
-export interface Match {
-  _id: ObjectId;
-  date: Date;
-  owner: ObjectId;
-  // Maps player id to score
-  score?: Record<string, number>;
-  status: MatchStatus;
-  sport: Sport;
-  players: ObjectId[];
+interface BaseMatch extends MongoDBItem {
+  date: DateTimeString;
   messages: Message[];
-  league?: ObjectId;
+  owner: ObjectId;
+  players: ObjectId[];
+  sport: Sport;
 }
 
-export interface MatchProposal {
-  date: Date;
+interface MatchWithoutScore extends BaseMatch {
+  status: MatchStatus.Accepted | MatchStatus.Request;
+}
+
+export type Scores = Record<ID, number>;
+interface MatchWithScore extends BaseMatch {
+  // Maps player id to score
+  score: Scores;
+  status: MatchStatus.Complete;
+  usersRated: ObjectId[];
+}
+
+interface LeagueInfo {
+  league: ObjectId;
+  round: number;
+}
+
+type LeagueMatch<T> = LeagueInfo & T;
+
+type MatchWithStatus = MatchWithScore | MatchWithoutScore;
+
+export type Match = MatchWithStatus | LeagueMatch<MatchWithStatus>;
+
+interface BaseMatchProposal {
+  date: DateTimeString;
+  to: ObjectId;
   sport: Sport;
-  owner: ObjectId;
+}
+
+export type MatchProposal = LeagueMatch<BaseMatchProposal> | BaseMatchProposal;
+
+export type MatchQuery = Query<{
+  league: ObjectId;
   players: ObjectId[];
-  league?: ObjectId;
+  round: number;
+  sport: Sport;
+  status: MatchStatus;
+}>;
+
+export interface CensoredLeagueMatch {
+  date: string;
+  league: ObjectId;
+  round: number;
+  players: ObjectId[];
+  sport: Sport;
+  score?: Record<string, number>;
+  status: MatchStatus.Complete | MatchStatus.Accepted;
 }

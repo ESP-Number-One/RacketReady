@@ -1,7 +1,6 @@
 import { fireEvent, render } from "@testing-library/react";
-import "@testing-library/jest-dom";
 import { Stars } from "../src/components/stars";
-import { track } from "./utils";
+import { track } from "./helpers/utils";
 
 /* Jest + React Guides: https://jestjs.io/docs/tutorial-react */
 
@@ -84,13 +83,11 @@ describe("Stars", () => {
   });
 
   test("Default value test", () => {
-    // Testing the disabled.
-    const setRating = (_: number) => {
-      // Nothing.
-    };
-
-    const component = render(<Stars rating={0} onRatingChange={setRating} />);
+    const component = render(<Stars rating={0} />);
 
     expect(component.container).toBeInTheDocument();
+    fireEvent.click(
+      component.container.querySelector("button") as unknown as HTMLElement,
+    );
   });
 });

@@ -8,18 +8,16 @@ import cors from "cors";
 import * as swaggerUi from "swagger-ui-express";
 import { ValidateError } from "tsoa";
 import { RegisterRoutes } from "../tsoa/routes.js";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error -- eslint can be annoying
+// @ts-ignore - testing does not support it
 import swaggerConfig from "../tsoa/swagger.json" assert { type: "json" };
 
 export const app = express();
 
 // Use body parser to read sent json payloads
-app.use(
-  urlencoded({
-    extended: true,
-  }),
-);
+app.use(json({ limit: "50mb" }));
+app.use(urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 
-app.use(json());
 app.use(cors());
 app.use((_, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
