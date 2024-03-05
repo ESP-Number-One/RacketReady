@@ -1,6 +1,7 @@
 import { type ReactElement, type JSXElementConstructor, useState } from "react";
 import { type APIClient } from "@esp-group-one/api-client";
 import { API } from "../../src/state/auth";
+import { ErrorHandler } from "../../src/lib/async";
 
 /**
  * Track the effect of a particular prop on a JSX element.
@@ -110,5 +111,11 @@ export function MockAPI(api: DeepPartial<APIClient>) {
         {children}
       </API.Provider>
     );
+  };
+}
+
+export function MockErrorHandler(fn: (e: Error) => void) {
+  return function __({ children }: { children: ReactElement }) {
+    return <ErrorHandler.Provider value={fn}>{children}</ErrorHandler.Provider>;
   };
 }
