@@ -144,7 +144,7 @@ export function CardList<T extends ReactNode>({
 
   return (
     <div
-      className="grid-flow-row grid overflow-scroll max-h-[60vh]"
+      className="grid-flow-row grid overflow-scroll max-h-screen"
       id="card-list"
       onScroll={(e) => {
         handleScroll(e);

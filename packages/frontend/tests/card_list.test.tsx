@@ -91,7 +91,6 @@ it("should call the next page once after scrolling to the bottom", async () => {
     setTimeout(res, 2000);
   });
 
-  // cardsDiv.scroll(0, 9999);
   cardsDiv.scrollTop = 9999;
   fireEvent.scroll(cardsDiv, {
     target: { scrollY: 9999, scrollTop: 9999, top: 9999 },
