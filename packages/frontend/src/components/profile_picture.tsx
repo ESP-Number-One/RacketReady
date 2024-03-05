@@ -5,10 +5,12 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 interface ProfilePicturePickerProps {
   backgroundColor?: string;
+  onChange: (img: string) => void; // Define the onChange prop
 }
 
 export function ProfilePicturePicker({
   backgroundColor = "bg-p-grey-100",
+  onChange, // Include the onChange prop in the props interface
 }: ProfilePicturePickerProps) {
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
     undefined,
@@ -19,11 +21,9 @@ export function ProfilePicturePicker({
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setSelectedImage(reader.result as string);
-
-        // At this point, the image has been read into memory and can be uploaded to a server.
-        // You would add your code to upload the image to your backend here.
-        // This could be a fetch or axios POST request, for example.
+        const imageDataURL = reader.result as string; // Convert the result to a string
+        setSelectedImage(imageDataURL);
+        onChange(imageDataURL); // Call the onChange function with the image data URL
       };
       reader.readAsDataURL(file);
     }
@@ -31,12 +31,12 @@ export function ProfilePicturePicker({
 
   const handleImageClick = () => {
     setSelectedImage(undefined);
+    onChange(""); // Call the onChange function with an empty string when the image is cleared
   };
 
   return (
     <div
-      className={`relative flex items-center justify-center rounded-lg overflow-hidden ${backgroundColor}`}
-      style={{ width: "100%", paddingTop: "100%" }}
+      className={`relative flex items-center justify-center rounded-lg overflow-hidden ${backgroundColor} w-full aspect-w-1 aspect-h-1`}
     >
       <div className="absolute inset-0">
         {selectedImage ? (
@@ -59,7 +59,7 @@ export function ProfilePicturePicker({
             <input
               id="fileInput"
               type="file"
-              accept="image/*"
+              accept="image/png,image/jpeg,image/webp"
               className="hidden"
               onChange={handleImageChange}
             />
