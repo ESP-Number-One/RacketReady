@@ -1,30 +1,48 @@
-import type { Sport } from "@esp-group-one/types";
+import type { Match, ObjectId } from "@esp-group-one/types";
 import type { Moment } from "moment";
-import { Tag } from "./tags";
+import { useContext, type JSX } from "react";
+import moment from "moment";
+import { API } from "../state/auth";
+import { ErrorHandler, useAsync } from "../lib/async";
 import { Profile } from "./profile";
-
-interface MatchCardProps {
-  sportsTag: Sport;
-  profilePic: string;
-  name: string;
-  startTime: Moment;
-  endTime: Moment;
-  link: string;
-}
+import { Tag } from "./tags";
 
 export function MatchCard({
-  sportsTag,
-  profilePic,
-  name,
-  startTime,
-  endTime,
-  link,
-}: MatchCardProps) {
+  match: { sport, date, players, _id: matchId },
+}: {
+  match: Match;
+}) {
+  const api = useContext(API);
+  const errorHandler = useContext(ErrorHandler);
+
+  const { ok, loading, error } = useAsync(async () => {
+    const { _id: myId } = await api.user().me();
+
+    const opId = players.find(
+      (id) => id.toString() !== myId.toString(),
+    ) as unknown as ObjectId;
+
+    const op = await api.user().getId(opId);
+    const profilePic = await api.user().getProfileSrc(opId);
+
+    return { opponent: op, profilePic };
+  })
+    .catch(errorHandler)
+    .await();
+
+  if (!ok) return (loading ?? error) as JSX.Element;
+
+  const {
+    opponent: { name: oppponentName },
+    profilePic,
+  } = ok;
+
+  const startTime = moment(date);
   const info = formatDate(startTime);
-  const endinfo = formatDate(endTime);
+  const endinfo = formatDate(startTime.clone().add(1, "hour"));
   return (
     <a
-      href={link}
+      href={`/match?id=${matchId.toString()}`}
       className="rounded-lg border border-gray-300 p-2 flex items-center w-80 bg-p-grey-200"
     >
       <div className="mr-4">
@@ -33,10 +51,12 @@ export function MatchCard({
         </div>
       </div>
       <div className="flex flex-col flex-1">
-        <div className="font-title font-bold text-2xl text-white">{name}</div>
+        <div className="font-title font-bold text-2xl text-white">
+          {oppponentName}
+        </div>
         <div className="font-body text-white text-xl">{`${info.time} - ${endinfo.time}`}</div>
         <div className="pb-1">
-          <Tag sportName={sportsTag} />
+          <Tag sportName={sport} />
         </div>
       </div>
       <div className="font-body font-bold text-base uppercase text-center pr-6 text-white">
