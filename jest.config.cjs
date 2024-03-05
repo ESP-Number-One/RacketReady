@@ -65,7 +65,7 @@ const config = {
       rootDir: "packages/frontend",
       testEnvironment: "jsdom",
       transform: {
-        "\\.(ts|tsx)$": "ts-jest",
+        "\\.(ts|tsx|js|jsx)$": "ts-jest",
       },
       setupFilesAfterEnv: ["<rootDir>/tests/__setup__.ts"],
       testRegex: "\\.(test|spec)\\.(ts|tsx)$",
