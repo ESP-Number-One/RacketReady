@@ -3,6 +3,7 @@ import { useState } from "react";
 import type { IconProps } from "./icon";
 
 interface InputProps {
+  onChange: (val: string) => void;
   type: "text" | "textarea" | "time" | "date";
   placeholder: string;
   icon?: ReactElement<IconProps>;
@@ -14,6 +15,7 @@ export function Input({
   type,
   placeholder,
   icon,
+  onChange,
   backgroundColor = "bg-p-grey-100",
   textColor = "text-white",
 }: InputProps) {
@@ -23,6 +25,7 @@ export function Input({
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
+    onChange(e.target.value);
     setInputValue(e.target.value);
   };
 
