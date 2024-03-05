@@ -1,13 +1,12 @@
-// RadioButton.tsx
-import React from "react";
+import type { ChangeEvent, ReactNode } from "react";
 
 interface RadioButtonProps {
   name: string;
   value: string;
-  label?: React.ReactNode;
-  icon?: React.ReactNode;
+  label?: ReactNode;
+  icon?: ReactNode;
   checked?: boolean;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   isFirst?: boolean;
   isLast?: boolean;
 }

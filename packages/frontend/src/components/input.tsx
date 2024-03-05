@@ -1,26 +1,27 @@
-import React, { useState } from "react";
-import { IconProps } from "./icon";
+import type { ChangeEvent, ReactElement, ReactNode } from "react";
+import { useState } from "react";
+import type { IconProps } from "./icon";
 
 interface InputProps {
   type: "text" | "textarea" | "time" | "date";
   placeholder: string;
-  icon?: React.ReactElement<IconProps>;
+  icon?: ReactElement<IconProps>;
   backgroundColor?: string;
   textColor?: string;
 }
 
-const Input: React.FC<InputProps> = ({
+export function Input({
   type,
   placeholder,
   icon,
   backgroundColor = "bg-p-grey-100",
   textColor = "text-white",
-}) => {
+}: InputProps) {
   const [inputValue, setInputValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setInputValue(e.target.value);
   };
@@ -36,19 +37,16 @@ const Input: React.FC<InputProps> = ({
   };
 
   // Common styles for all input types
-  const commonStyles = `font-body text-2xl font-bold text-white w-full bg-transparent focus:outline-none 
+  const commonStyles = `font-body text-2xl font-bold text-white w-full bg-transparent focus:outline-none
   inline-flex items-center w-full transform transition duration-150 ease-in-out m-0 ${
     isFocused ? "" : "placeholder-white"
   } ${icon ? "pl-5" : "pl-6"}`;
 
-  return (
-    <div className={`relative ${backgroundColor} ${textColor} rounded-lg p-2`}>
-      {icon && (
-        <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
-          {icon}
-        </div>
-      )}
-      {type === "text" && (
+  let inp: ReactNode;
+
+  switch (type) {
+    case "text":
+      inp = (
         <input
           type="text"
           placeholder={isFocused ? "" : placeholder}
@@ -58,8 +56,10 @@ const Input: React.FC<InputProps> = ({
           onBlur={handleBlur}
           className={commonStyles}
         />
-      )}
-      {type === "textarea" && (
+      );
+      break;
+    case "textarea":
+      inp = (
         <textarea
           placeholder={isFocused ? "" : placeholder}
           value={inputValue}
@@ -68,8 +68,10 @@ const Input: React.FC<InputProps> = ({
           onBlur={handleBlur}
           className={`${commonStyles} resize-none`}
         />
-      )}
-      {type === "time" && (
+      );
+      break;
+    case "time":
+      inp = (
         <input
           type="time"
           value={inputValue}
@@ -78,8 +80,10 @@ const Input: React.FC<InputProps> = ({
           onBlur={handleBlur}
           className={commonStyles}
         />
-      )}
-      {type === "date" && (
+      );
+      break;
+    case "date":
+      inp = (
         <input
           type="date"
           value={inputValue}
@@ -88,11 +92,18 @@ const Input: React.FC<InputProps> = ({
           onBlur={handleBlur}
           className={commonStyles}
         />
+      );
+      break;
+  }
+
+  return (
+    <div className={`relative ${backgroundColor} ${textColor} rounded-lg p-2`}>
+      {icon && (
+        <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
+          {icon}
+        </div>
       )}
+      {inp}
     </div>
   );
-};
-
-export default Input; // Export the Input component as default
-
-export { Input }; // Export the Input component as named export
+}
