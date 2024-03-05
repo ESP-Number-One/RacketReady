@@ -1,4 +1,4 @@
-import { Slot } from "../../src/lib/slotting";
+import { Slot } from "../../../src/lib/slotting";
 
 describe("Slotting Utilities", () => {
   const TestA = (_props: { class: string }) => {

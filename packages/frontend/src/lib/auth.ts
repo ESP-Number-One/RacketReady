@@ -30,7 +30,7 @@ export async function isNewUser(client: APIClient): Promise<boolean> {
     .me()
     .then(() => false)
     .catch((e) => {
-      console.log(`Had error: ${e}`);
+      console.warn(`Had error: ${e}`);
       return true;
     });
 }
