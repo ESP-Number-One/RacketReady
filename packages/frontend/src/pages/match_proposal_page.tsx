@@ -35,18 +35,21 @@ export function MatchProposal() {
     <Page>
       <Page.Header>
         <Header.Back />
-        Page Header
+        Proposed Matches
         <Header.Right>
           <FontAwesomeIcon icon={faPlus} />
         </Header.Right>
       </Page.Header>
       <Page.Body>
-        <CardList nextPage={nextPage} />
+        <CardList
+          nextPage={nextPage}
+          emptyListPlaceholder="You have no more match proposals."
+        />
       </Page.Body>
       <Page.Footer>
         <button
           onClick={() => {
-            viewNavigate("/match-proposal");
+            viewNavigate("/match-proposals");
           }}
         >
           MatchProposal

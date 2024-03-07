@@ -10,14 +10,14 @@ import type { APIClient } from "@esp-group-one/api-client";
 import { Proposal } from "../components/proposal";
 
 export namespace Cards {
-  export function fromUsers(users: User[] | CensoredUser[]) {
+  export function fromUsers(users: User[] | CensoredUser[], _api: APIClient) {
     console.error("Not implemented");
     return users.map((user) => {
       return (<div key={user._id.toString()} />) as ReactNode;
     });
   }
 
-  export function fromLeagues(leagues: League[]) {
+  export function fromLeagues(leagues: League[], _api: APIClient) {
     console.error("Not implemented");
     return leagues.map((league) => {
       return (<div key={league._id.toString()} />) as ReactNode;
