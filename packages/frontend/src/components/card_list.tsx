@@ -7,12 +7,14 @@ interface CardListProps<T extends ReactNode> {
   nextPage: (nextPage: number) => Promise<T[]>;
   refreshPage?: () => void;
   startPage?: number;
+  emptyListPlaceholder?: string;
 }
 
 export function CardList<T extends ReactNode>({
   nextPage,
   refreshPage,
   startPage,
+  emptyListPlaceholder = "No more results",
 }: CardListProps<T>) {
   const [pageNum, setPageNum] = useState(
     startPage !== undefined && startPage >= 0 ? startPage : 0,
@@ -61,12 +63,15 @@ export function CardList<T extends ReactNode>({
   };
 
   const touchMove = (e: TouchEvent) => {
+    const target: EventTarget =
+      e.target === null ? e.targetTouches[0].target : e.target;
+    const targetDiv: HTMLDivElement = target as HTMLDivElement;
     y2 = e.touches[0].pageY;
     if (
-      document.scrollingElement?.scrollTop === 0 && // view is at top of screen
+      targetDiv.offsetTop <= 120 && // view is at top of screen
       y2 > y1 + 120 && // touch scrolled down by 120px
       !isLoading && // Don't update if already loading stuff
-      !shouldGetPage // and don't update if already about to load stuff
+      !shouldGetPage // and don't up===date if already about to load stuff
     ) {
       setIsRefreshing(true);
       setIsLastPage(false);
@@ -123,32 +128,29 @@ export function CardList<T extends ReactNode>({
     const targetDiv: HTMLDivElement = target as HTMLDivElement;
     if (
       targetDiv.scrollTop + targetDiv.clientHeight <
-        targetDiv.scrollHeight - 30 ||
+        targetDiv.scrollHeight - targetDiv.clientHeight * 0.1 ||
       isLastPage ||
       isLoading ||
       shouldGetPage
     ) {
       return;
     }
-    setShouldGetPage(true);
     blockNextPage.current = false;
+    setShouldGetPage(true);
   };
 
   useEffect(() => {
     if (!isLoading && !isLastPage && !blockNextPage.current) {
-      nextPageWrapper();
       blockNextPage.current = true;
+      nextPageWrapper();
     }
     setShouldGetPage(false);
   }, [shouldGetPage]);
 
   return (
     <div
-      className="grid-flow-row grid overflow-scroll max-h-screen"
+      className="grid-flow-row grid overflow-clip h-full items-top"
       id="card-list"
-      onScroll={(e) => {
-        handleScroll(e);
-      }}
     >
       <FontAwesomeIcon
         className={
@@ -159,10 +161,28 @@ export function CardList<T extends ReactNode>({
         icon={faRefresh}
         size="lg"
       />
-      {cards.current}
-      {isLoading ? <p className="self-center font-body">Loading!</p> : null}
-      {isLastPage ? (
-        <p className="self-center font-body">No more results.</p>
+      <div
+        className="overflow-scroll"
+        onScroll={(e) => {
+          handleScroll(e);
+        }}
+      >
+        {cards.current}
+        {isLoading ? <p className="self-center font-body">Loading!</p> : null}
+        {isLastPage &&
+        cards.current.length !== 0 &&
+        emptyListPlaceholder === undefined ? (
+          <p className="self-center font-body text-center pt-6 pb-6">
+            {emptyListPlaceholder}
+          </p>
+        ) : null}
+      </div>
+      {emptyListPlaceholder && cards.current.length === 0 ? (
+        <div className="flex flex-row justify-center h-full">
+          <p className="p-2 font-title h-full text-p-grey-100">
+            {emptyListPlaceholder}
+          </p>
+        </div>
       ) : null}
     </div>
   );
