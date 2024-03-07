@@ -1,6 +1,6 @@
 import { expect, test } from "@jest/globals";
 import { ObjectId } from "../src/utils.js";
-import { IDS } from "./utils.js";
+import { IDS } from "./helpers/utils.js";
 
 describe("Object ID", () => {
   test("from JSON", () => {

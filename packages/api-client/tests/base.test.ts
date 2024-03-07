@@ -1,15 +1,8 @@
 import { beforeEach, describe, expect, test } from "@jest/globals";
-import fetchMockImp, { type FetchMock } from "jest-fetch-mock";
 import { newAPISuccess } from "@esp-group-one/types";
 import { APIClientBase } from "../src/base.js";
-import { fetchMockEndpointOnce, runErrorTests } from "./lib/utils.js";
-
-// TypeScript is weird and seems to believe the type is two different things
-// depending on running build/test
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- two typescript versions colliding
-const fetchMock: FetchMock = (
-  "default" in fetchMockImp ? fetchMockImp.default : fetchMockImp
-) as FetchMock;
+import { fetchMockEndpointOnce, runErrorTests } from "./helpers/utils.js";
+import { fetchMock } from "./helpers/fetch_mock.js";
 
 fetchMock.enableMocks();
 beforeEach(() => {

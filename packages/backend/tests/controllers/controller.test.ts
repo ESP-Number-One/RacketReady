@@ -1,21 +1,19 @@
 import type { FilterOptions } from "@esp-group-one/db-client";
-import { tests as dbTests } from "@esp-group-one/db-client";
 import { describe, expect, test } from "@jest/globals";
 import type { OptionalId } from "mongodb";
 import type { MongoDBItem, WithError, User } from "@esp-group-one/types";
-import {
-  ObjectId,
-  newAPISuccess,
-  tests as typesTests,
-} from "@esp-group-one/types";
+import { ObjectId, newAPISuccess } from "@esp-group-one/types";
 import type { Request } from "express";
 import { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
+import {
+  IDS,
+  OIDS,
+  addUser,
+  compareBag,
+  idCmp,
+} from "@esp-group-one/test-helpers";
 import { ControllerWrap } from "../../src/controller.js";
-import { addUser, compareBag, idCmp } from "../helpers/utils.js";
-import { setup, withDb, withRawDb } from "../helpers/controller.js";
-
-const { getRawDb } = dbTests;
-const { IDS } = typesTests;
+import { setup, withRawDb } from "../helpers/controller.js";
 
 interface TestObj extends MongoDBItem {
   name: string;
@@ -24,11 +22,8 @@ interface TestObj extends MongoDBItem {
 
 class TestController extends ControllerWrap<TestObj> {
   getCollection(): Promise<CollectionWrap<TestObj>> {
-    return Promise.resolve(
-      withRawDb<CollectionWrap<TestObj>>(
-        (client) =>
-          new CollectionWrap<TestObj>(getRawDb(client).collection("test")),
-      ),
+    return withRawDb<CollectionWrap<TestObj>>(
+      (db) => new CollectionWrap<TestObj>(db.collection("test")),
     );
   }
 
@@ -76,7 +71,7 @@ class TestController extends ControllerWrap<TestObj> {
   }
 }
 
-setup();
+const db = setup();
 
 let controller: TestController;
 
@@ -120,7 +115,7 @@ describe("get", () => {
   });
 
   test("not found", async () => {
-    await expect(controller.get(new ObjectId(IDS[0]))).resolves.toStrictEqual({
+    await expect(controller.get(OIDS[0])).resolves.toStrictEqual({
       success: false,
       error: "Failed to get obj",
     });
@@ -200,21 +195,19 @@ describe("create", () => {
 
 describe("withUserId", () => {
   test("found", async () => {
-    await withDb(async (db) => {
-      const auth0Id = "github|123456";
-      const user = await addUser(db, auth0Id);
+    const auth0Id = "github|123456";
+    const user = await addUser(db.get(), auth0Id);
 
-      const req = getFakeReq(auth0Id);
-      const res = controller.withUserId(req, (id) =>
-        Promise.resolve(newAPISuccess(id)),
-      );
+    const req = getFakeReq(auth0Id);
+    const res = controller.withUserId(req, (id) =>
+      Promise.resolve(newAPISuccess(id)),
+    );
 
-      await expect(res).resolves.toStrictEqual({
-        success: true,
-        data: user._id,
-      });
-      expect(controller.getStatus()).toBe(undefined);
+    await expect(res).resolves.toStrictEqual({
+      success: true,
+      data: user._id,
     });
+    expect(controller.getStatus()).toBe(undefined);
   });
 
   test("not found", async () => {
@@ -231,41 +224,37 @@ describe("withUserId", () => {
   });
 
   test("Error", async () => {
-    await withDb(async (db) => {
-      const auth0Id = "github|123456";
-      const _ = await addUser(db, auth0Id);
+    const auth0Id = "github|123456";
+    await addUser(db.get(), auth0Id);
 
-      const req = getFakeReq(auth0Id);
-      const res = controller.withUserId(req, () =>
-        Promise.reject(new Error("Some random error")),
-      );
+    const req = getFakeReq(auth0Id);
+    const res = controller.withUserId(req, () =>
+      Promise.reject(new Error("Some random error")),
+    );
 
-      await expect(res).resolves.toStrictEqual({
-        success: false,
-        error: "Internal Server Error",
-      });
-      expect(controller.getStatus()).toBe(500);
+    await expect(res).resolves.toStrictEqual({
+      success: false,
+      error: "Internal Server Error",
     });
+    expect(controller.getStatus()).toBe(500);
   });
 });
 
 describe("withUser", () => {
   test("found", async () => {
-    await withDb(async (db) => {
-      const auth0Id = "github|123456";
-      const user = await addUser(db, auth0Id);
+    const auth0Id = "github|123456";
+    const user = await addUser(db.get(), auth0Id);
 
-      const req = getFakeReq(auth0Id);
-      const res = controller.withUser(req, (u) =>
-        Promise.resolve(newAPISuccess(u)),
-      );
+    const req = getFakeReq(auth0Id);
+    const res = controller.withUser(req, (u) =>
+      Promise.resolve(newAPISuccess(u)),
+    );
 
-      await expect(res).resolves.toStrictEqual({
-        success: true,
-        data: user,
-      });
-      expect(controller.getStatus()).toBe(undefined);
+    await expect(res).resolves.toStrictEqual({
+      success: true,
+      data: user,
     });
+    expect(controller.getStatus()).toBe(undefined);
   });
 
   test("not found", async () => {
@@ -282,41 +271,35 @@ describe("withUser", () => {
   });
 
   test("user not found (map is)", async () => {
-    await withDb(async (db) => {
-      const auth0Id = "github|123456";
-      await (
-        await db.userMap()
-      ).insert({ auth0Id, internalId: new ObjectId(IDS[0]) });
+    const auth0Id = "github|123456";
+    await (await db.get().userMap()).insert({ auth0Id, internalId: OIDS[0] });
 
-      const req = getFakeReq(auth0Id);
-      const res = await controller.withUser(req, (u) =>
-        Promise.resolve(newAPISuccess(u)),
-      );
+    const req = getFakeReq(auth0Id);
+    const res = await controller.withUser(req, (u) =>
+      Promise.resolve(newAPISuccess(u)),
+    );
 
-      expect(controller.getStatus()).toBe(404);
-      expect(res).toStrictEqual({
-        success: false,
-        error: "Could not get user",
-      });
+    expect(controller.getStatus()).toBe(404);
+    expect(res).toStrictEqual({
+      success: false,
+      error: "Could not get user",
     });
   });
 
   test("Error", async () => {
-    await withDb(async (db) => {
-      const auth0Id = "github|123456";
-      const _ = await addUser(db, auth0Id);
+    const auth0Id = "github|123456";
+    await addUser(db.get(), auth0Id);
 
-      const req = getFakeReq(auth0Id);
-      const res = controller.withUser(req, () =>
-        Promise.reject(new Error("Some random error")),
-      );
+    const req = getFakeReq(auth0Id);
+    const res = controller.withUser(req, () =>
+      Promise.reject(new Error("Some random error")),
+    );
 
-      await expect(res).resolves.toStrictEqual({
-        success: false,
-        error: "Internal Server Error",
-      });
-      expect(controller.getStatus()).toBe(500);
+    await expect(res).resolves.toStrictEqual({
+      success: false,
+      error: "Internal Server Error",
     });
+    expect(controller.getStatus()).toBe(500);
   });
 });
 
@@ -330,7 +313,7 @@ describe("withVerifiedParam", () => {
     expect(controller.getStatus()).toBe(undefined);
     expect(res).toStrictEqual({
       success: true,
-      data: new ObjectId(IDS[0]),
+      data: OIDS[0],
     });
   });
 

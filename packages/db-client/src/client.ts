@@ -31,8 +31,10 @@ export class DbClient {
 
   public async close(): Promise<void> {
     // This makes sure we don't have any async process left
-    await this.db;
-    await this.client.close();
+    if (!this.closed) {
+      await this.db;
+      await this.client.close();
+    }
     this.closed = true;
   }
 
@@ -62,6 +64,14 @@ export class DbClient {
     return this.matchesCache;
   }
 
+  public rawClient(): MongoClient {
+    return this.client;
+  }
+
+  public raw(): Promise<Db> {
+    return this.db;
+  }
+
   public async userMap(): Promise<CollectionWrap<UserIdMap>> {
     const db = await this.db;
 
@@ -88,7 +98,7 @@ export class DbClient {
    * This should only be called in the constructor
    */
   private async connect(): Promise<Db> {
-    await this.client.connect();
+    this.client = await this.client.connect();
 
     return this.client.db(this.dbName);
   }

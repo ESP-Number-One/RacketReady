@@ -1,59 +1,35 @@
-import { DbClient, tests as dbTests } from "@esp-group-one/db-client";
 import type { Error, MongoDBItem, Success, User } from "@esp-group-one/types";
-import { ObjectId, tests as typeTests } from "@esp-group-one/types";
-import { beforeAll, afterAll, describe, expect, test } from "@jest/globals";
-import type { MongoClient } from "mongodb";
+import { ObjectId } from "@esp-group-one/types";
+import { afterAll, describe, expect, test } from "@jest/globals";
+import {
+  IDS,
+  OIDS,
+  TestDb,
+  compareBag,
+  idCmp,
+} from "@esp-group-one/test-helpers";
+import type { Db } from "mongodb";
 import { closeDb } from "../../src/lib/db.js";
 import { app } from "../../src/app.js";
-import {
-  addUser,
-  compareBag,
-  expectAPIRes,
-  idCmp,
-  requestWithAuth,
-} from "./utils.js";
-
-const { IDS } = typeTests;
-const { getRawClient, getRawDb, setup: dbSetup } = dbTests;
+import { expectAPIRes, requestWithAuth } from "./utils.js";
+import { TestUser } from "./user.js";
 
 const TEST_AUTH0_ID = "github|111111";
-const AUTH_TOKEN = "Bearer test_api_token";
 
-let db: DbClient;
-let client: MongoClient;
+let db: TestDb;
 
-async function resetCollections(): Promise<void> {
-  const collections = await getRawDb(client).collections();
-  const promises = [];
-  for (const c of collections) {
-    promises.push(c.deleteMany());
-  }
-  await Promise.all(promises);
-}
-
-export function setup() {
-  beforeAll(async () => {
-    dbSetup();
-
-    db = new DbClient();
-    client = await getRawClient();
-  });
-
-  beforeEach(resetCollections);
-
+export function setup(): TestDb {
   afterAll(async () => {
     await closeDb();
-    await db.close();
-    await client.close();
   });
+
+  db = new TestDb();
+
+  return db;
 }
 
-export function withDb<T>(func: (db: DbClient) => T): T {
-  return func(db);
-}
-
-export function withRawDb<T>(func: (db: MongoClient) => T): T {
-  return func(client);
+export async function withRawDb<T>(func: (db: Db) => T): Promise<T> {
+  return func(await db.get().raw());
 }
 
 export function addCommonTests<
@@ -73,29 +49,25 @@ export function addCommonTests<
   getCreation: () => Creation;
   dontAddUserOnCreation?: boolean;
   skipNewExists?: boolean;
-  addObj: (db: DbClient, currUser: User, creation?: Creation) => Promise<T>;
-  addCensoredObj: (db: DbClient, currUser: User) => Promise<Censored>;
-  validateCreation: (db: DbClient, user: User) => Promise<void>;
+  addObj: (currUser: User, creation?: Creation) => Promise<T>;
+  addCensoredObj: (currUser: User) => Promise<Censored>;
+  validateCreation: (user: User) => Promise<void>;
 }) {
   const PAGE_SIZE = 20;
-  let currUser: User;
-
-  beforeEach(async () => {
-    currUser = await addUser(db, TEST_AUTH0_ID);
-  });
+  const currUser = new TestUser(db, TEST_AUTH0_ID);
 
   describe("find", () => {
     test("Found", async () => {
       const objsPromise = [];
       for (let i = 0; i < PAGE_SIZE; i++)
-        objsPromise.push(addCensoredObj(db, currUser));
+        objsPromise.push(addCensoredObj(currUser.get()));
 
       const objs = await Promise.all(objsPromise);
 
-      const res = await requestWithAuth(app, TEST_AUTH0_ID)
+      const res = await currUser
+        .request(app)
         .post(`${prefix}/find`)
-        .send({ pageSize: PAGE_SIZE })
-        .set("Authorization", AUTH_TOKEN);
+        .send({ pageSize: PAGE_SIZE });
 
       expect(res.statusCode).toBe(200);
       const body = ObjectId.fromObj(res.body) as Success<Censored[]>;
@@ -108,23 +80,23 @@ export function addCommonTests<
 
     // Due to the differences in query we cannot test it here so just test a malformed one
     test("Malformed Query", async () => {
-      const res = await requestWithAuth(app, TEST_AUTH0_ID)
+      const res = await currUser
+        .request(app)
         .post(`${prefix}/find`)
         .send({
-          query: { not_existant_id: new ObjectId(IDS[0]) },
+          query: { not_existant_id: OIDS[0] },
           pageSize: PAGE_SIZE,
-        })
-        .set("Authorization", AUTH_TOKEN);
+        });
 
       expect(res.statusCode).toBe(400);
       expectAPIRes(res.body).toStrictEqual({});
     });
 
     test("None found", async () => {
-      const res = await requestWithAuth(app, TEST_AUTH0_ID)
+      const res = await currUser
+        .request(app)
         .post(`${prefix}/find`)
-        .send({ pageSize: PAGE_SIZE })
-        .set("Authorization", AUTH_TOKEN);
+        .send({ pageSize: PAGE_SIZE });
 
       expect(res.statusCode).toBe(200);
       expectAPIRes(res.body).toStrictEqual({
@@ -136,12 +108,12 @@ export function addCommonTests<
 
   describe("get", () => {
     test("Found", async () => {
-      const obj = await addCensoredObj(db, currUser);
+      const obj = await addCensoredObj(currUser.get());
       expect(obj).not.toBe(undefined);
 
-      const res = await requestWithAuth(app, TEST_AUTH0_ID)
-        .get(`${prefix}/${obj._id.toString()}`)
-        .set("Authorization", AUTH_TOKEN);
+      const res = await currUser
+        .request(app)
+        .get(`${prefix}/${obj._id.toString()}`);
 
       expect(res.statusCode).toBe(200);
       expectAPIRes(res.body).toStrictEqual({
@@ -151,9 +123,7 @@ export function addCommonTests<
     });
 
     test("Not Found", async () => {
-      const res = await requestWithAuth(app, TEST_AUTH0_ID)
-        .get(`${prefix}/${IDS[0]}`)
-        .set("Authorization", AUTH_TOKEN);
+      const res = await currUser.request(app).get(`${prefix}/${IDS[0]}`);
 
       expect(res.statusCode).toBe(404);
       expect(res.body).toStrictEqual({
@@ -163,9 +133,7 @@ export function addCommonTests<
     });
 
     test("Invalid ID", async () => {
-      const res = await requestWithAuth(app, TEST_AUTH0_ID)
-        .get(`${prefix}/a`)
-        .set("Authorization", AUTH_TOKEN);
+      const res = await currUser.request(app).get(`${prefix}/a`);
 
       expect(res.statusCode).toBe(400);
       expect(res.body).toStrictEqual({});
@@ -176,13 +144,13 @@ export function addCommonTests<
     if (!skipNewExists) {
       test("already exists", async () => {
         const creation = getCreation();
-        if (dontAddUserOnCreation) await resetCollections();
+        if (dontAddUserOnCreation) await db.reset();
 
-        await addObj(db, currUser, creation);
-        const res = await requestWithAuth(app, TEST_AUTH0_ID)
+        await addObj(currUser.get(), creation);
+        const res = await currUser
+          .request(app)
           .post(`${prefix}/new`)
-          .send(creation as object)
-          .set("Authorization", AUTH_TOKEN);
+          .send(creation as object);
 
         expect(res.statusCode).toBe(409);
         const body = res.body as unknown as Error;
@@ -192,24 +160,21 @@ export function addCommonTests<
 
     test("succeeded", async () => {
       const creation = getCreation();
-      if (dontAddUserOnCreation) await resetCollections();
+      if (dontAddUserOnCreation) await db.reset();
 
-      const res = await requestWithAuth(app, TEST_AUTH0_ID)
+      const res = await currUser
+        .request(app)
         .post(`${prefix}/new`)
-        .send(creation as object)
-        .set("Authorization", AUTH_TOKEN);
+        .send(creation as object);
 
       expect(res.statusCode).toBe(201);
-      await validateCreation(db, currUser);
+      await validateCreation(currUser.get());
     });
 
     test("malformed", async () => {
-      if (dontAddUserOnCreation) await resetCollections();
+      if (dontAddUserOnCreation) await db.reset();
 
-      const res = await requestWithAuth(app, TEST_AUTH0_ID)
-        .post(`${prefix}/new`)
-        .send({})
-        .set("Authorization", AUTH_TOKEN);
+      const res = await currUser.request(app).post(`${prefix}/new`).send({});
 
       expect(res.statusCode).toBe(400);
       expect(res.body).toEqual({});
@@ -218,16 +183,17 @@ export function addCommonTests<
 
   describe("authentication", () => {
     test("No auth header", async () => {
-      const res = await requestWithAuth(app, TEST_AUTH0_ID).get(
-        `${prefix}/${IDS[0]}`,
-      );
+      const res = await currUser
+        .request(app)
+        .get(`${prefix}/${IDS[0]}`)
+        .unset("Authorization");
+
       expect(res.statusCode).toBe(401);
     });
 
     test("Not authorised", async () => {
-      const res = await requestWithAuth(app, "")
-        .get(`${prefix}/${IDS[0]}`)
-        .set("Authorization", AUTH_TOKEN);
+      const res = await requestWithAuth(app, "").get(`${prefix}/${IDS[0]}`);
+
       expect(res.statusCode).toBe(401);
     });
   });

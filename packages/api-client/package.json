@@ -19,6 +19,7 @@
   "devDependencies": {
     "@esp-group-one/eslint-config": "workspace:^",
     "@esp-group-one/jest-esm-transformer": "workspace:^",
+    "@esp-group-one/test-helpers": "workspace:^",
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.7",

@@ -1,10 +1,10 @@
 import { afterEach, describe, expect, test } from "@jest/globals";
-import * as db from "@esp-group-one/db-client";
+import { db } from "@esp-group-one/test-helpers";
 import { closeDb, getDb } from "../../src/lib/db.js";
 
 // So mongodb doesn't complain
 beforeAll(() => {
-  db.tests.setup();
+  db.setup();
 });
 
 // Makes sure the db is properly closed after all

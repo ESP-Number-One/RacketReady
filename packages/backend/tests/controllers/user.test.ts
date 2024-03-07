@@ -6,16 +6,15 @@ import type {
   UserCreation,
   UserQuery,
 } from "@esp-group-one/types";
-import { ObjectId, censorUser, tests } from "@esp-group-one/types";
+import { ObjectId, censorUser } from "@esp-group-one/types";
 import { describe, expect, test } from "@jest/globals";
 import { generateRandomString } from "ts-randomstring/lib/index.js";
+import { addUser, IDS } from "@esp-group-one/test-helpers";
 import { app } from "../../src/app.js";
-import { addUser, expectAPIRes, requestWithAuth } from "../helpers/utils.js";
-import { addCommonTests, setup, withDb } from "../helpers/controller.js";
+import { expectAPIRes, requestWithAuth } from "../helpers/utils.js";
+import { addCommonTests, setup } from "../helpers/controller.js";
 
-const { IDS } = tests;
-
-setup();
+const db = setup();
 
 jest.mock("access-token-jwt");
 
@@ -23,24 +22,18 @@ const auth0Id = "github|123456";
 
 describe("me", () => {
   test("success", async () => {
-    await withDb(async (db) => {
-      const user = await addUser(db, auth0Id);
-      const res = await requestWithAuth(app, auth0Id)
-        .get("/user/me")
-        .set("Authorization", "Bearer test_api_token");
+    const user = await addUser(db.get(), auth0Id);
+    const res = await requestWithAuth(app, auth0Id).get("/user/me");
 
-      expect(res.statusCode).toBe(200);
-      expectAPIRes(res.body).toStrictEqual({
-        success: true,
-        data: user,
-      });
+    expect(res.statusCode).toBe(200);
+    expectAPIRes(res.body).toStrictEqual({
+      success: true,
+      data: user,
     });
   });
 
   test("error", async () => {
-    const res = await requestWithAuth(app)
-      .get("/user/me")
-      .set("Authorization", "Bearer test_api_token");
+    const res = await requestWithAuth(app).get("/user/me");
 
     expect(res.statusCode).toBe(404);
     expectAPIRes(res.body).toStrictEqual({
@@ -59,38 +52,32 @@ describe("new", () => {
   };
 
   test("duplicate email", async () => {
-    await withDb(async (db) => {
-      const email = "test@bot.com";
-      await addUser(db, auth0Id, { email });
-      const res = await requestWithAuth(app, "github|111111")
-        .post("/user/new")
-        .send({
-          ...creation,
-          email,
-        } as UserCreation)
-        .set("Authorization", "Bearer test_api_token");
+    const email = "test@bot.com";
+    await addUser(db.get(), auth0Id, { email });
+    const res = await requestWithAuth(app, "github|111111")
+      .post("/user/new")
+      .send({
+        ...creation,
+        email,
+      } as UserCreation);
 
-      expect(res.statusCode).toBe(409);
-      expect(res.body).toStrictEqual({
-        success: false,
-        error: "User already exists",
-      });
+    expect(res.statusCode).toBe(409);
+    expect(res.body).toStrictEqual({
+      success: false,
+      error: "User already exists",
     });
   });
 
   test("already mapped user", async () => {
-    await withDb(async (db) => {
-      await addUser(db, auth0Id);
-      const res = await requestWithAuth(app, auth0Id)
-        .post("/user/new")
-        .send(creation)
-        .set("Authorization", "Bearer test_api_token");
+    await addUser(db.get(), auth0Id);
+    const res = await requestWithAuth(app, auth0Id)
+      .post("/user/new")
+      .send(creation);
 
-      expect(res.statusCode).toBe(409);
-      expect(res.body).toStrictEqual({
-        success: false,
-        error: "User already exists",
-      });
+    expect(res.statusCode).toBe(409);
+    expect(res.body).toStrictEqual({
+      success: false,
+      error: "User already exists",
     });
   });
 
@@ -103,29 +90,24 @@ describe("edit", () => {
   let user: User;
 
   beforeEach(async () => {
-    await withDb(async (db) => {
-      user = await addUser(db);
-    });
+    user = await addUser(db.get());
   });
 
   test("duplicate email", async () => {
-    await withDb(async (db) => {
-      const email = "test@bot.com";
-      await addUser(db, "github|111111", { email });
-      const res = await requestWithAuth(app)
-        .post("/user/me/edit")
-        .send({
-          description: "Hi I'm 100% a real person",
-          email: "test@bot.com",
-          name: "Alex Dasher",
-        } as UserCreation)
-        .set("Authorization", "Bearer test_api_token");
+    const email = "test@bot.com";
+    await addUser(db.get(), "github|111111", { email });
+    const res = await requestWithAuth(app)
+      .post("/user/me/edit")
+      .send({
+        description: "Hi I'm 100% a real person",
+        email: "test@bot.com",
+        name: "Alex Dasher",
+      } as UserCreation);
 
-      expect(res.statusCode).toBe(409);
-      expect(res.body).toStrictEqual({
-        success: false,
-        error: "User already exists",
-      });
+    expect(res.statusCode).toBe(409);
+    expect(res.body).toStrictEqual({
+      success: false,
+      error: "User already exists",
     });
   });
 
@@ -136,47 +118,39 @@ describe("edit", () => {
       name: "Alex Dasher",
     };
 
-    const res = await requestWithAuth(app)
-      .post("/user/me/edit")
-      .send(update)
-      .set("Authorization", "Bearer test_api_token");
+    const res = await requestWithAuth(app).post("/user/me/edit").send(update);
 
     expect(res.status).toBe(200);
-    await withDb(async (db) => {
-      const u = await (await db.users()).get(user._id);
-      expect(u?.description).toBe(update.description);
-      expect(u?.email).toBe(update.email);
-      expect(u?.name).toBe(update.name);
-    });
+
+    const u = await (await db.get().users()).get(user._id);
+    expect(u?.description).toBe(update.description);
+    expect(u?.email).toBe(update.email);
+    expect(u?.name).toBe(update.name);
   });
 
-  testWithProfilePicture("/user/me/edit", {}, 200, () =>
-    withDb(async (db) => {
-      const u = await (await db.users()).get(user._id);
-      return u?.profilePicture ?? "";
-    }),
-  );
+  testWithProfilePicture("/user/me/edit", {}, 200, async () => {
+    const u = await (await db.get().users()).get(user._id);
+    return u?.profilePicture ?? "";
+  });
 });
 
 describe("profile_picture", () => {
   const profilePicture = readStaticFile("res-webp.webp");
   test("get", async () => {
-    await withDb(async (db) => {
-      const u = await addUser(db, auth0Id, { profilePicture });
-      const res = await requestWithAuth(app, "github|111111")
-        .get(`/user/${u._id.toString()}/profile_picture`)
-        .set("Authorization", "Bearer test_api_token");
+    const u = await addUser(db.get(), auth0Id, { profilePicture });
+    const res = await requestWithAuth(app, "github|111111").get(
+      `/user/${u._id.toString()}/profile_picture`,
+    );
 
-      expect(res.status).toBe(200);
-      const body = res.body as Success<string>;
-      expect(body.data).toBe(`data:image/webp;base64,${profilePicture}`);
-    });
+    expect(res.status).toBe(200);
+    const body = res.body as Success<string>;
+    expect(body.data).toBe(`data:image/webp;base64,${profilePicture}`);
   });
 
   test("no user", async () => {
-    const res = await requestWithAuth(app, "github|111111")
-      .get(`/user/${IDS[0]}/profile_picture`)
-      .set("Authorization", "Bearer test_api_token");
+    const res = await requestWithAuth(app, "github|111111").get(
+      `/user/${IDS[0]}/profile_picture`,
+    );
 
     expect(res.status).toBe(404);
     expect(res.body).toStrictEqual({
@@ -188,27 +162,24 @@ describe("profile_picture", () => {
 
 describe("find", () => {
   test("with query", async () => {
-    await withDb(async (db) => {
-      await addUser(db, auth0Id);
+    await addUser(db.get(), auth0Id);
 
-      const names = ["Test bot 1", "Test Bot 2", "Test bot 3"];
-      const promises = [];
-      for (const n of names) {
-        promises.push(addUser(db, generateRandomString(), { name: n }));
-      }
+    const names = ["Test bot 1", "Test Bot 2", "Test bot 3"];
+    const promises = [];
+    for (const n of names) {
+      promises.push(addUser(db.get(), generateRandomString(), { name: n }));
+    }
 
-      const users = await Promise.all(promises);
+    const users = await Promise.all(promises);
 
-      const res = await requestWithAuth(app, auth0Id)
-        .post("/user/find")
-        .send({ query: { profileText: "bot 1$" } } as PageOptions<UserQuery>)
-        .set("Authorization", "Bearer test_api_token");
+    const res = await requestWithAuth(app, auth0Id)
+      .post("/user/find")
+      .send({ query: { profileText: "bot 1$" } } as PageOptions<UserQuery>);
 
-      expect(res.status).toBe(200);
-      expect(res.body).toEqual({
-        success: true,
-        data: [censorUser(users[0])],
-      });
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({
+      success: true,
+      data: [censorUser(users[0])],
     });
   });
 });
@@ -224,16 +195,16 @@ addCommonTests({
     } as UserCreation;
   },
   dontAddUserOnCreation: true,
-  addObj: (db, _, creation) => addUser(db, generateRandomString(), creation),
-  addCensoredObj: async (db) => {
-    const user = await addUser(db, generateRandomString(), {
+  addObj: (_, creation) => addUser(db.get(), generateRandomString(), creation),
+  addCensoredObj: async () => {
+    const user = await addUser(db.get(), generateRandomString(), {
       name: generateRandomString(),
       email: `${generateRandomString({ length: 10 })}@test.com`,
     });
     return censorUser(user);
   },
-  validateCreation: async (db) => {
-    const coll = await db.users();
+  validateCreation: async () => {
+    const coll = await db.get().users();
     const res = await coll.find({});
     expect(res).toStrictEqual([
       {
@@ -277,8 +248,7 @@ function testWithProfilePicture<T, R>(
       test(filetype, async () => {
         const res = await requestWithAuth(app)
           .post(endpoint)
-          .send({ ...base, profilePicture })
-          .set("Authorization", "Bearer test_api_token");
+          .send({ ...base, profilePicture });
 
         expect(res.status).toBe(successCode);
         await expect(getProfilePicture(res.body as R)).resolves.toBe(
@@ -290,8 +260,7 @@ function testWithProfilePicture<T, R>(
     test("Invalid base64", async () => {
       const res = await requestWithAuth(app)
         .post(endpoint)
-        .send({ ...base, profilePicture: "as;lkdfj'z=['/-ф" })
-        .set("Authorization", "Bearer test_api_token");
+        .send({ ...base, profilePicture: "as;lkdfj'z=['/-ф" });
 
       expect(res.statusCode).toBe(400);
       expect(res.body).toStrictEqual({
@@ -305,8 +274,7 @@ function testWithProfilePicture<T, R>(
 
       const res = await requestWithAuth(app)
         .post(endpoint)
-        .send({ ...base, profilePicture })
-        .set("Authorization", "Bearer test_api_token");
+        .send({ ...base, profilePicture });
 
       expect(res.statusCode).toBe(400);
       expect(res.body).toStrictEqual({

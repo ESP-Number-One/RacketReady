@@ -1,70 +1,60 @@
 import { describe, expect, test } from "@jest/globals";
-import { ObjectId, tests } from "@esp-group-one/types";
+import { ObjectId } from "@esp-group-one/types";
 import type { Request } from "express";
 import type { VerifyJwtResult } from "access-token-jwt";
+import { IDS, addUser } from "@esp-group-one/test-helpers";
 import {
   getUserId,
   mapUser,
   safeEqual,
   setUserId,
 } from "../../src/lib/utils.js";
-import { addUser } from "../helpers/utils.js";
-import { setup, withDb } from "../helpers/controller.js";
+import { setup } from "../helpers/controller.js";
 
-const { IDS } = tests;
-
-setup();
+const db = setup();
 
 const auth0Id = "github|123456";
 
 describe("getUserId", () => {
   test("exists", async () => {
-    await withDb(async (db) => {
-      const user = await addUser(db, auth0Id);
-      const req = { auth0Id } as Request;
-      await expect(getUserId(db, req)).resolves.toStrictEqual(user._id);
-    });
+    const user = await addUser(db.get(), auth0Id);
+    const req = { auth0Id } as Request;
+    await expect(getUserId(db.get(), req)).resolves.toStrictEqual(user._id);
   });
 
   test("user doesn't exist", async () => {
-    await withDb(async (db) => {
-      const req = { auth0Id: "github|123456" } as Request;
-      await expect(getUserId(db, req)).resolves.toBe(undefined);
-    });
+    const req = { auth0Id: "github|123456" } as Request;
+    await expect(getUserId(db.get(), req)).resolves.toBe(undefined);
   });
 
   test("id not set", async () => {
-    await withDb(async (db) => {
-      const req = {} as Request;
-      await expect(getUserId(db, req)).rejects.toThrow();
-    });
+    const req = {} as Request;
+    await expect(getUserId(db.get(), req)).rejects.toThrow();
   });
 });
 
 describe("mapUser", () => {
   test("id set", async () => {
-    await withDb(async (db) => {
-      const req = { auth0Id } as Request;
-      await expect(
-        mapUser(db, req, new ObjectId(IDS[0])),
-      ).resolves.not.toThrow();
+    const req = { auth0Id } as Request;
+    await expect(
+      mapUser(db.get(), req, new ObjectId(IDS[0])),
+    ).resolves.not.toThrow();
 
-      const coll = db.userMap();
-      await expect((await coll).find({})).resolves.toStrictEqual([
-        {
-          _id: expect.any(ObjectId),
-          auth0Id,
-          internalId: new ObjectId(IDS[0]),
-        },
-      ]);
-    });
+    const coll = db.get().userMap();
+    await expect((await coll).find({})).resolves.toStrictEqual([
+      {
+        _id: expect.any(ObjectId),
+        auth0Id,
+        internalId: new ObjectId(IDS[0]),
+      },
+    ]);
   });
 
   test("id not set", async () => {
-    await withDb(async (db) => {
-      const req = {} as Request;
-      await expect(mapUser(db, req, new ObjectId(IDS[0]))).rejects.toThrow();
-    });
+    const req = {} as Request;
+    await expect(
+      mapUser(db.get(), req, new ObjectId(IDS[0])),
+    ).rejects.toThrow();
   });
 });
 

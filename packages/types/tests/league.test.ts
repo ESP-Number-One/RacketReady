@@ -1,7 +1,7 @@
 import { describe, expect, test } from "@jest/globals";
 import { censorLeague } from "../src/league.js";
 import { ObjectId, Sport } from "../src/utils.js";
-import { IDS, getLeague } from "./utils.js";
+import { IDS, getLeague } from "./helpers/utils.js";
 
 describe("Censor league", () => {
   test("public league", () => {
