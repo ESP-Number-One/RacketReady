@@ -1990,6 +1990,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@esp-group-one/test-env@workspace:packages/test-env":
+  version: 0.0.0-use.local
+  resolution: "@esp-group-one/test-env@workspace:packages/test-env"
+  dependencies:
+    "@esp-group-one/db-client": "workspace:^"
+    "@esp-group-one/test-helpers": "workspace:^"
+    "@esp-group-one/types": "workspace:^"
+    cross-env: "npm:^7.0.3"
+    moment: "npm:^2.30.1"
+  languageName: unknown
+  linkType: soft
+
 "@esp-group-one/test-helpers@workspace:^, @esp-group-one/test-helpers@workspace:packages/test-helpers":
   version: 0.0.0-use.local
   resolution: "@esp-group-one/test-helpers@workspace:packages/test-helpers"

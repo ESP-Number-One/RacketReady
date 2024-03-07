@@ -26,11 +26,8 @@ export default class MongoEnvironment extends TestEnvironment {
   async teardown() {
     // Stop the database.
     try {
-      console.log("Stopping");
       await MONGO.stop();
-      console.log("Stopped");
     } catch (e) {
-      console.log("Error");
       console.warn(e);
     }
     await super.teardown();
