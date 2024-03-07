@@ -15,31 +15,31 @@ export const Search = memo(function Search({ onSubmit, hidden }: SearchProps) {
   }
 
   return (
-    <div className="display-flex flex-row w-full h-full">
+    <div className="display-inline w-fit h-fit bg-p-grey-200 rounded-lg align-middle">
       <form
         onSubmit={(e) => {
           e.preventDefault();
           onSubmitWrapper();
         }}
       >
+        <button
+          className="rounded-lg p1 ml-2 mb-1 mr-1 self-center justify-center align-middle"
+          data-testid="search-button"
+          type="submit"
+        >
+          <Icon icon={faMagnifyingGlass} color="#fff" size="lg" />
+        </button>
         <input
-          className="font-body m-2 ml-1 p-1 w-fit bg-gray-100 rounded-lg h-fit text-xl"
+          className="font-body p-1 mr-2 mt-2 mb-2 ml-1 bg-p-grey-200 rounded-lg text-xl text-white placeholder:text-white focus:"
           data-testid="search-input"
           hidden={hidden}
           onChange={(e) => {
             setSearch(e.target.value);
           }}
-          placeholder="Search"
+          placeholder="Search people!"
           required
           type="text"
         />
-        <button
-          className="m-2 ml-1 bg-gray-200 p-2 rounded-lg duration-100 hover:bg-gray-400 active:bg-gray-400 focus:ring focus:ring-gray-600"
-          data-testid="search-button"
-          type="submit"
-        >
-          <Icon icon={faMagnifyingGlass} />
-        </button>
       </form>
     </div>
   );
