@@ -36,9 +36,6 @@ export function MatchProposal() {
       <Page.Header>
         <Header.Back />
         Proposed Matches
-        <Header.Right>
-          <FontAwesomeIcon icon={faPlus} />
-        </Header.Right>
       </Page.Header>
       <Page.Body>
         <CardList
