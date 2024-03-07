@@ -169,9 +169,7 @@ export function CardList<T extends ReactNode>({
       >
         {cards.current}
         {isLoading ? <p className="self-center font-body">Loading!</p> : null}
-        {isLastPage &&
-        cards.current.length !== 0 &&
-        emptyListPlaceholder === undefined ? (
+        {isLastPage && cards.current.length !== 0 ? (
           <p className="self-center font-body text-center pt-6 pb-6">
             {emptyListPlaceholder}
           </p>
