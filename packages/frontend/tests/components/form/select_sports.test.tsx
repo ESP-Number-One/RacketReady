@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { Sport } from "@esp-group-one/types";
 import { userEvent } from "@testing-library/user-event";
-import { SelectSport } from "../../src/components/select_sports";
+import { SelectSport } from "../../../src/components/form/select_sports";
 
 describe("SelectSport", () => {
   test("Change colour on select", async () => {
