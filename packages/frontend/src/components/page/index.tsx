@@ -1,4 +1,4 @@
-import type { ReactNode, JSX, CSSProperties } from "react";
+import type { ReactNode, JSX } from "react";
 import { Slot } from "../../lib/slotting";
 import { BottomBar } from "../bottom_bar";
 import { Header } from "./header";
@@ -38,7 +38,6 @@ function PageImpl({ children: _children, page }: PageProps) {
 interface BodyProps {
   children: ReactNode;
   className?: string;
-  style?: CSSProperties;
 }
 
 PageImpl.Header = Header;
