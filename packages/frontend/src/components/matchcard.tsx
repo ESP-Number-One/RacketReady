@@ -8,6 +8,7 @@ import { Profile } from "./profile";
 import { Tag } from "./tags";
 
 export function MatchCard({
+  //connecting to backend
   match: { sport, date, players, _id: matchId },
 }: {
   match: Match;

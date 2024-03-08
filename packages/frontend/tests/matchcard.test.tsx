@@ -1,4 +1,4 @@
-import { act, render } from "@testing-library/react";
+import { act, render } from "@testing-library/react"; //should pass all tests
 import "@testing-library/jest-dom";
 import {
   type CensoredUser,
