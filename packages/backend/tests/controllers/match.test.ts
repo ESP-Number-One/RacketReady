@@ -27,8 +27,9 @@ describe("accept", () => {
   test("done", async () => {
     const match = await addMatch(db.get(), {
       status: MatchStatus.Request,
-      players: [user.id(), OIDS[0]],
+      players: [OIDS[0], user.id()],
     });
+
     const res = await user
       .request(app)
       .post(`/match/${match._id.toString()}/accept`);
@@ -46,7 +47,7 @@ describe("accept", () => {
   test("match already accepted", async () => {
     const match = await addMatch(db.get(), {
       status: MatchStatus.Accepted,
-      players: [user.id(), OIDS[0]],
+      players: [OIDS[0], user.id()],
     });
 
     const res = await user

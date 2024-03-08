@@ -24,6 +24,10 @@ export class ObjectId {
     if (!this.verify()) throw Error("Input must be a 24 character hex string");
   }
 
+  public equals(o: ObjectId): boolean {
+    return this.toString() === o.toString();
+  }
+
   public toString(): string {
     return this.mongoDbId;
   }
@@ -65,6 +69,10 @@ export class ObjectId {
       Boolean(/^[a-f0-9]+$/.exec(this.mongoDbId))
     );
   }
+}
+
+export function hasId(arr: ObjectId[], id: ObjectId): boolean {
+  return arr.some((i) => i.equals(id));
 }
 
 export interface MongoDBItem {
