@@ -1,4 +1,4 @@
-import { DbClient } from "@esp-group-one/db-client";
+import type { DbClient } from "@esp-group-one/db-client";
 import type { League, Match, User } from "@esp-group-one/types";
 import { helpers as types } from "@esp-group-one/types";
 import type { OptionalId } from "mongodb";
