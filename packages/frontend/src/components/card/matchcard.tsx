@@ -2,10 +2,10 @@ import type { Match, ObjectId } from "@esp-group-one/types";
 import type { Moment } from "moment";
 import { useContext, type JSX } from "react";
 import moment from "moment";
-import { API } from "../state/auth";
-import { ErrorHandler, useAsync } from "../lib/async";
-import { Profile } from "./profile";
-import { Tag } from "./tags";
+import { API } from "../../state/auth";
+import { ErrorHandler, useAsync } from "../../lib/async";
+import { Profile } from "../profile";
+import { Tag } from "../tags";
 
 export function MatchCard({
   //connecting to backend
