@@ -1,18 +1,14 @@
+import { asFuncMock } from "@esp-group-one/test-helpers-base";
 import { render } from "@testing-library/react";
 import type { To } from "react-router-dom";
 import { BottomBar } from "../../src/components/bottom_bar.tsx";
-import { asFuncMock } from "../helpers/mock.ts";
 import { useViewNav } from "../../src/state/nav.ts";
-
-/* Jest + React Guides: https://jestjs.io/docs/tutorial-react */
 
 jest.mock("../../src/state/nav");
 
 const mockedUseNav = asFuncMock(useViewNav);
 
-// Group of related tests.
 describe("BottomBar", () => {
-  //     \/ Describe individual test here.
   test("highlight current page", () => {
     const component = render(<BottomBar activePage={"profile"} />);
     const profile = component.container.children.item(0)?.children.item(3);
