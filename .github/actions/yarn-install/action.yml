@@ -11,7 +11,7 @@ runs:
         cache: yarn
 
     - name: Install packages
-      run: yarn install --immutable
+      run: unset GIT_WORK_TREE && yarn install --immutable
       shell: bash
 
     - name: Build all packages
