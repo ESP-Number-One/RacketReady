@@ -14,7 +14,7 @@ export async function getAvailabilityCache(
   userId: ObjectId,
 ): Promise<ObjectId[]> {
   const coll = await client.availabilityCaches();
-  const res = await coll.find({ availablePeople: [userId] });
+  const res = await coll.find({ availablePeople: userId });
 
   const availablePeople = res.flatMap((x) => x.availablePeople);
   const uniqueAvailablePeople = Array.from(new Set(availablePeople));
