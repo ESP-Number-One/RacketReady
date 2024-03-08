@@ -1,30 +1,53 @@
-import { fireEvent, render, waitFor } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import { userEvent } from "@testing-library/user-event";
 import { ProfilePicturePicker } from "../../../src/components/form/profile_picture";
 
 describe("ProfilePicturePicker", () => {
   test("displays selected image", async () => {
-    const handleChange = (): void => {
-      throw new Error("Function not implemented.");
+    const user = userEvent.setup();
+
+    const expectedVals = ["(⌐□_□)", ""];
+    const handleChange = (val: string): void => {
+      expect(val).toBe(expectedVals.shift());
     };
 
-    const { getByLabelText, getByAltText } = render(
-      <ProfilePicturePicker onChange={handleChange} />,
+    const component = render(<ProfilePicturePicker onChange={handleChange} />);
+    expect(component.container).toBeInTheDocument();
+
+    /**
+     * ```html
+     * <div ...>
+     *    <div ...>
+     *       <label ...>...</label>
+     *    </div>
+     * </div>
+     * ```
+     */
+    const container = component.container.children[0];
+
+    // Check input is there by default
+    const input = container.querySelector("input");
+    expect(input).not.toBeNull();
+    const file = new File(["(⌐□_□)"], "chucknorris.png", { type: "image/png" });
+
+    if (input) await user.upload(input, file);
+
+    // Check image has now appeared
+    const img = container.querySelector("img");
+    expect(img).not.toBeNull();
+    expect(img).toBeInTheDocument();
+    expect(img).toHaveAttribute(
+      "src",
+      expect.stringContaining("data:image/png;base64"),
     );
 
-    // Simulate selecting an image
-    const file = new File(["(⌐□_□)"], "chucknorris.png", { type: "image/png" });
-    const input = getByLabelText("Profile Picture");
-    fireEvent.change(input, { target: { files: [file] } });
+    if (img) await user.click(img);
 
-    // Wait for the image element to appear in the document
-    await waitFor(() => {
-      const imgElement = getByAltText("Profile");
-      expect(imgElement).toBeInTheDocument();
-      expect(imgElement).toHaveAttribute(
-        "src",
-        expect.stringContaining("data:image/png;base64"),
-      );
-    });
+    // Check we have gone back to the input
+    expect(img).not.toBeInTheDocument();
+
+    const newInput = container.querySelector("input");
+    expect(newInput).not.toBeNull();
   });
 });

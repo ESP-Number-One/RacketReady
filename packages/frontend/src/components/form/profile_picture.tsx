@@ -1,5 +1,5 @@
 import type { ChangeEvent } from "react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
@@ -16,23 +16,26 @@ export function ProfilePicturePicker({
     undefined,
   );
 
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const imageDataURL = reader.result as string; // Convert the result to a string
-        setSelectedImage(imageDataURL);
-        onChange(imageDataURL); // Call the onChange function with the image data URL
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  const handleImageChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const imageDataURL = reader.result as string; // Convert the result to a string
+          setSelectedImage(imageDataURL);
+          onChange(imageDataURL); // Call the onChange function with the image data URL
+        };
+        reader.readAsDataURL(file);
+      }
+    },
+    [setSelectedImage, onChange],
+  );
 
-  const handleImageClick = () => {
+  const handleImageClick = useCallback(() => {
     setSelectedImage(undefined);
     onChange(""); // Call the onChange function with an empty string when the image is cleared
-  };
+  }, [setSelectedImage, onChange]);
 
   return (
     <div
