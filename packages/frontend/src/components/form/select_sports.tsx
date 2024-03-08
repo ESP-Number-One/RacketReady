@@ -1,7 +1,7 @@
 import type { Sport } from "@esp-group-one/types";
 import { useCallback, useState } from "react";
 import type { ChangeEvent } from "react";
-import { sportToColour } from "../../util/sport";
+import { sportToColour } from "../../../util/sport";
 
 interface SportListProps {
   sports: Sport[];

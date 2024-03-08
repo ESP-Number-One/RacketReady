@@ -1,6 +1,6 @@
 import type { ChangeEvent, ReactElement, ReactNode } from "react";
 import { useState } from "react";
-import type { IconProps } from "./icon";
+import type { IconProps } from "../icon";
 
 interface InputProps {
   onChange: (val: string) => void;
