@@ -7,6 +7,7 @@ import {
   ObjectId,
   PageOptions,
   ID,
+  hasId,
 } from "@esp-group-one/types";
 import type {
   Error,
@@ -82,10 +83,7 @@ export class LeaguesController extends ControllerWrap<League> {
     return this.withUserId(req, async (userId) => {
       const res = await this.get(id);
       if (res.success) {
-        if (
-          res.data.private &&
-          res.data.ownerIds.map((e) => e.toString()).includes(userId.toString())
-        )
+        if (res.data.private && hasId(res.data.ownerIds, userId))
           return newAPISuccess(res.data.inviteCode);
 
         // Don't want to give away the league exists if user does not have
@@ -174,7 +172,7 @@ export class LeaguesController extends ControllerWrap<League> {
   ): Promise<WithError<undefined>> {
     const id = new ObjectId(leagueId);
     return this.withUser(req, async (currUser) => {
-      if (!currUser.leagues.map((e) => e.toString()).includes(id.toString())) {
+      if (!hasId(currUser.leagues, id)) {
         const league = await (await this.getCollection()).get(id);
         if (
           league &&
@@ -252,12 +250,7 @@ export class LeaguesController extends ControllerWrap<League> {
         if (!getRes.success) return getRes;
 
         const league = getRes.data;
-        if (
-          !league.ownerIds
-            .map((e) => e.toString())
-            .includes(currUser.toString())
-        )
-          return this.notFound();
+        if (!hasId(league.ownerIds, currUser)) return this.notFound();
 
         const coll = await this.getCollection();
         const res: Promise<WithError<undefined>> = coll

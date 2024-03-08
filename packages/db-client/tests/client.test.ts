@@ -1,6 +1,6 @@
 import type { Document, MongoClient, OptionalId } from "mongodb";
 import type { League, Match, User, UserIdMap } from "@esp-group-one/types";
-import { tests } from "@esp-group-one/types";
+import { helpers } from "@esp-group-one/types";
 import { describe, expect, test } from "@jest/globals";
 import { DbClient } from "../src/client.js";
 import {
@@ -10,9 +10,10 @@ import {
   USER_MAP_COLLECTION_NAME,
 } from "../src/constants.js";
 import { toMongo } from "../src/types.js";
-import { getRawClient, getRawDb, setup } from "./helpers/utils.js";
+import { getRawClient, getRawDb } from "./helpers/utils.js";
+import { setup } from "./helpers/setup.js";
 
-const { getLeague, getMatch, getUser, getUserIdMap } = tests;
+const { getLeague, getMatch, getUser, getUserIdMap } = helpers;
 
 let db: DbClient;
 let client: MongoClient;
@@ -74,6 +75,16 @@ describe("collections", () => {
   });
 });
 
+describe("raw", () => {
+  test("db", async () => {
+    await expect(db.raw()).resolves.not.toBeNaN();
+  });
+
+  test("client", () => {
+    expect(db.rawClient()).not.toBeNaN();
+  });
+});
+
 describe("isClosed", () => {
   test("closed", async () => {
     expect(db.isClosed()).toBe(false);
@@ -91,6 +102,7 @@ describe("environmental variables", () => {
       delete process.env.DB_NAME;
       const _ = new DbClient();
     }).toThrow();
+
     setup();
   });
 });

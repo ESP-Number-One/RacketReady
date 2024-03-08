@@ -17,6 +17,7 @@
     "lint-ci": "yarn workspaces foreach -Ap run lint --max-warnings 0",
     "lint:fix": "yarn workspaces foreach -Ap run lint:fix",
     "test": "jest",
+    "test:setup": "yarn workspace @esp-group-one/test-env run setup",
     "test:linux": "act -j test"
   },
   "devDependencies": {

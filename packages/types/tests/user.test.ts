@@ -6,7 +6,7 @@ import {
   censorUser,
 } from "../src/user.js";
 import { ObjectId, Sport } from "../src/utils.js";
-import { getUser, IDS } from "./utils.js";
+import { getUser, IDS } from "./helpers/utils.js";
 
 test("user", () => {
   const user = getUser({});

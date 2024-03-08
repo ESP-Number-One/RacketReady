@@ -3,7 +3,8 @@ import type { MongoDBItem, SortQuery } from "@esp-group-one/types";
 import { describe, expect, test } from "@jest/globals";
 import { CollectionWrap } from "../src/collection.js";
 import { toMongo } from "../src/types.js";
-import { getRawClient, getRawDb, insertMany, setup } from "./helpers/utils.js";
+import { getRawClient, getRawDb, insertMany } from "./helpers/utils.js";
+import { setup } from "./helpers/setup.js";
 
 interface TestObj extends MongoDBItem {
   name: string;

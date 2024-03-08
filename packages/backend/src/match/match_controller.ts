@@ -8,6 +8,7 @@ import {
   newAPISuccess,
   Scores,
   ID,
+  hasId,
 } from "@esp-group-one/types";
 import type {
   Match,
@@ -53,9 +54,7 @@ export class MatchsController extends ControllerWrap<Match> {
       const res = await this.get(id);
       if (res.success) {
         if (
-          !res.data.players
-            .map((p) => p.toString())
-            .includes(userId.toString()) ||
+          !hasId(res.data.players, userId) ||
           res.data.owner.toString() === userId.toString()
         ) {
           return this.notFound();
@@ -89,9 +88,7 @@ export class MatchsController extends ControllerWrap<Match> {
     return this.withUserId(req, async (userId) => {
       const res = await this.get(id);
       if (res.success) {
-        if (
-          !res.data.players.map((p) => p.toString()).includes(userId.toString())
-        ) {
+        if (!hasId(res.data.players, userId)) {
           return this.notFound();
         }
 
@@ -107,11 +104,10 @@ export class MatchsController extends ControllerWrap<Match> {
 
         /* SCORES VALIDATION */
         const players = Object.keys(scores);
-        const matchPlayers = res.data.players.map((p) => p.toString());
 
         // Get players which aren't in the match
         const difference = players.filter(
-          (x) => !matchPlayers.includes(x.toString()),
+          (x) => !hasId(res.data.players, new ObjectId(x)),
         );
 
         if (
@@ -154,9 +150,7 @@ export class MatchsController extends ControllerWrap<Match> {
     return this.withUserId(req, async (userId) => {
       const res = await this.get(id);
       if (res.success) {
-        if (
-          !res.data.players.map((p) => p.toString()).includes(userId.toString())
-        ) {
+        if (!hasId(res.data.players, userId)) {
           return this.notFound();
         }
 
@@ -170,17 +164,13 @@ export class MatchsController extends ControllerWrap<Match> {
         console.log(
           JSON.stringify(res.data.usersRated.map((p) => p.toString())),
         );
-        if (
-          res.data.usersRated
-            .map((p) => p.toString())
-            .includes(userId.toString())
-        ) {
+        if (hasId(res.data.usersRated, userId)) {
           this.setStatus(400);
           return newAPIError("You have already rated the match!");
         }
 
         const playersBeingRated = res.data.players.filter(
-          (p) => p.toString() !== userId.toString(),
+          (p) => !p.equals(userId),
         );
 
         const users = await this.getDb().users();
@@ -214,9 +204,7 @@ export class MatchsController extends ControllerWrap<Match> {
     return this.withUserId(req, async (userId) => {
       const res = await this.get(id);
       if (res.success) {
-        if (
-          !res.data.players.map((p) => p.toString()).includes(userId.toString())
-        ) {
+        if (!hasId(res.data.players, userId)) {
           return this.notFound();
         }
       }
@@ -315,11 +303,7 @@ export class MatchsController extends ControllerWrap<Match> {
 
         // TODO: Consider removing when we replace with the auto league assignment
         if ("league" in proposal) {
-          if (
-            !user.leagues
-              .map((l) => l.toString())
-              .includes(proposal.league.toString())
-          ) {
+          if (!hasId(user.leagues, proposal.league)) {
             this.setStatus(400);
             return newAPIError("You must be in the league to create a match");
           }
