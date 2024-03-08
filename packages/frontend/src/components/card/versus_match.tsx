@@ -1,3 +1,13 @@
+/**
+ * Once given a score in the form:
+ *
+ * ```js
+ * const score = {
+ *   "<person_name_1>": '<person_1_score>',
+ *   "<person_name_2>": '<person_2_score>',
+ * };
+ * ```
+ */
 export function VersusMatchCard(props: { score: Record<string, number> }) {
   const [firstKey, secondKey] = Object.keys(props.score);
   const firstValue = props.score[firstKey];
