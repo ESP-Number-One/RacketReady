@@ -1,7 +1,7 @@
 import type { League } from "../src/league.js";
 import type { Match, Scores } from "../src/match.js";
 import { MatchStatus } from "../src/match.js";
-import type { User, UserIdMap } from "../src/user.js";
+import { AbilityLevel, type User, type UserIdMap } from "../src/user.js";
 import type { ID } from "../src/utils.js";
 import { ObjectId, Sport } from "../src/utils.js";
 
@@ -78,8 +78,8 @@ export function getUser(obj: Partial<User>): User {
     profilePicture: obj.profilePicture ?? "AAAAAAAA",
     email: obj.email ?? "test@test.ts",
     sports: obj.sports ?? [
-      { sport: Sport.Tennis, ability: "beginner" },
-      { sport: Sport.Squash, ability: "expert" },
+      { sport: Sport.Tennis, ability: AbilityLevel.Beginner },
+      { sport: Sport.Squash, ability: AbilityLevel.Advanced },
     ],
     leagues: obj.leagues ?? [new ObjectId(IDS[1])],
     availability: obj.availability ?? [

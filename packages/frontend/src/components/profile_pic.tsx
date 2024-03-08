@@ -1,39 +1,36 @@
-import type { Sport, SportInfo } from "@esp-group-one/types";
+import { AbilityLevel, type Sport, type SportInfo } from "@esp-group-one/types";
 import { useMemo, useState } from "react";
 import { Tag } from "./tags";
 
 interface Info {
   sports: SportInfo[];
-  onClick: () => void;
-  selected: Sport;
   image: string;
-  displayAbility: boolean;
+  displayAbility?: boolean;
 }
 
-const getAbilityLevel = (sports: SportInfo[], selected: Sport): string => {
-  const selectedSport = sports.find((sport) => sport.sport === selected);
-
-  return selectedSport ? selectedSport.ability : "Beginner";
-};
-
-function getAbilityColour(abilityLevel: string) {
+function getAbilityColour(abilityLevel: AbilityLevel) {
   switch (abilityLevel) {
-    case "Beginner":
+    case AbilityLevel.Beginner:
       return "bg-beginner";
-    case "Intermediate":
+    case AbilityLevel.Intermediate:
       return "bg-intermediate";
-    case "Advanced":
+    case AbilityLevel.Advanced:
       return "bg-advanced";
   }
 }
 
+function getAbilityLevel(sports: SportInfo[], selected: Sport): AbilityLevel {
+  const selectedSport = sports.find((sport) => sport.sport === selected);
+
+  return selectedSport ? selectedSport.ability : AbilityLevel.Beginner;
+}
+
 export function ProfilePic({
   sports: initialSports,
-  selected,
   image,
-  displayAbility,
+  displayAbility = true,
 }: Info) {
-  const [selectedSport, setSelectedSport] = useState(selected);
+  const [selectedSport, setSelectedSport] = useState(initialSports[0].sport);
 
   const ability = useMemo(
     () => getAbilityLevel(initialSports, selectedSport),
@@ -46,25 +43,32 @@ export function ProfilePic({
   };
 
   return (
-    <div className="w-full aspect-square relative">
-      <img src={image} />
-      <div className="absolute top-0 left-0 right-0 bottom-0 flex flex-wrap items-center gap-4 p-2">
-        {initialSports.map((sport) => (
-          <Tag
-            sportName={sport.sport}
-            active={sport.sport === selectedSport}
-            key={sport.sport}
-            onClick={() => {
-              handleClick(sport.sport);
-            }}
-          />
-        ))}
+    <div className="w-full">
+      <div className="relative aspect-square">
+        <img src={image} className="w-full" />
+        <div className="h-min absolute bottom-0 left-0 bottom-0 p-2">
+          <div className="flex flex-wrap items-center gap-2">
+            {initialSports.map((sport) => (
+              <button
+                onClick={() => {
+                  handleClick(sport.sport);
+                }}
+                key={sport.sport}
+              >
+                <Tag
+                  sportName={sport.sport}
+                  active={sport.sport === selectedSport}
+                />
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
       {displayAbility && (
         <div
           className={`${colour} font-title text-white py-3 px-5 text-center text-xl font-bold`}
         >
-          {getAbilityLevel(initialSports, selectedSport)}
+          {ability.charAt(0).toUpperCase() + ability.slice(1)}
         </div>
       )}
     </div>
