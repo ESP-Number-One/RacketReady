@@ -1,6 +1,10 @@
 import { expect, test } from "@jest/globals";
 import type { Ratings } from "../src/user.js";
-import { calculateAverageRating, censorUser } from "../src/user.js";
+import {
+  AbilityLevel,
+  calculateAverageRating,
+  censorUser,
+} from "../src/user.js";
 import { ObjectId, Sport } from "../src/utils.js";
 import { getUser, IDS } from "./utils.js";
 
@@ -12,8 +16,8 @@ test("user", () => {
     description: "Tester9000",
     rating: { 1: 5, 2: 10, 3: 20, 4: 50, 5: 10 },
     sports: [
-      { sport: Sport.Tennis, ability: "beginner" },
-      { sport: Sport.Squash, ability: "expert" },
+      { sport: Sport.Tennis, ability: AbilityLevel.Beginner },
+      { sport: Sport.Squash, ability: AbilityLevel.Advanced },
     ],
   });
 });

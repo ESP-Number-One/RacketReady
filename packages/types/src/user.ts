@@ -12,7 +12,7 @@ export type Ratings = Record<StarCount, number>;
 
 export interface SportInfo {
   sport: Sport;
-  ability: string;
+  ability: AbilityLevel;
 }
 
 export interface Duration {
