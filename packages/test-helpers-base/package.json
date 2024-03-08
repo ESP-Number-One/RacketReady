@@ -1,5 +1,5 @@
 {
-  "name": "@esp-group-one/test-helpers",
+  "name": "@esp-group-one/test-helpers-base",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -23,8 +23,6 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
-    "@esp-group-one/db-client": "workspace:^",
-    "@esp-group-one/test-helpers-base": "workspace:^",
     "@esp-group-one/types": "workspace:^",
     "@jest/globals": "^29.7.0",
     "moment": "^2.30.1"
