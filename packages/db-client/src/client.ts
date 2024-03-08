@@ -37,6 +37,19 @@ export class DbClient {
     this.closed = false;
   }
 
+  public async availabilityCaches(): Promise<
+    CollectionWrap<AvailabilityCache>
+  > {
+    const db = await this.db;
+    if (!this.availabilityCacheCache) {
+      this.availabilityCacheCache = new CollectionWrap(
+        db.collection(AVAILABILITY_CACHE_COLLECTION_NAME),
+      );
+    }
+
+    return this.availabilityCacheCache;
+  }
+
   public async close(): Promise<void> {
     // This makes sure we don't have any async process left
     if (!this.closed) {
@@ -109,18 +122,5 @@ export class DbClient {
     this.client = await this.client.connect();
 
     return this.client.db(this.dbName);
-  }
-
-  public async availabilityCaches(): Promise<
-    CollectionWrap<AvailabilityCache>
-  > {
-    const db = await this.db;
-    if (!this.availabilityCacheCache) {
-      this.availabilityCacheCache = new CollectionWrap(
-        db.collection(AVAILABILITY_CACHE_COLLECTION_NAME),
-      );
-    }
-
-    return this.availabilityCacheCache;
   }
 }

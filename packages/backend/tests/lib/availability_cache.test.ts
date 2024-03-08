@@ -1,87 +1,90 @@
-import { afterAll, beforeAll, describe, expect, it } from "@jest/globals";
-import * as db from "@esp-group-one/db-client";
+import { describe, expect, it } from "@jest/globals";
 import moment from "moment";
+import type { Availability, AvailabilityCache } from "@esp-group-one/types";
+import { ObjectId } from "@esp-group-one/types";
+import type { OptionalId } from "mongodb";
+import { OIDS, TestDb, stopTime } from "@esp-group-one/test-helpers";
 import {
   getAvailabilityCache,
   setAvailabilityCache,
 } from "../../src/lib/availability_cache.js";
-import {
-  Availability,
-  AvailabilityCache,
-  ObjectId,
-  tests,
-} from "@esp-group-one/types";
-import { resetCollections } from "../helpers/controller.js";
-import { MongoClient, OptionalId } from "mongodb";
-
-const { IDS } = tests;
 
 // So mongodb doesn't complain
-let client: db.DbClient;
-let mongoClient: MongoClient;
+const db = new TestDb();
 
-beforeAll(async () => {
-  db.tests.setup();
-  mongoClient = await db.tests.getRawClient();
-  client = new db.DbClient();
-});
-
-afterAll(async () => {
-  await client.close();
-});
-
-beforeEach(async () => {
-  await resetCollections(mongoClient);
+beforeAll(() => {
+  stopTime();
 });
 
 describe("getAvailabilityCache", () => {
   it("should handle a user that doesn't have common availabilities", async () => {
     await setupAvailability();
-    const result = await getAvailabilityCache(client, new ObjectId(IDS[0]));
+    const result = await getAvailabilityCache(db.get(), OIDS[0]);
     expect(result).toEqual([]); // Expect an empty array
   });
 
   it("acts as expected", async () => {
-    await setupAvailability();
-    const currUserId = new ObjectId(IDS[0]);
-    const result = await getAvailabilityCache(client, currUserId);
-    expect(result).toEqual([]);
+    const currUserId = OIDS[0];
+    const users = OIDS.slice(1);
+    await setupAvailability([
+      [currUserId, users[0]],
+      [users[0], users[1]],
+      [currUserId, users[1]],
+    ]);
+    const result = await getAvailabilityCache(db.get(), currUserId);
+    expect(result).toEqual([users[0], users[1]]);
   });
 
   it("removes duplicates over multiple times", async () => {
-    
-  });
-
-  it("does not return the current user", async () => {
-    const currUserId = new ObjectId(IDS[0]);
-    await setupAvailability([[currUserId]]);
-    const result = await getAvailabilityCache(client, currUserId);
-    const stringResult = result.map((id) => id.toString());
-    expect(stringResult).not.toContain(currUserId.toString());
-  });
-
-  // TODO: Remove as this is an example structure
-  it("should get unique available people", async () => {
-    const currUserId = new ObjectId(IDS[0]);
-    const users = IDS.slice(1).map((id) => new ObjectId(id));
+    const currUserId = OIDS[0];
+    const users = OIDS.slice(1);
     await setupAvailability([
       [currUserId, users[0]],
       [users[0], users[1]],
       [currUserId, users[0]],
     ]);
-
-    // TODO: Use client to set availability cache to return something
-    const result = await getAvailabilityCache(client, currUserId);
-
+    const result = await getAvailabilityCache(db.get(), currUserId);
     expect(result).toEqual([users[0]]);
+  });
+
+  it("does not return the current user", async () => {
+    const currUserId = OIDS[0];
+    await setupAvailability([[currUserId]]);
+    const result = await getAvailabilityCache(db.get(), currUserId);
+    const stringResult = result.map((id) => id.toString());
+    expect(stringResult).not.toContain(currUserId.toString());
   });
 });
 
 describe("setAvailabilityCache", () => {
   it("should set availability cache", async () => {
-    const currUserId = new ObjectId(IDS[0]);
-    await setAvailabilityCache(client, currUserId, getAvailability({}));
-    // TODO: Query the database with client to see if the cache was changed
+    await setupAvailability();
+    const currUserId = OIDS[0];
+
+    let day = moment().startOf("hour");
+    const availabilityForTwoWeeks: AvailabilityCache[] = [];
+
+    for (let i = 0; i < 14; i++) {
+      const availabilityForDay: AvailabilityCache = {
+        _id: expect.any(ObjectId) as unknown as ObjectId,
+        start: day.toISOString(),
+        availablePeople: [currUserId],
+      };
+      const availabilityForDay2: AvailabilityCache = {
+        _id: expect.any(ObjectId) as unknown as ObjectId,
+        start: day.clone().add(1, "hour").toISOString(),
+        availablePeople: [currUserId],
+      };
+      availabilityForTwoWeeks.push(availabilityForDay, availabilityForDay2);
+      day = day.add(1, "day");
+    }
+
+    await setAvailabilityCache(db.get(), currUserId, getAvailability({}));
+
+    const collection = await db.get().availabilityCaches();
+    const result = await collection.find({ availablePeople: currUserId });
+
+    expect(result).toStrictEqual(availabilityForTwoWeeks);
   });
 });
 
@@ -100,10 +103,10 @@ async function setupAvailability(origin?: ObjectId[][]) {
   // Setup availability cache
   // Add { start: moment(some offset here).toISOString(), availablePeople: [] }
   // One for each hour for the next two weeks
-  const coll = await client.availabilityCaches();
+  const coll = await db.get().availabilityCaches();
   const twoWeeksFromNow = moment().add(2, "weeks");
   const times: OptionalId<AvailabilityCache>[] = [];
-  const currTime = moment();
+  const currTime = moment().startOf("hour");
   while (currTime.isBefore(twoWeeksFromNow)) {
     times.push({
       start: currTime.toISOString(),
