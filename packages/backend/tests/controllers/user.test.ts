@@ -9,10 +9,18 @@ import type {
 import { ObjectId, censorUser } from "@esp-group-one/types";
 import { describe, expect, test } from "@jest/globals";
 import { generateRandomString } from "ts-randomstring/lib/index.js";
-import { addUser, IDS } from "@esp-group-one/test-helpers";
+import {
+  addUser,
+  IDS,
+  OIDS,
+  setupAvailability,
+} from "@esp-group-one/test-helpers";
+import { getAvailability } from "@esp-group-one/types/build/tests/helpers/utils.js";
+import moment from "moment";
 import { app } from "../../src/app.js";
 import { expectAPIRes, requestWithAuth } from "../helpers/utils.js";
 import { addCommonTests, setup } from "../helpers/controller.js";
+import { TestUser } from "../helpers/user.js";
 
 const db = setup();
 
@@ -86,17 +94,82 @@ describe("new", () => {
   );
 });
 
-describe("edit", () => {
-  let user: User;
+describe("add availability", () => {
+  const user = new TestUser(db);
 
-  beforeEach(async () => {
-    user = await addUser(db.get());
+  test("success", async () => {
+    await setupAvailability(db.get());
+
+    const availability = getAvailability({ recurring: undefined });
+    const res = await user
+      .request(app)
+      .post("/user/me/availability/add")
+      .send(availability);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toStrictEqual({
+      success: true,
+    });
+
+    const caches = await db.get().availabilityCaches();
+    const result = await caches.find({ availablePeople: user.id() });
+
+    const day = moment().startOf("hour");
+    expect(result).toStrictEqual([
+      {
+        _id: expect.any(ObjectId),
+        start: day.toISOString(),
+        availablePeople: [user.id()],
+      },
+      {
+        _id: expect.any(ObjectId),
+        start: day.clone().add(1, "hour").toISOString(),
+        availablePeople: [user.id()],
+      },
+    ]);
+
+    const u = await user.update();
+    delete availability.recurring;
+    expect(u.availability).toStrictEqual([availability]);
   });
+});
+
+describe("availability with others", () => {
+  const user = new TestUser(db);
+
+  test("success", async () => {
+    await setupAvailability(db.get(), [
+      [],
+      [user.id()],
+      [OIDS[0]],
+      [user.id(), OIDS[0]],
+      [OIDS[0], user.id()],
+    ]);
+
+    const res = await user
+      .request(app)
+      .post(`/user/${IDS[0]}/availability`)
+      .send({});
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toStrictEqual({
+      success: true,
+      data: [
+        moment().add(3, "hours").startOf("hours").toISOString(),
+        moment().add(4, "hours").startOf("hours").toISOString(),
+      ],
+    });
+  });
+});
+
+describe("edit", () => {
+  const user = new TestUser(db);
 
   test("duplicate email", async () => {
     const email = "test@bot.com";
     await addUser(db.get(), "github|111111", { email });
-    const res = await requestWithAuth(app)
+    const res = await user
+      .request(app)
       .post("/user/me/edit")
       .send({
         description: "Hi I'm 100% a real person",
@@ -118,20 +191,26 @@ describe("edit", () => {
       name: "Alex Dasher",
     };
 
-    const res = await requestWithAuth(app).post("/user/me/edit").send(update);
+    const res = await user.request(app).post("/user/me/edit").send(update);
 
     expect(res.status).toBe(200);
 
-    const u = await (await db.get().users()).get(user._id);
-    expect(u?.description).toBe(update.description);
-    expect(u?.email).toBe(update.email);
-    expect(u?.name).toBe(update.name);
+    const u = await user.update();
+    expect(u.description).toBe(update.description);
+    expect(u.email).toBe(update.email);
+    expect(u.name).toBe(update.name);
   });
 
-  testWithProfilePicture("/user/me/edit", {}, 200, async () => {
-    const u = await (await db.get().users()).get(user._id);
-    return u?.profilePicture ?? "";
-  });
+  testWithProfilePicture(
+    "/user/me/edit",
+    {},
+    200,
+    async () => {
+      const u = await user.update();
+      return u.profilePicture;
+    },
+    user,
+  );
 });
 
 describe("profile_picture", () => {
@@ -237,6 +316,7 @@ function testWithProfilePicture<T, R>(
   base: T,
   successCode: number,
   getProfilePicture: (body: R) => Promise<string>,
+  user?: TestUser,
 ) {
   describe("With profile picture", () => {
     ["png", "jpeg", "webp"].forEach((filetype) => {
@@ -246,7 +326,7 @@ function testWithProfilePicture<T, R>(
       const resProfilePicture = readStaticFile(`res-${filetype}.webp`);
 
       test(filetype, async () => {
-        const res = await requestWithAuth(app)
+        const res = await requestWithAuth(app, user?.auth0Id)
           .post(endpoint)
           .send({ ...base, profilePicture });
 
@@ -258,7 +338,7 @@ function testWithProfilePicture<T, R>(
     });
 
     test("Invalid base64", async () => {
-      const res = await requestWithAuth(app)
+      const res = await requestWithAuth(app, user?.auth0Id)
         .post(endpoint)
         .send({ ...base, profilePicture: "as;lkdfj'z=['/-ф" });
 
@@ -272,7 +352,7 @@ function testWithProfilePicture<T, R>(
     test("Invalid image", async () => {
       const profilePicture = readStaticFile("not_an_image.txt");
 
-      const res = await requestWithAuth(app)
+      const res = await requestWithAuth(app, user?.auth0Id)
         .post(endpoint)
         .send({ ...base, profilePicture });
 

@@ -27,6 +27,7 @@
     "access-token-jwt": "workspace:^",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "moment": "^2.30.1",
     "mongodb": "^6.3.0",
     "oauth2-bearer": "workspace:^",
     "sharp": "^0.33.2",

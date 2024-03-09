@@ -1,3 +1,5 @@
+import type { DateTimeString, MongoDBItem, ObjectId } from "./utils.js";
+
 export interface PageOptions<T> {
   query?: T;
   sort?: SortQuery<T>;
@@ -67,3 +69,11 @@ type QueryPartial<T> = {
 };
 
 export type Query<T> = QueryPartial<T>;
+
+/**
+ * This is the type for a collection of avialable time of players
+ */
+export interface AvailabilityCache extends MongoDBItem {
+  start: DateTimeString;
+  availablePeople: ObjectId[];
+}

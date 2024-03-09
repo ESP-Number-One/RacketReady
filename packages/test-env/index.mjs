@@ -7,6 +7,7 @@ import {
   addMatch,
   addUser,
   resetCollections,
+  setupAvailability,
 } from "../test-helpers/build/src/db.js";
 import { MatchStatus, Sport, helpers as types } from "@esp-group-one/types";
 
@@ -15,6 +16,8 @@ const db = new DbClient();
 const AUTH0ID = "github|123456"; // TODO: Put your auth 0 token here
 
 await resetCollections(db);
+
+await setupAvailability(db);
 
 const profilePicture = types.PICTURES[0];
 

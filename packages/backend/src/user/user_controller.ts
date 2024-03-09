@@ -7,6 +7,8 @@ import {
   UserCreation,
   PageOptions,
   ID,
+  Availability,
+  QueryOptions,
 } from "@esp-group-one/types";
 import type {
   UserQuery,
@@ -14,6 +16,7 @@ import type {
   Error,
   User,
   WithError,
+  DateTimeString,
 } from "@esp-group-one/types";
 import { type Filter } from "mongodb";
 import sharp from "sharp";
@@ -32,6 +35,7 @@ import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collecti
 import * as express from "express";
 import { ControllerWrap } from "../controller.js";
 import { getUserId, mapUser } from "../lib/utils.js";
+import { setAvailabilityCache } from "../lib/availability_cache.js";
 
 @Security("auth0")
 @Route("user")
@@ -67,6 +71,32 @@ export class UsersController extends ControllerWrap<User> {
     if (res.success) return newAPISuccess(censorUser(res.data));
 
     return res;
+  }
+
+  /**
+   * @returns the time where the current user is available with another
+   */
+  @Response<Error>(500, "Internal Server Error")
+  @Post("{userId}/availability")
+  public async availabilityWith(
+    @Path() userId: ID,
+    @Body() query: QueryOptions<undefined>,
+    @Request() req: express.Request,
+  ): Promise<WithError<DateTimeString[]>> {
+    const id = new ObjectId(userId);
+
+    return this.withUserId(req, async (currUser) => {
+      const caches = await this.getDb().availabilityCaches();
+      const res = await caches.page({
+        ...query,
+        query: {
+          $and: [{ availablePeople: id }, { availablePeople: currUser }],
+        },
+        sort: { start: 1 },
+      });
+
+      return newAPISuccess(res.map((cache) => cache.start));
+    });
   }
 
   /**
@@ -187,6 +217,25 @@ export class UsersController extends ControllerWrap<User> {
           });
         },
       );
+    });
+  }
+
+  /**
+   * Updates the users availability with the given information
+   */
+  @Response<Error>(500, "Internal Server Error")
+  @Post("me/availability/add")
+  public async addAvailability(
+    @Body() availability: Availability,
+    @Request() req: express.Request,
+  ): Promise<WithError<undefined>> {
+    return this.withUserId(req, async (userId) => {
+      await setAvailabilityCache(this.getDb(), userId, availability);
+
+      const coll = await this.getCollection();
+      await coll.edit(userId, { $push: { availability } });
+
+      return newAPISuccess(undefined);
     });
   }
 
