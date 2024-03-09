@@ -82,19 +82,16 @@ it("should call the next page function", () => {
 
 it("should call the next page once after scrolling to the bottom", async () => {
   const { container } = render(<CardList nextPage={nextPage} />);
-  const divOrNull = container
-    .getElementsByClassName("grid-flow-row grid overflow-scroll max-h-screen")
-    .item(0);
+  const divOrNull = container.getElementsByClassName("overflow-scroll").item(0);
   const cardList = divOrNull ? divOrNull : container;
 
   await new Promise((res) => {
     setTimeout(res, 2000);
   });
 
-  cardList.scrollTop = 9999;
   // scroll the card list to the very bottom
   fireEvent.scroll(cardList, {
-    target: { scrollY: 9999, scrollTop: 9999, top: 9999 },
+    top: cardList.scrollHeight - cardList.clientHeight,
   });
 
   await new Promise((res) => {
