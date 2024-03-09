@@ -1,6 +1,13 @@
 import type { DbClient } from "@esp-group-one/db-client";
-import type { League, Match, User } from "@esp-group-one/types";
+import type {
+  AvailabilityCache,
+  League,
+  Match,
+  ObjectId,
+  User,
+} from "@esp-group-one/types";
 import { helpers as types } from "@esp-group-one/types";
+import moment from "moment";
 import type { OptionalId } from "mongodb";
 
 export async function addUser(
@@ -49,4 +56,28 @@ export async function resetCollections(db: DbClient): Promise<void> {
     promises.push(c.deleteMany());
   }
   await Promise.all(promises);
+}
+
+/**
+ * Sets up the availability cache setting the first couple of hours to the
+ * given 2d array of object ids
+ */
+export async function setupAvailability(
+  db: DbClient,
+  origin: ObjectId[][] = [],
+) {
+  const coll = await db.availabilityCaches();
+  const twoWeeksFromNow = moment().add(2, "weeks");
+  const times: OptionalId<AvailabilityCache>[] = [];
+  const currTime = moment().startOf("hour");
+
+  while (currTime.isBefore(twoWeeksFromNow)) {
+    times.push({
+      start: currTime.toISOString(),
+      availablePeople: origin.shift() ?? [],
+    });
+    currTime.add(1, "hour");
+  }
+
+  await coll.insert(...times);
 }

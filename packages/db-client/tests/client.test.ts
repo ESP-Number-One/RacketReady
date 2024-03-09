@@ -1,9 +1,10 @@
 import type { Document, MongoClient, OptionalId } from "mongodb";
 import type { League, Match, User, UserIdMap } from "@esp-group-one/types";
 import { helpers } from "@esp-group-one/types";
-import { describe, expect, test } from "@jest/globals";
+import { beforeAll, afterAll, describe, expect, test } from "@jest/globals";
 import { DbClient } from "../src/client.js";
 import {
+  AVAILABILITY_CACHE_COLLECTION_NAME,
   LEAGUE_COLLECTION_NAME,
   MATCH_COLLECTION_NAME,
   USER_COLLECTION_NAME,
@@ -30,6 +31,19 @@ afterAll(async () => {
 });
 
 describe("collections", () => {
+  test("availabilityCaches", async () => {
+    const rawColl = getRawDb(client).collection(
+      AVAILABILITY_CACHE_COLLECTION_NAME,
+    );
+
+    const userIdMap: OptionalId<UserIdMap> = getUserIdMap({});
+    await rawColl.insertOne(toMongo(userIdMap) as OptionalId<Document>);
+
+    const coll = await db.availabilityCaches();
+
+    await expect(coll.find({})).resolves.toStrictEqual([userIdMap]);
+  });
+
   test("leagues", async () => {
     const rawColl = getRawDb(client).collection(LEAGUE_COLLECTION_NAME);
 

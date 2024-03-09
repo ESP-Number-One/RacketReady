@@ -9,6 +9,14 @@ import type { Moment } from "moment";
 import moment from "moment";
 import type { Filter } from "mongodb";
 
+/**
+ * Gets other users who are available at the same time
+ *
+ * @param client - The database client to use
+ * @param userId - The user id to match against
+ *
+ * @returns a list of unique user ids of the other users
+ */
 export async function getAvailabilityCache(
   client: DbClient,
   userId: ObjectId,
@@ -24,66 +32,62 @@ export async function getAvailabilityCache(
   return uniqueAvailablePeople.map((x) => new ObjectId(x));
 }
 
+/**
+ * Updates the availability cache with a given availability object
+ *
+ * @param db - The database client to use
+ * @param userId - The user id to set for
+ * @param availability - The availability to set the user to
+ */
 export async function setAvailabilityCache(
   db: DbClient,
   userId: ObjectId,
   availability: Availability,
 ): Promise<void> {
-  // Availablity is an objeect with start and end time. For each one hour time slot in the availabilty return me an time object. All the time objects should be an array
   const start = moment(availability.timeStart).startOf("hour");
   const end = moment(availability.timeEnd).startOf("hour");
-  //find the difference between start and end time
+
   const duration = end.diff(start, "hours");
-  //create an array of time objects
   const times = Array.from({ length: duration }, (_, i) =>
     start.clone().add(i, "hours"),
   );
 
   const twoWeeksFromStart = start.clone().add(2, "weeks");
 
-  //check if this has recursion
   if (availability.recurring) {
     let lastTimes = [...times];
+    // Get the time objects for the next two weeks
     while (lastTimes.length > 0) {
-      // use map and filter functions to get the time objects for the next two weeks
       lastTimes = lastTimes
         .map((time) =>
           addTime(time, availability.recurring as unknown as Duration),
-        ) // TODO ADD recuring date time thing
+        )
         .filter((time) => time < twoWeeksFromStart);
       times.push(...lastTimes);
     }
-    //Query : Start time in array AND available doesn't contain userId
-    const queries: Filter<AvailabilityCache>[] = [
-      { availablePeople: { $not: { $eq: userId } } },
-      { start: { $in: times.map((x) => x.toISOString()) } },
-    ];
-    const availabilityCache = await db.availabilityCaches();
-    // const curr = await availabilityCache.find({});
-    // const currFilter = await availabilityCache.find({ $and: queries });
-    // const currFilter2 = await availabilityCache.find(queries[1]);
-    // console.log(curr);
-    // console.log(currFilter);
-    // console.log(currFilter2);
-    await availabilityCache.editWithQuery(
-      { $and: queries },
-      { $push: { availablePeople: userId } },
-    );
   }
+
+  // Query : Start time in array AND available doesn't contain userId to
+  // make sure duplicates don't occur
+  const queries: Filter<AvailabilityCache>[] = [
+    { availablePeople: { $not: { $eq: userId } } },
+    { start: { $in: times.map((x) => x.toISOString()) } },
+  ];
+  const availabilityCache = await db.availabilityCaches();
+
+  await availabilityCache.editWithQuery(
+    { $and: queries },
+    { $push: { availablePeople: userId } },
+  );
 }
+
 function addTime(time: Moment, duration: Duration): Moment {
   let newTime = time.clone();
-  if (duration.days) {
-    newTime = newTime.add(duration.days, "days");
-  }
-  if (duration.weeks) {
-    newTime = newTime.add(duration.weeks, "weeks");
-  }
-  if (duration.months) {
-    newTime = newTime.add(duration.months, "months");
-  }
-  if (duration.years) {
-    newTime = newTime.add(duration.years, "years");
-  }
+
+  if (duration.days) newTime = newTime.add(duration.days, "days");
+  if (duration.weeks) newTime = newTime.add(duration.weeks, "weeks");
+  if (duration.months) newTime = newTime.add(duration.months, "months");
+  if (duration.years) newTime = newTime.add(duration.years, "years");
+
   return newTime;
 }
