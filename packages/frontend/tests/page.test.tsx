@@ -1,6 +1,12 @@
+import { asFuncMock } from "@esp-group-one/test-helpers-base";
 import { render } from "@testing-library/react";
 import { Page } from "../src/components/page";
 import { Header } from "../src/components/page/header";
+import { useViewNav } from "../src/state/nav.ts";
+
+jest.mock("../src/state/nav");
+
+const mockedUseNav = asFuncMock(useViewNav);
 
 describe("Page", () => {
   test("Slotting Structure", () => {
@@ -16,6 +22,8 @@ describe("Page", () => {
     expect(thing.container.childNodes.item(0).childNodes.length).toBe(3);
   });
   test("Minimal", () => {
+    mockedUseNav.mockReturnValue(() => void 0);
+
     const thing = render(
       <Page>
         <Page.Body>Body</Page.Body>
@@ -24,14 +32,16 @@ describe("Page", () => {
 
     expect(thing.container.childNodes.length).toBe(1);
     console.log(thing.container.innerHTML);
-    expect(thing.container.childNodes.item(0).childNodes.length).toBe(1);
+    expect(thing.container.childNodes.item(0).childNodes.length).toBe(2);
   });
 
   test("Empty", () => {
+    mockedUseNav.mockReturnValue(() => void 0);
+
     const thing = render(<Page>A</Page>);
 
     expect(thing.container.childNodes.length).toBe(1);
-    expect(thing.container.childNodes.item(0).childNodes.length).toBe(1); // Content still there.
+    expect(thing.container.childNodes.item(0).childNodes.length).toBe(2); // Content still there.
     expect(thing.container.innerText).toBeFalsy(); // No text, since no <Page.Body />
   });
 

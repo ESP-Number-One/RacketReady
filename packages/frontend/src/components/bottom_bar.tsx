@@ -8,7 +8,7 @@ import {
 import { useViewNav } from "../state/nav.ts";
 
 export function BottomBar(props: {
-  activePage: "home" | "search" | "leagues" | "profile";
+  activePage?: "home" | "search" | "leagues" | "profile";
 }) {
   const viewNavigate = useViewNav();
 
