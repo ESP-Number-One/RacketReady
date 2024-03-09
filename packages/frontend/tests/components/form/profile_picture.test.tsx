@@ -33,6 +33,9 @@ describe("ProfilePicturePicker", () => {
 
     if (input) await user.upload(input, file);
 
+    // To reduce the random failing of the test
+    await sleep(100);
+
     // Check image has now appeared
     const img = container.querySelector("img");
     expect(img).not.toBeNull();
@@ -51,3 +54,9 @@ describe("ProfilePicturePicker", () => {
     expect(newInput).not.toBeNull();
   });
 });
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
