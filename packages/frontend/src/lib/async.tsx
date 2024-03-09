@@ -1,4 +1,10 @@
-import { createContext, useEffect, useState, type JSX } from "react";
+import {
+  createContext,
+  useEffect,
+  useState,
+  type JSX,
+  useContext,
+} from "react";
 
 type Res<Ok, Err> =
   | { type: "loading" }
@@ -19,7 +25,7 @@ type FinalRes<Ok, Err> =
  * State wrapper for async functions,
  * rendering different JSX for different states:
  * * Loading (pending) states -- default is `\<\>Loading\</\>`;
- * * Error states -- default is to just `console.error`;
+ * * Error states -- default is either: (1) spread error upwards, or (2) just `console.error`;
  * * Success state -- returns `{ok: data}`.
  *
  * See {@link asyncHook} for example usage.
@@ -42,8 +48,17 @@ export class Result<Ok, Err> {
     return new Result({ type: "loading" });
   }
 
-  static error<Err>(error: Err): Result<never, Err> {
-    return new Result({ type: "error", value: error }) as Result<never, Err>;
+  static error<Err>(
+    error: Err,
+    errorHandler?: (error: Err) => void,
+  ): Result<never, Err> {
+    const res = new Result({ type: "error", value: error }) as Result<
+      never,
+      Err
+    >;
+    res.#errorHandler = errorHandler ?? res.#errorHandler;
+
+    return res;
   }
 
   static ok<Ok>(ok: Ok, refresh?: (() => void) | undefined): Result<Ok, never> {
@@ -101,13 +116,20 @@ export class Result<Ok, Err> {
  * within a functional component.
  *
  * @param func - The async function to call.
+ * @param options - Whether to enable refreshing for this hook.
  * @returns The {@link Result} state wrapper.
  *
+ * ### Error Handling
+ * By default, if no explicit `.catch()` is defined on the hook,
+ * errors are passed upwards, or (if not available) `console.error`'ed.
+ *
+ * ### Simple Example
  * @example
  * ```tsx
+ * // ./simple_example.tsx
  * import { useAsync } from "../lib/async";
  *
- * async function randomWaiting(ms: number) {
+ * export async function randomWaiting(ms: number) {
  *  await new Promise((resolve) => setTimeout(resolve, ms));
  *  if (Math.random() > 0.5) {
  *    throw new Error("Random error.");
@@ -127,6 +149,34 @@ export class Result<Ok, Err> {
  *  return <>{ok}</>;
  * }
  * ```
+ *
+ * ### Refresh Example
+ * @example
+ * ```tsx
+ * // ./refresh_example.tsx
+ * import { useAsync } from "../lib/async";
+ * import { randomWaiting } from "./simple_example";
+ *
+ * const state = { times: 0 };
+ *
+ * function RefreshExample() {
+ *  const { loading, error, ok, refresh } = useAsync(
+ *    () => randomWaiting(1_000).then(() => (state.times++)),
+ *    { refresh: true }
+ *  )
+ *    .loading(() => <>Waiting...</>)
+ *    .catch((error: Error) => <>{error.toString()}</>)
+ *    .await();
+ *
+ *  if (!ok) return loading ?? error;
+ *
+ *  return (
+ *    <button onClick={refresh}>
+ *      Clicked {times} times!
+ *    </button>
+ *  );
+ * }
+ * ```
  */
 export function useAsync<S>(
   func: () => Promise<S>,
@@ -136,6 +186,8 @@ export function useAsync<S>(
   const [state, setState] = useState(
     Result.loading() as unknown as Result<S, Error>,
   );
+
+  const errorHandler = useContext(ErrorHandler);
 
   useEffect(() => {
     func()
@@ -152,7 +204,7 @@ export function useAsync<S>(
         );
       })
       .catch((error: Error) => {
-        setState(Result.error(error));
+        setState(Result.error(error, errorHandler));
       });
   }, [refresh]);
 
