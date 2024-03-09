@@ -2,6 +2,7 @@ import type { ReactNode, JSX } from "react";
 import { Slot } from "../../lib/slotting";
 import { BottomBar } from "../bottom_bar";
 import { Header } from "./header";
+import { BottomBar } from "../bottom_bar";
 
 interface PageProps {
   children: ReactNode[] | ReactNode;
