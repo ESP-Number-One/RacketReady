@@ -5,18 +5,17 @@ import {
   newAPISuccess,
   ObjectId,
   UserCreation,
-  PageOptions,
   ID,
   Availability,
   QueryOptions,
+  UserPageOptions,
 } from "@esp-group-one/types";
 import type {
-  UserQuery,
   CensoredUser,
+  DateTimeString,
   Error,
   User,
   WithError,
-  DateTimeString,
 } from "@esp-group-one/types";
 import { type Filter } from "mongodb";
 import sharp from "sharp";
@@ -122,7 +121,7 @@ export class UsersController extends ControllerWrap<User> {
   @Response<Error>(500, "Internal Server Error")
   @Post("find")
   public async findUsers(
-    @Body() requestBody: PageOptions<UserQuery>,
+    @Body() requestBody: UserPageOptions,
     @Request() req: express.Request,
   ): Promise<WithError<CensoredUser[]>> {
     return this.withVerifiedParam(requestBody, (opts) =>

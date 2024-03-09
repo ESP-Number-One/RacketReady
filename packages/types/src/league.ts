@@ -1,4 +1,4 @@
-import type { Query } from "./db_client.js";
+import type { PageOptions, Query, SortQuery } from "./db_client.js";
 import type { MongoDBItem, ObjectId, Sport } from "./utils.js";
 
 interface BaseLeague extends MongoDBItem {
@@ -43,3 +43,5 @@ export type LeagueQuery = Query<{
   sport: Sport;
   name: string;
 }> & { amIn?: boolean };
+
+export type LeaguePageOptions = PageOptions<LeagueQuery, SortQuery<League>>;

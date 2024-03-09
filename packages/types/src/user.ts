@@ -1,4 +1,4 @@
-import type { Query } from "./db_client.js";
+import type { PageOptions, Query, SortQuery } from "./db_client.js";
 import type { DateTimeString, MongoDBItem, ObjectId, Sport } from "./utils.js";
 
 export enum AbilityLevel {
@@ -81,3 +81,5 @@ export function calculateAverageRating(rate: Ratings): number {
 
   return sum / count;
 }
+
+export type UserPageOptions = PageOptions<UserQuery, SortQuery<User>>;
