@@ -6,9 +6,14 @@ type Res<Ok, Err> =
   | { type: "ok"; value: Ok };
 
 type FinalRes<Ok, Err> =
-  | { ok: Ok; error: undefined; loading: undefined }
-  | { ok: undefined; error: Err; loading: undefined }
-  | { ok: undefined; error: undefined; loading: JSX.Element };
+  | { ok: Ok; error: undefined; loading: undefined; refresh: () => void }
+  | { ok: undefined; error: Err; loading: undefined; refresh: undefined }
+  | {
+      ok: undefined;
+      error: undefined;
+      loading: JSX.Element;
+      refresh: undefined;
+    };
 
 /**
  * State wrapper for async functions,
@@ -23,6 +28,11 @@ export class Result<Ok, Err> {
   #internal: Res<Ok, Err>;
   #loadingHandler: () => JSX.Element = () => <>Loading</>;
   #errorHandler: (error: Err) => unknown = console.error;
+  #refresh: () => void = () => {
+    console.warn(
+      "You're calling refresh on a non-refresh async hook! Don't do it.",
+    );
+  };
 
   private constructor(internal: Res<Ok, Err>) {
     this.#internal = internal;
@@ -36,11 +46,15 @@ export class Result<Ok, Err> {
     return new Result({ type: "error", value: error }) as Result<never, Err>;
   }
 
-  static ok<Ok>(ok: Ok): Result<Ok, never> {
-    return new Result({ type: "ok", value: ok }) as unknown as Result<
+  static ok<Ok>(ok: Ok, refresh?: (() => void) | undefined): Result<Ok, never> {
+    const res = new Result({ type: "ok", value: ok }) as unknown as Result<
       Ok,
       never
     >;
+
+    res.#refresh = refresh ?? res.#refresh;
+
+    return res;
   }
 
   catch(handler?: (error: Err) => unknown): this {
@@ -60,18 +74,21 @@ export class Result<Ok, Err> {
           loading: this.#loadingHandler(),
           ok: undefined,
           error: undefined,
+          refresh: undefined,
         };
       case "error":
         return {
           error: this.#errorHandler(this.#internal.value),
           loading: undefined,
           ok: undefined,
+          refresh: undefined,
         };
       case "ok":
         return {
           ok: this.#internal.value,
           error: undefined,
           loading: undefined,
+          refresh: this.#refresh,
         };
     }
   }
@@ -111,7 +128,11 @@ export class Result<Ok, Err> {
  * }
  * ```
  */
-export function useAsync<S>(func: () => Promise<S>) {
+export function useAsync<S>(
+  func: () => Promise<S>,
+  options?: { refresh?: boolean },
+) {
+  const [refresh, setRefresh] = useState(0);
   const [state, setState] = useState(
     Result.loading() as unknown as Result<S, Error>,
   );
@@ -119,12 +140,21 @@ export function useAsync<S>(func: () => Promise<S>) {
   useEffect(() => {
     func()
       .then((data: S) => {
-        setState(Result.ok(data) as unknown as Result<S, Error>);
+        setState(
+          Result.ok(
+            data,
+            options?.refresh === true
+              ? () => {
+                  setRefresh(refresh + 1);
+                }
+              : undefined,
+          ) as unknown as Result<S, Error>,
+        );
       })
       .catch((error: Error) => {
         setState(Result.error(error));
       });
-  }, []);
+  }, [refresh]);
 
   return state;
 }
