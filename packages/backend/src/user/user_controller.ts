@@ -116,24 +116,32 @@ export class UsersController extends ControllerWrap<User> {
           const text = opts.query.profileText;
           delete opts.query.profileText;
           let query = opts.query as Filter<User>;
+          if (query.sports) {
+            query["sports.sport"] = query.sports;
+            delete query.sports;
+          }
 
           if (text) {
-            const textQuery: Filter<string> = {
+            const regQuery: Filter<string> = {
               $regex: text,
               $options: "i",
             };
-            query = {
+
+            const textQuery = {
               $or: [
                 {
-                  ...query,
-                  name: textQuery,
+                  name: regQuery,
                 },
                 {
-                  ...query,
-                  description: textQuery,
+                  description: regQuery,
                 },
               ],
             };
+
+            query =
+              Object.keys(query).length === 0
+                ? textQuery
+                : { $and: [textQuery, query] };
           }
 
           queries.push(query);
