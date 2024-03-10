@@ -5,6 +5,7 @@ interface BaseLeague extends MongoDBItem {
   name: string;
   ownerIds: ObjectId[];
   sport: Sport;
+  picture?: string;
 }
 
 interface PublicLeague extends BaseLeague {
@@ -22,6 +23,7 @@ export interface LeagueCreation {
   name: string;
   sport: Sport;
   private: boolean;
+  picture?: string;
 }
 
 export interface CensoredLeague extends MongoDBItem {
