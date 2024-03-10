@@ -35,7 +35,7 @@ export function RecProfile({ user, displayAbility }: Info) {
           <p className="line-clamp-3">{desc}</p>
         </div>
       </div>
-      <div className="bg-slate-400 px-5 pb-3 space-y-2 overflow-scroll rounded-b-lg">
+      <div className="bg-slate-400 px-5 pt-2 pb-2 mt-1 space-y-2 overflow-scroll rounded-b-lg">
         {user.availability.map((time, i) => {
           return (
             <div

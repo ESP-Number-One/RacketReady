@@ -15,8 +15,9 @@ export const Search = memo(function Search({ onSubmit, hidden }: SearchProps) {
   };
 
   return (
-    <div className="display-inline w-fit max-w-fit bg-p-grey-100 rounded-xl align-middle">
+    <div className=" w-fit max-w-fit bg-p-grey-100 rounded-xl align-middle">
       <form
+        className="flex flex-row"
         onSubmit={(e) => {
           e.preventDefault();
           onSubmitWrapper();
