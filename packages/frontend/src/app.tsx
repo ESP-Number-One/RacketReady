@@ -6,6 +6,7 @@ import { AnotherTestPage } from "./pages/another_test.js";
 import { API, type AuthResult, handleApi } from "./state/auth.js";
 import { LoginButton } from "./components/auth.js";
 import { useAPIClient } from "./lib/auth.js";
+import { NewMatchPage } from "./pages/match/new.js";
 
 export function App() {
   const [result, setResult] = useState({ type: "loading" } as AuthResult);
@@ -38,6 +39,7 @@ export function App() {
       <Routes>
         <Route index element={<TestPage />} />
         <Route path="/another" element={<AnotherTestPage />} />
+        <Route path="/match/new" element={<NewMatchPage />} />
       </Routes>
     </API.Provider>
   ) : (
