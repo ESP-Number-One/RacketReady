@@ -15,7 +15,7 @@ export const Search = memo(function Search({ onSubmit, hidden }: SearchProps) {
   };
 
   return (
-    <div className="display-inline w-fit h-fit bg-p-grey-200 rounded-lg align-middle">
+    <div className="display-inline w-fit max-w-fit bg-p-grey-100 rounded-xl align-middle">
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -23,14 +23,14 @@ export const Search = memo(function Search({ onSubmit, hidden }: SearchProps) {
         }}
       >
         <button
-          className="rounded-lg p1 ml-2 mb-1 mr-1 self-center justify-center align-middle"
+          className="rounded-lg p1 ml-2 mr-1 self-center justify-center align-middle"
           data-testid="search-button"
           type="submit"
         >
-          <Icon icon={faMagnifyingGlass} color="#fff" size="lg" />
+          <Icon icon={faMagnifyingGlass} color="#fff" size="sm" />
         </button>
         <input
-          className="font-body p-1 mr-2 mt-2 mb-2 ml-1 bg-p-grey-200 rounded-lg text-xl text-white placeholder:text-white focus:"
+          className="font-title placeholder:font-black max-w-full w-full font-black p-1 mr-2 ml-1 bg-p-grey-100 rounded-lg placeholder:text-2xl text-2xl placeholder:text-white text-white"
           data-testid="search-input"
           hidden={hidden}
           onChange={(e) => {
