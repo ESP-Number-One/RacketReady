@@ -202,6 +202,26 @@ export class LeaguesController extends ControllerWrap<League> {
   }
 
   /**
+   * @returns a string which can be put into an img element's src to display
+   *   the image
+   */
+  @Response<Error>(500, "Internal Server Error")
+  @Get("{leagueId}/picture")
+  public async getProfilePicture(
+    @Path() leagueId: ID,
+  ): Promise<WithError<string>> {
+    const id = new ObjectId(leagueId);
+
+    const res = await this.get(id);
+    if (!res.success) return res;
+    if (res.data.picture === undefined) {
+      return this.notFound(404, "No picture for this league.");
+    }
+
+    return newAPISuccess(`data:image/webp;base64,${res.data.picture}`);
+  }
+
+  /**
    * Creates a new league with the given information, setting the owner to the
    * current user
    */
