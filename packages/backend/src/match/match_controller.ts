@@ -14,8 +14,9 @@ import {
 import type {
   Match,
   WithError,
-  StarCount,
   SortQuery,
+  StarCount,
+  Message,
 } from "@esp-group-one/types";
 import {
   Body,
@@ -31,6 +32,7 @@ import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collecti
 import type { Filter, OptionalId, UpdateFilter } from "mongodb";
 import * as express from "express";
 import type { User } from "@esp-group-one/db-client/build/src/types.js";
+import moment from "moment";
 import { ControllerWrap } from "../controller.js";
 
 @Security("auth0")
@@ -76,6 +78,40 @@ export class MatchsController extends ControllerWrap<Match> {
   }
 
   /**
+   * Cancels the given match if it hasn't happened yet
+   */
+  @Post("{matchId}/cancel")
+  public cancelMatch(
+    @Path() matchId: ID,
+    @Request() req: express.Request,
+  ): Promise<WithError<undefined>> {
+    const id = new ObjectId(matchId);
+
+    return this.withUserId(req, async (userId) => {
+      const res = await this.get(id);
+      if (res.success) {
+        if (
+          !res.data.players.map((p) => p.toString()).includes(userId.toString())
+        ) {
+          return this.notFound();
+        }
+
+        if (res.data.status === MatchStatus.Complete) {
+          this.setStatus(400);
+          return newAPIError("The match is has completed");
+        }
+
+        const coll = await this.getCollection();
+        await coll.delete(id);
+
+        return newAPISuccess(undefined);
+      }
+
+      return res;
+    });
+  }
+
+  /**
    * Accepts the given match
    */
   @Post("{matchId}/complete")
@@ -98,7 +134,7 @@ export class MatchsController extends ControllerWrap<Match> {
           return newAPIError("The match is not in accepted state");
         }
 
-        if (new Date() <= new Date(res.data.date)) {
+        if (moment().isBefore(res.data.date)) {
           this.setStatus(400);
           return newAPIError("The match has not started");
         }
@@ -126,6 +162,49 @@ export class MatchsController extends ControllerWrap<Match> {
             score: scores,
           },
         });
+
+        return newAPISuccess(undefined);
+      }
+
+      return res;
+    });
+  }
+
+  /**
+   * Sends a message on the given match.
+   *
+   * This can only be done when the message has been accepted but not completed
+   */
+  @Post("{matchId}/message")
+  public message(
+    @Path() matchId: ID,
+    @Body() { message }: { message: string },
+    @Request() req: express.Request,
+  ): Promise<WithError<undefined>> {
+    const id = new ObjectId(matchId);
+
+    return this.withUserId(req, async (userId) => {
+      const res = await this.get(id);
+      if (res.success) {
+        if (
+          !res.data.players.map((p) => p.toString()).includes(userId.toString())
+        ) {
+          return this.notFound();
+        }
+
+        if (res.data.status !== MatchStatus.Accepted) {
+          this.setStatus(400);
+          return newAPIError("The match is not in an accepting state");
+        }
+
+        const fullMessage: Message = {
+          sender: userId,
+          text: message,
+          date: moment().toISOString(),
+        };
+
+        const coll = await this.getCollection();
+        await coll.edit(id, { $push: { messages: fullMessage } });
 
         return newAPISuccess(undefined);
       }
@@ -271,8 +350,8 @@ export class MatchsController extends ControllerWrap<Match> {
     @Request() req: express.Request,
   ): Promise<WithError<Match>> {
     return this.withVerifiedParam(requestBody, (proposal) => {
-      const d = new Date(requestBody.date);
-      if (d.toString() === "Invalid Date") {
+      const d = moment(requestBody.date);
+      if (!d.isValid() || moment().isAfter(d)) {
         this.setStatus(400);
         return Promise.resolve(newAPIError("Invalid date"));
       }

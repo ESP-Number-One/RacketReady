@@ -25,6 +25,15 @@ export class CollectionWrap<T extends MongoDBItem> {
   }
 
   /**
+   * Deletes the object with the given id
+   *
+   * @param id - the id to delete
+   */
+  public async delete(id: ObjectId): Promise<void> {
+    await this.collection.deleteOne({ _id: toMongo(id) });
+  }
+
+  /**
    * Edits a given object with the id with the update filter
    *
    * @param id - the id of the object to update

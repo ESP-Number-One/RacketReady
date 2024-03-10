@@ -49,6 +49,22 @@ describe("accept", () => {
   runErrorTests(endpoint, () => api.accept(id));
 });
 
+describe("cancel", () => {
+  const id = new ObjectId(IDS[0]);
+  const resObj = undefined;
+  const endpoint = `match/${IDS[0]}/cancel`;
+  test("Normal", async () => {
+    fetchMockEndpointOnce(endpoint, newAPISuccess(resObj), {
+      body: undefined,
+    });
+
+    await expect(api.cancel(id)).resolves.toStrictEqual(resObj);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  runErrorTests(endpoint, () => api.cancel(id));
+});
+
 describe("complete", () => {
   const id = new ObjectId(IDS[0]);
   const resObj = undefined;
@@ -67,4 +83,22 @@ describe("complete", () => {
   });
 
   runErrorTests(endpoint, () => api.complete(id, {}));
+});
+
+describe("message", () => {
+  const id = new ObjectId(IDS[0]);
+  const resObj = undefined;
+  const endpoint = `match/${IDS[0]}/message`;
+  test("Normal", async () => {
+    const message = "Hi!";
+
+    fetchMockEndpointOnce(endpoint, newAPISuccess(resObj), {
+      body: { message },
+    });
+
+    await expect(api.message(id, message)).resolves.toStrictEqual(resObj);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  runErrorTests(endpoint, () => api.message(id, ""));
 });

@@ -9,6 +9,7 @@ import { UpcomingMatch } from "./pages/upcoming.js";
 import { ProfilePage } from "./pages/profile.js";
 import { SetAvailability } from "./pages/me/availability.js";
 import { NewMatchPage } from "./pages/match/new.js";
+import { SingleMatchPage } from "./pages/single_match.js";
 
 export function App() {
   const [result, setResult] = useState({ type: "loading" } as AuthResult);
@@ -44,6 +45,7 @@ export function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/me/availability" element={<SetAvailability />} />
         <Route path="/match/new" element={<NewMatchPage />} />
+        <Route path="/match" element={<SingleMatchPage />} />
       </Routes>
     </API.Provider>
   ) : (

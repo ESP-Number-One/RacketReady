@@ -14,8 +14,8 @@ export enum MatchStatus {
 }
 
 export interface Message {
-  sender: string;
-  date: string;
+  sender: ObjectId;
+  date: DateTimeString;
   text: string;
 }
 
