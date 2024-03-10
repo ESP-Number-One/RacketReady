@@ -1,11 +1,8 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { AbilityLevel, ObjectId, Sport } from "@esp-group-one/types";
+import { useRef } from "react";
 import { Page } from "../components/page";
-import { Header } from "../components/page/header";
 import { useViewNav } from "../state/nav";
 import { RecProfile } from "../components/rec_profile";
-import { ReactElement, ReactNode, UIEvent, useRef } from "react";
 import { Search } from "../components/search";
 
 export function TestPage() {
