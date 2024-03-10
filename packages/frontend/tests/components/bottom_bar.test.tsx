@@ -13,7 +13,7 @@ describe("BottomBar", () => {
     const component = render(<BottomBar activePage={"profile"} />);
     const profile = component.container.children.item(0)?.children.item(3);
     expect(profile).not.toBeNull();
-    expect(profile?.classList.contains("bg-p-blue")).toBe(true);
+    expect(profile?.classList.contains("text-p-blue")).toBe(true);
   });
 
   test("Clicking works", () => {

@@ -1,4 +1,5 @@
 import { fireEvent, render } from "@testing-library/react";
+import type { StarCount } from "@esp-group-one/types";
 import { Stars } from "../src/components/stars";
 import { track } from "./helpers/utils";
 
@@ -16,7 +17,11 @@ describe("Stars", () => {
 
     // Here's how to test a JSX component: you render it with the test renderer.
     const component = render(
-      <Stars rating={0} onRatingChange={setRating} disabled={false} />,
+      <Stars
+        rating={0 as StarCount}
+        onRatingChange={setRating}
+        disabled={false}
+      />,
     );
 
     expect(component.container).toBeInTheDocument();
@@ -57,7 +62,11 @@ describe("Stars", () => {
         track="rating"
         callback="onRatingChange" // Prop that's a callback.
       >
-        <Stars rating={0} onRatingChange={() => void 0} disabled={false} />
+        <Stars
+          rating={0 as StarCount}
+          onRatingChange={() => void 0}
+          disabled={false}
+        />
       </StarsTracker>,
     );
 
@@ -83,7 +92,7 @@ describe("Stars", () => {
   });
 
   test("Default value test", () => {
-    const component = render(<Stars rating={0} />);
+    const component = render(<Stars rating={0 as StarCount} />);
 
     expect(component.container).toBeInTheDocument();
     fireEvent.click(

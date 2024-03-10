@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import type { StarCount } from "@esp-group-one/types";
 import { Stars } from "../components/stars";
 import { Page } from "../components/page";
 import { Header } from "../components/page/header";
 import { useViewNav } from "../state/nav";
 
 export function TestPage() {
-  const [rating, setRating] = useState(2);
+  const [rating, setRating] = useState<StarCount>(2);
   const viewNavigate = useViewNav();
 
   return (

@@ -9,10 +9,10 @@ interface SearchProps {
 
 export const Search = memo(function Search({ onSubmit, hidden }: SearchProps) {
   const [search, setSearch] = useState("");
-  function onSubmitWrapper() {
+  const onSubmitWrapper = () => {
     if (search === "") return;
     onSubmit(search);
-  }
+  };
 
   return (
     <div className="display-inline w-fit h-fit bg-p-grey-200 rounded-lg align-middle">

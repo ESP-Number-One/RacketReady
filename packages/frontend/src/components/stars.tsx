@@ -4,12 +4,13 @@ import {
   FontAwesomeIcon,
   type FontAwesomeIconProps,
 } from "@fortawesome/react-fontawesome";
+import type { StarCount } from "@esp-group-one/types";
 
 function StarButton(props: {
-  onClick: (rating: number) => void;
-  currentRating: number;
-  rating: number;
+  currentRating: StarCount;
   disabled?: boolean;
+  onClick: (rating: StarCount) => void;
+  rating: StarCount;
   size?: FontAwesomeIconProps["size"];
 }) {
   return (
@@ -29,8 +30,8 @@ function StarButton(props: {
 }
 
 export function Stars(props: {
-  rating: number;
-  onRatingChange?: (newRating: number) => void;
+  rating: StarCount;
+  onRatingChange?: (newRating: StarCount) => void;
   disabled?: boolean;
   size?: FontAwesomeIconProps["size"];
 }) {
@@ -42,7 +43,7 @@ export function Stars(props: {
           disabled={props.disabled}
           key={e}
           onClick={props.onRatingChange ?? (() => void 0)}
-          rating={e}
+          rating={e as StarCount}
           size={props.size}
         />
       ))}

@@ -21,15 +21,13 @@ function PageImpl({
   return (
     <div className="root-page flex h-screen w-screen flex-col">
       {header !== undefined ? (
-        <div className="flex-none w-full p-5 bg-slate-500 text-white font-title text-2xl font-bold">
+        <div className="flex-none w-full p-2 text-p-grey-900 font-title text-2xl font-bold">
           <div className="relative flex w-full">{header}</div>
         </div>
       ) : null}
       <div className="flex-1 min-h-0 h-full px-2">{body}</div>
       {footer !== undefined ? (
-        <div className="flex-none w-full p-5 bg-slate-400 text-white font-title justify-end">
-          {footer}
-        </div>
+        <div className="flex-none w-full font-title justify-end">{footer}</div>
       ) : null}
     </div>
   );
@@ -43,7 +41,7 @@ interface BodyProps {
 
 PageImpl.Header = Header;
 
-PageImpl.Body = function Body({ children, className }: BodyProps) {
+PageImpl.Body = function Body({ children, className = "" }: BodyProps) {
   return (
     <div
       className={`h-full ${className}`}

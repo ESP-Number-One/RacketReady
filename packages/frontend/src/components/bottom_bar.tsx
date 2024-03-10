@@ -13,10 +13,10 @@ export function BottomBar(props: {
   const viewNavigate = useViewNav();
 
   return (
-    <div className="flex justify-between grid-cols-4 mb-3 pt-3 bottom-0 left-0 fixed w-full border-t-p-grey-900 border-t-4">
+    <div className="grid grid-cols-4 bg-white grid-cols-4 pb-3 pt-3 bottom-0 left-0 w-full border-t-p-grey-900 border-t-4">
       <button
         className={`${
-          props.activePage === "home" ? "bg-p-blue" : ""
+          props.activePage === "home" ? "text-p-blue font-bold" : ""
         } flex justify-center w-full`}
         onClick={() => {
           viewNavigate("/");
@@ -29,7 +29,7 @@ export function BottomBar(props: {
           viewNavigate("/search");
         }}
         className={`${
-          props.activePage === "search" ? "bg-p-blue" : ""
+          props.activePage === "search" ? "text-p-blue font-bold" : ""
         } flex justify-center w-full`}
       >
         <FontAwesomeIcon
@@ -43,7 +43,7 @@ export function BottomBar(props: {
           viewNavigate("/leagues");
         }}
         className={`${
-          props.activePage === "leagues" ? "bg-p-blue" : ""
+          props.activePage === "leagues" ? "text-p-blue font-bold" : ""
         } flex justify-center w-full`}
       >
         <FontAwesomeIcon icon={faTrophy} className="text-center" size="2x" />
@@ -53,7 +53,7 @@ export function BottomBar(props: {
           viewNavigate("/profile");
         }}
         className={`${
-          props.activePage === "profile" ? "bg-p-blue" : ""
+          props.activePage === "profile" ? "text-p-blue font-bold" : ""
         } flex justify-center w-full`}
       >
         <FontAwesomeIcon icon={faPerson} className="text-center" size="2x" />

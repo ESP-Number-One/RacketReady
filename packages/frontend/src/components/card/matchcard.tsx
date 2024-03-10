@@ -1,4 +1,4 @@
-import type { Match, ObjectId } from "@esp-group-one/types";
+import type { CensoredUser, Match } from "@esp-group-one/types";
 import type { Moment } from "moment";
 import { useContext, type JSX } from "react";
 import moment from "moment";
@@ -8,35 +8,26 @@ import { Profile } from "../profile";
 import { Tag } from "../tags";
 
 export function MatchCard({
-  //connecting to backend
-  match: { sport, date, players, _id: matchId },
+  className = "",
+  match: { sport, date, _id: matchId },
+  opponent,
 }: {
+  className?: string;
   match: Match;
+  opponent: CensoredUser;
 }) {
   const api = useContext(API);
   const errorHandler = useContext(ErrorHandler);
 
   const { ok, loading, error } = useAsync(async () => {
-    const { _id: myId } = await api.user().me();
+    const profilePic = await api.user().getProfileSrc(opponent._id);
 
-    const opId = players.find(
-      (id) => id.toString() !== myId.toString(),
-    ) as unknown as ObjectId;
-
-    const op = await api.user().getId(opId);
-    const profilePic = await api.user().getProfileSrc(opId);
-
-    return { opponent: op, profilePic };
+    return { profilePic };
   })
     .catch(errorHandler)
     .await();
 
-  if (!ok) return (loading ?? error) as JSX.Element;
-
-  const {
-    opponent: { name: oppponentName },
-    profilePic,
-  } = ok;
+  if (error) return error as JSX.Element;
 
   const startTime = moment(date);
   const info = formatDate(startTime);
@@ -44,16 +35,22 @@ export function MatchCard({
   return (
     <a
       href={`/match?id=${matchId.toString()}`}
-      className="rounded-lg border border-gray-300 p-2 flex items-center w-80 bg-p-grey-200"
+      className={`${className} rounded-lg border border-gray-300 p-2 flex items-center w-full bg-p-grey-200`}
     >
       <div className="mr-4">
-        <div className="image-container">
-          <Profile imgSrc={profilePic} />
-        </div>
+        {ok ? (
+          <div className="image-container">
+            <Profile imgSrc={ok.profilePic} />
+          </div>
+        ) : (
+          <div className="flex place-content-center w-24 h-24 rounded-2xl overflow-hidden">
+            {loading}
+          </div>
+        )}
       </div>
       <div className="flex flex-col flex-1">
         <div className="font-title font-bold text-2xl text-white">
-          {oppponentName}
+          {opponent.name}
         </div>
         <div className="font-body text-white text-xl">{`${info.time} - ${endinfo.time}`}</div>
         <div className="pb-1">

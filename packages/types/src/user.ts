@@ -69,6 +69,7 @@ export interface UserCreation {
 }
 
 export type UserQuery = Query<{
+  _id: ObjectId;
   sports: string[];
   leagues: ObjectId[];
 }> & { profileText?: string };
