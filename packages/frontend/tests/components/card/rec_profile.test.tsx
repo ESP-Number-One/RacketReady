@@ -91,7 +91,7 @@ describe("RecProfile", () => {
     expect(
       component.container.getElementsByClassName(
         "bg-slate-400 px-5 pt-2 pb-2 mt-1 space-y-2 overflow-scroll rounded-b-lg",
-      ),
-    ).toBeFalsy();
+      ).length,
+    ).toBe(0);
   });
 });
