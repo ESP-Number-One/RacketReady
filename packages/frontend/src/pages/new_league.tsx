@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBan, faFloppyDisk, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { Stars } from "../components/page/stars"; // Assuming Stars is still relevant
 import { Page } from "../components/page";
 import { Header } from "../components/page/header";
 import { useViewNav } from "../state/nav";
@@ -28,17 +27,7 @@ export function NewLeaguePage() {
   const currentSport: Sport = sportsOptions[0];
 
   const handleCreateLeague = async () => {
-    try {
-      if (!formRef.current) return; // Check if form ref is available
-      // **Commented out API call**
-      // await api.leagues().new(formRef.current.formData);
-      console.log("League creation successful (simulated)"); // Placeholder
-      // Navigate to a success page or perform other actions after creation
-    } catch (error) {
-      console.error("Error creating league:", error);
-      // Display error message to the user
-      formRef.current?.setError(error.toString()); // Optional chaining
-    }
+    //I dont know what to do here await api.leagues().new(formData);
   };
 
   const handleCancel = () => {
@@ -46,9 +35,22 @@ export function NewLeaguePage() {
   };
 
   const handleCreateButtonClick = () => {
-    if (formRef.current) {
-      formRef.current.submit();
-    }
+    void handleCreateLeague();
+  };
+
+  const [name, setName] = React.useState("");
+  const [startDate, setStartDate] = React.useState("");
+  const [endDate, setEndDate] = React.useState("");
+
+  const handleNameChange = (value: string) => {
+    setName(value);
+  };
+  const handleStartDateChange = (value: string) => {
+    setStartDate(value);
+  };
+
+  const handleEndDateChange = (value: string) => {
+    setEndDate(value);
   };
 
   return (
@@ -67,11 +69,19 @@ export function NewLeaguePage() {
           <div style={{ padding: "10px 0" }} /> {/* Empty div with padding */}
           <SelectSport sports={sportsOptions} currentSport={currentSport} />
           <div style={{ padding: "10px 0" }} /> {/* Empty div with padding */}
-          <Input type="text" placeholder="Name" />
+          <Input type="text" placeholder="Name" onChange={handleNameChange} />
           <div style={{ padding: "10px 0" }} /> {/* Empty div with padding */}
-          <Input type="date" placeholder="Start date" />
+          <Input
+            type="date"
+            placeholder="Start date"
+            onChange={handleStartDateChange}
+          />
           <div style={{ padding: "10px 0" }} /> {/* Empty div with padding */}
-          <Input type="date" placeholder="End date" />
+          <Input
+            type="date"
+            placeholder="End date"
+            onChange={handleEndDateChange}
+          />
           <div style={{ padding: "10px 0" }} /> {/* Empty div with padding */}
           <div className="flex">
             <RadioButton
