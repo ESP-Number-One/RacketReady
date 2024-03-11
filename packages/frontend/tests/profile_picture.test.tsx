@@ -2,6 +2,7 @@ import { fireEvent, render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { ProfilePicturePicker } from "../src/components/profile_picture";
 
+//profile pic tests
 describe("ProfilePicturePicker", () => {
   test("displays selected image", async () => {
     const handleChange = (): void => {
