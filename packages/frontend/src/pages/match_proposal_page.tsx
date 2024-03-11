@@ -5,12 +5,10 @@ import { Header } from "../components/page/header";
 import { CardList } from "../components/card_list";
 import { API } from "../state/auth";
 import { Cards } from "../utils/types_to_cards";
-import { useViewNav } from "../state/nav";
+import { BottomBar } from "../components/bottom_bar";
 
 export function MatchProposal() {
   const api = useContext(API);
-
-  const viewNavigate = useViewNav();
 
   const nextPage = (pageNum: number): Promise<ReactNode[]> => {
     let result: ReactNode[];
@@ -42,13 +40,7 @@ export function MatchProposal() {
         />
       </Page.Body>
       <Page.Footer>
-        <button
-          onClick={() => {
-            viewNavigate("/match-proposals");
-          }}
-        >
-          MatchProposal
-        </button>
+        <BottomBar activePage={"home"} />
       </Page.Footer>
     </Page>
   );

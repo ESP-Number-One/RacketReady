@@ -1,9 +1,5 @@
-import {
-  MatchStatus,
-  type CensoredUser,
-  type League,
-  type Match,
-} from "@esp-group-one/types";
+import { MatchStatus } from "@esp-group-one/types";
+import type { CensoredLeague, CensoredUser, Match } from "@esp-group-one/types";
 import type { ReactNode } from "react";
 import type { APIClient } from "@esp-group-one/api-client";
 import { Proposal } from "../components/proposal";
@@ -30,7 +26,7 @@ export namespace Cards {
     });
   }
 
-  export function fromLeagues(leagues: League[], _api: APIClient) {
+  export function fromLeagues(leagues: CensoredLeague[], _api: APIClient) {
     console.error("Not implemented");
     return leagues.map((league) => {
       return (<div key={league._id.toString()} />) as ReactNode;
