@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { AnotherTestPage } from "./pages/another_test.js";
+import { NewLeaguePage } from "./pages/new_league.js";
 import { API, type AuthResult, handleApi } from "./state/auth.js";
 import { LoginButton } from "./components/auth.js";
 import { useAPIClient } from "./lib/auth.js";
@@ -50,6 +51,7 @@ export function App() {
         <Route path="/match/new" element={<NewMatchPage />} />
         <Route path="/match" element={<SingleMatchPage />} />
         <Route path="/match/complete" element={<CompleteMatchForm />} />
+        <Route path="/league/new" element={<NewLeaguePage />} />
       </Routes>
     </API.Provider>
   ) : (
