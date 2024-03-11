@@ -3,17 +3,30 @@ import {
   type CensoredUser,
   type League,
   type Match,
-  type User,
 } from "@esp-group-one/types";
 import type { ReactNode } from "react";
 import type { APIClient } from "@esp-group-one/api-client";
 import { Proposal } from "../components/proposal";
+import { RecProfile } from "../components/rec_profile";
 
 export namespace Cards {
-  export function fromUsers(users: User[] | CensoredUser[], _api: APIClient) {
-    console.error("Not implemented");
-    return users.map((user) => {
-      return (<div key={user._id.toString()} />) as ReactNode;
+  export function fromUsers(users: CensoredUser[], api: APIClient) {
+    return Promise.all(
+      (() => {
+        return users.map(async (user) => {
+          return (
+            <RecProfile
+              key={user._id.toString()}
+              user={user}
+              pfp={await api.user().getProfileSrc(user._id)}
+              availability={await api.user().findAvailabilityWith(user._id, {})}
+              displayAbility={false}
+            />
+          );
+        });
+      })(),
+    ).then((cards) => {
+      return cards;
     });
   }
 

@@ -8,6 +8,8 @@ interface CardListProps<T extends ReactNode> {
   nextPage: (nextPage: number) => Promise<T[]>;
   refreshPage?: () => void;
   startPage?: number;
+  emptyListPlaceholder?: string;
+  shouldSnap?: boolean;
 }
 
 export function CardList<T extends ReactNode>({
@@ -15,6 +17,8 @@ export function CardList<T extends ReactNode>({
   nextPage,
   refreshPage,
   startPage,
+  emptyListPlaceholder = "No more results",
+  shouldSnap,
 }: CardListProps<T>) {
   const [pageNum, setPageNum] = useState(
     startPage !== undefined && startPage >= 0 ? startPage : 0,
@@ -150,6 +154,11 @@ export function CardList<T extends ReactNode>({
   return (
     <div
       className="grid-flow-row grid overflow-clip h-full items-top"
+      style={
+        shouldSnap
+          ? { scrollSnapType: "y mandatory", scrollSnapStop: "always" }
+          : {}
+      }
       id="card-list"
     >
       <FontAwesomeIcon
