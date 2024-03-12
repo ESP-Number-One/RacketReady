@@ -1,33 +1,89 @@
-import type { ReactNode } from "react";
+import type { ReactNode, JSX, FormEventHandler } from "react";
 import { useCallback, useState } from "react";
+import { Slot } from "../../lib/slotting";
+import { Page } from "../page";
+import { Button } from "../button";
 import { ErrorDiv } from "../error";
 
 interface FormProps {
+  children: ReactNode[] | ReactNode;
+  parentError?: string;
   onSubmit: () => Promise<void>;
+}
+
+function FormImpl({ children: _children, parentError, onSubmit }: FormProps) {
+  const [error, setError] = useState(parentError ?? "");
+  const [disabled, setDisabled] = useState(false);
+
+  let children: ReactNode[];
+  if (!(_children instanceof Array)) {
+    children = [_children];
+  } else {
+    children = _children;
+  }
+
+  const header = Slot.find(children, FormImpl.Header);
+  const body = Slot.find(children, FormImpl.Body);
+  const footer = Slot.find(children, FormImpl.Footer);
+
+  const onSubmitWrapper: FormEventHandler<HTMLFormElement> = useCallback(
+    (e) => {
+      e.preventDefault();
+      setDisabled(true);
+      onSubmit()
+        .catch((err: string) => {
+          setError(err.toString());
+        })
+        .finally(() => {
+          setDisabled(false);
+        });
+    },
+    [onSubmit],
+  );
+
+  return (
+    <form onSubmit={onSubmitWrapper}>
+      <Page>
+        <Page.Header>{header}</Page.Header>
+        <Page.Body className="flex flex-col overflow-y-scroll">
+          {body}
+          <ErrorDiv className="flex-none" error={error} />
+        </Page.Body>
+        <Page.Footer>
+          {footer ? (
+            footer
+          ) : (
+            <Button type="submit" disabled={disabled}>
+              Submit
+            </Button>
+          )}
+        </Page.Footer>
+      </Page>
+    </form>
+  );
+}
+
+interface WithChildrenProps {
   children: ReactNode;
 }
 
-export function Form({ onSubmit, children }: FormProps) {
-  const [error, setError] = useState("");
+FormImpl.Header = function Header({ children }: WithChildrenProps) {
+  return children;
+};
 
-  const onSubmitWrapper = useCallback(() => {
-    onSubmit().catch((e: string) => {
-      setError(e.toString());
-    });
-  }, [onSubmit]);
+FormImpl.Body = function Body({ children }: WithChildrenProps) {
+  return children;
+};
 
-  // TODO: switch to alternative buttons
-  return (
-    <div className="padding-20px">
-      {children}
-      <ErrorDiv className="mb-4" error={error} />
-      <button
-        className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
-        onClick={onSubmitWrapper}
-        type="submit"
-      >
-        Submit
-      </button>
-    </div>
-  );
+FormImpl.Footer = function Body({ children }: WithChildrenProps) {
+  return children;
+};
+
+interface FormT {
+  (_: FormProps): JSX.Element;
+  Header: (_: WithChildrenProps) => JSX.Element;
+  Body: (_: WithChildrenProps) => JSX.Element;
+  Footer: (_: WithChildrenProps) => JSX.Element;
 }
+
+export const Form = FormImpl as FormT;
