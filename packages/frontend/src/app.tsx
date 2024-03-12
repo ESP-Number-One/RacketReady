@@ -1,11 +1,11 @@
 import { Route, Routes } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { TestPage } from "./pages/test.js";
 import { AnotherTestPage } from "./pages/another_test.js";
 import { API, type AuthResult, handleApi } from "./state/auth.js";
 import { LoginButton } from "./components/auth.js";
 import { useAPIClient } from "./lib/auth.js";
+import { UpcomingMatch } from "./pages/upcoming.js";
 
 export function App() {
   const [result, setResult] = useState({ type: "loading" } as AuthResult);
@@ -36,7 +36,7 @@ export function App() {
   return ok.authenticated ? (
     <API.Provider value={ok.client}>
       <Routes>
-        <Route index element={<TestPage />} />
+        <Route index element={<UpcomingMatch />} />
         <Route path="/another" element={<AnotherTestPage />} />
       </Routes>
     </API.Provider>
