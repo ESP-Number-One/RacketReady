@@ -80,7 +80,7 @@ export function hasId(arr: ObjectId[], id: ObjectId): boolean {
  * @param base64 The raw base64 string.
  * @returns Valid `src` for an `<img >` tag.
  */
-export function makeWebP(base64: string): `data:image/webp;base64,${string}` {
+export function makeImgSrc(base64: string): `data:image/webp;base64,${string}` {
   return `data:image/webp;base64,${base64}`;
 }
 

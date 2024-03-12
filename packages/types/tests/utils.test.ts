@@ -1,5 +1,5 @@
 import { expect, test } from "@jest/globals";
-import { ObjectId, makeWebP } from "../src/utils.js";
+import { ObjectId, makeImgSrc } from "../src/utils.js";
 import { IDS } from "./helpers/utils.js";
 
 describe("Object ID", () => {
@@ -57,6 +57,6 @@ describe("Object ID", () => {
 
 describe("makeWebP", () => {
   test("prepend", () => {
-    expect(makeWebP(`12`)).toBe("data:image/webp;base64,12");
+    expect(makeImgSrc(`12`)).toBe("data:image/webp;base64,12");
   });
 });

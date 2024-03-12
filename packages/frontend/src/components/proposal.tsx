@@ -1,5 +1,5 @@
 import {
-  makeWebP,
+  makeImgSrc,
   type CensoredUser,
   type Match,
   type ObjectId,
@@ -30,7 +30,7 @@ async function load(api: APIClient, data: Match) {
   const profilePic = await api
     .user()
     .getId(data.owner)
-    .then((u) => makeWebP(u.profilePicture));
+    .then((u) => makeImgSrc(u.profilePicture));
 
   return { data, users, profilePic };
 }

@@ -1,4 +1,8 @@
-import { type CensoredUser, makeWebP, type Match } from "@esp-group-one/types";
+import {
+  type CensoredUser,
+  makeImgSrc,
+  type Match,
+} from "@esp-group-one/types";
 import type { Moment } from "moment";
 import moment from "moment";
 import { Profile } from "../profile";
@@ -14,7 +18,7 @@ export function MatchCard({
   opponent: CensoredUser;
 }) {
   const op = opponent;
-  const profilePic = makeWebP(op.profilePicture);
+  const profilePic = makeImgSrc(op.profilePicture);
 
   const startTime = moment(date);
   const info = formatDate(startTime);
