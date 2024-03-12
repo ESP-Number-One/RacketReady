@@ -260,7 +260,7 @@ describe("find", () => {
 
     const res = await requestWithAuth(app, auth0Id)
       .post("/user/find")
-      .send({ query: { sports: Sport.Tennis } } as PageOptions<UserQuery>);
+      .send({ query: { sports: Sport.Tennis } } as UserPageOptions);
 
     expect(res.status).toBe(200);
     expectAPIRes(res.body).toEqual({
@@ -297,7 +297,7 @@ describe("find", () => {
       .post("/user/find")
       .send({
         query: { profileText: "bot 1$", sports: Sport.Tennis },
-      } as PageOptions<UserQuery>);
+      } as UserPageOptions);
 
     expect(res.status).toBe(200);
     expectAPIRes(res.body).toEqual({
