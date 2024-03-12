@@ -1,9 +1,8 @@
 import type {
   ID,
   Match,
+  MatchPageOptions,
   MatchProposal,
-  MatchQuery,
-  PageOptions,
   Scores,
 } from "@esp-group-one/types";
 import { MatchStatus, ObjectId, Sport } from "@esp-group-one/types";
@@ -447,7 +446,7 @@ describe("find", () => {
       .post(`/match/find`)
       .send({
         query: { status: MatchStatus.Accepted },
-      } as PageOptions<MatchQuery>);
+      } as MatchPageOptions);
 
     expect(res.statusCode).toBe(200);
     expectAPIRes(res.body).toStrictEqual({

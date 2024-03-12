@@ -9,12 +9,13 @@ import {
   Scores,
   ID,
   hasId,
+  MatchPageOptions,
 } from "@esp-group-one/types";
 import type {
   Match,
   WithError,
-  MatchQuery,
   StarCount,
+  SortQuery,
 } from "@esp-group-one/types";
 import {
   Body,
@@ -218,7 +219,7 @@ export class MatchsController extends ControllerWrap<Match> {
    */
   @Post("find")
   public async findMatchs(
-    @Body() requestBody: PageOptions<MatchQuery>,
+    @Body() requestBody: MatchPageOptions,
     @Request() req: express.Request,
   ): Promise<WithError<Match[]>> {
     return this.withVerifiedParam(requestBody, (opts) =>
@@ -244,7 +245,7 @@ export class MatchsController extends ControllerWrap<Match> {
    */
   @Post("find/proposed")
   public async findProposedMatchs(
-    @Body() requestBody: PageOptions<undefined>,
+    @Body() requestBody: PageOptions<undefined, SortQuery<Match>>,
     @Request() req: express.Request,
   ): Promise<WithError<Match[]>> {
     return this.withVerifiedParam(requestBody, (opts) =>

@@ -5,9 +5,9 @@ import {
   newAPISuccess,
   LeagueCreation,
   ObjectId,
-  PageOptions,
   ID,
   hasId,
+  LeaguePageOptions,
 } from "@esp-group-one/types";
 import type {
   Error,
@@ -101,7 +101,8 @@ export class LeaguesController extends ControllerWrap<League> {
   @Response<Error>(500, "Internal Server Error")
   @Post("find")
   public async findLeagues(
-    @Body() requestBody: PageOptions<LeagueQuery>,
+    @Body()
+    requestBody: LeaguePageOptions,
     @Request() req: express.Request,
   ): Promise<WithError<CensoredLeague[]>> {
     return this.withVerifiedParam(requestBody, (opts) =>

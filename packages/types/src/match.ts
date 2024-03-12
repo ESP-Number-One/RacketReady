@@ -1,4 +1,4 @@
-import type { Query } from "./db_client.js";
+import type { PageOptions, Query, SortQuery } from "./db_client.js";
 import type {
   DateTimeString,
   ID,
@@ -75,3 +75,5 @@ export interface CensoredLeagueMatch {
   score?: Record<string, number>;
   status: MatchStatus.Complete | MatchStatus.Accepted;
 }
+
+export type MatchPageOptions = PageOptions<MatchQuery, SortQuery<Match>>;

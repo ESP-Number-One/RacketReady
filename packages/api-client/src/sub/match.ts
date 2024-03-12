@@ -1,10 +1,11 @@
-import {
-  type Match,
-  type MatchProposal,
-  type MatchQuery,
-  type ObjectId,
-  type PageOptions,
-  type Scores,
+import type {
+  SortQuery,
+  Match,
+  MatchProposal,
+  MatchQuery,
+  ObjectId,
+  PageOptions,
+  Scores,
 } from "@esp-group-one/types";
 import { SubAPIClient } from "./base.js";
 
@@ -22,7 +23,9 @@ export class MatchAPIClient extends SubAPIClient<
     return this.post(`${id.toString()}/complete`, scores);
   }
 
-  public findProposed(opts: PageOptions<undefined>): Promise<Match[]> {
+  public findProposed(
+    opts: PageOptions<undefined, SortQuery<Match>>,
+  ): Promise<Match[]> {
     return this.post("find/proposed", opts);
   }
 }

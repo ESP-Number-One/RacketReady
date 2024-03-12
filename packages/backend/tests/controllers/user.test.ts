@@ -1,10 +1,9 @@
 import * as fs from "node:fs";
 import type {
-  PageOptions,
   Success,
   User,
   UserCreation,
-  UserQuery,
+  UserPageOptions,
 } from "@esp-group-one/types";
 import { ObjectId, censorUser } from "@esp-group-one/types";
 import { describe, expect, test } from "@jest/globals";
@@ -253,7 +252,7 @@ describe("find", () => {
 
     const res = await requestWithAuth(app, auth0Id)
       .post("/user/find")
-      .send({ query: { profileText: "bot 1$" } } as PageOptions<UserQuery>);
+      .send({ query: { profileText: "bot 1$" } } as UserPageOptions);
 
     expect(res.status).toBe(200);
     expect(res.body).toEqual({
