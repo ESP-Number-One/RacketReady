@@ -2,9 +2,9 @@ import { MatchStatus } from "@esp-group-one/types";
 import type { CensoredLeague, CensoredUser, Match } from "@esp-group-one/types";
 import type { ReactNode } from "react";
 import type { APIClient } from "@esp-group-one/api-client";
+import moment from "moment";
 import { Proposal } from "../components/proposal";
 import { RecProfile } from "../components/rec_profile";
-import moment from "moment";
 
 export namespace Cards {
   export function fromUsers(users: CensoredUser[], api: APIClient) {
