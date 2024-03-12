@@ -266,4 +266,62 @@ export class LeaguesController extends ControllerWrap<League> {
       }),
     );
   }
+
+  /**
+   * Generates match proposal
+   */
+  @Post("{leagueId}/generate-match-proposals")
+  public async generateMatchProposals(
+    @Path() leagueId: ID,
+    @Request() req: express.Request,
+  ): Promise<WithError<MatchProposal[]>> {
+    const id = new ObjectId(leagueId);
+
+    return this.withUser(req, async (currUser) => {
+      const res = await this.get(id);
+      if (!res.success) {
+        return res;
+      }
+
+      const league = res.data;
+      if (!hasId(league.ownerIds, currUser._id)) {
+        return this.notFound();
+      }
+
+      const matchProposals: MatchProposal[] = [];
+
+      // Group people by ability level
+      const peopleByAbilityLevel: Record<AbilityLevel, ObjectId[]> = {
+        beginner: [],
+        intermediate: [],
+        advanced: [],
+      };
+      for (const person of league.people as User[]) {
+        peopleByAbilityLevel[person.abilityLevel].push(person._id);
+      }
+
+      // Generate match proposals for each ability level
+      for (const abilityLevel of [
+        "beginner",
+        "intermediate",
+        "advanced",
+      ] as const) {
+        const people = peopleByAbilityLevel[abilityLevel];
+
+        // Randomly pair people
+        for (let i = 0; i < people.length; i += 2) {
+          if (i + 1 < people.length) {
+            const matchProposal: MatchProposal = {
+              ownerId: league._id,
+              players: [people[i], people[i + 1]],
+              abilityLevel,
+            };
+            matchProposals.push(matchProposal);
+          }
+        }
+      }
+      //Return match proposals
+      return newAPISuccess(matchProposals);
+    });
+  }
 }
