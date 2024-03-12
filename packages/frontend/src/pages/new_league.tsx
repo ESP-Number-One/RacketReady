@@ -1,125 +1,124 @@
-import React, { useRef, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBan, faFloppyDisk, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { Page } from "../components/page";
+import { useContext, useState } from "react";
+import { faBan, faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
+import type { LeagueCreation } from "@esp-group-one/types";
+import { Sport } from "@esp-group-one/types/src/utils";
 import { Header } from "../components/page/header";
-import { useViewNav } from "../state/nav";
 import { Form } from "../components/form/index";
 import { Input } from "../components/form/input";
 import { RadioButton } from "../components/form/radio_button";
 import { SelectSport } from "../components/form/select_sports";
-import { Button } from "../components/button"; // Import Button component
+import { Button } from "../components/button";
 import { Icon } from "../components/icon";
-import { Sport } from "../../../types/src/utils"; // Update this path
-// import { api } from "../lib/api"; // Assuming this is your API client (commented out)
+import { API } from "../state/auth";
 
 export function NewLeaguePage() {
-  const viewNavigate = useViewNav();
-  const formRef = useRef(null); // Ref to access Form component instance
-
-  const [selectedOption, setSelectedOption] = useState("public");
-
-  const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedOption(event.target.value);
-  };
-
-  const sportsOptions: Sport[] = [Sport.Badminton, Sport.Tennis, Sport.Squash];
-  const currentSport: Sport = sportsOptions[0];
+  const [name, setName] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [visibility, setVisibility] = useState<boolean>(true);
+  const api = useContext(API);
 
   const handleCreateLeague = async () => {
-    //I dont know what to do here await api.leagues().new(formData);
+    try {
+      // Make sure all required fields are filled
+      if (!name || !startDate || !endDate) {
+        throw new Error("Please fill in all required fields.");
+      }
+
+      // Construct the league object
+      const formData: LeagueCreation = {
+        name,
+        // startDate,
+        // endDate,
+        // ownerIds: [ok.user._id],
+        sport: Sport.Tennis,
+        private: !visibility,
+      };
+
+      // Call the API to create a new league
+      await api.league().create(formData);
+
+      // Redirect or perform any other necessary actions upon successful creation
+    } catch (error) {
+      console.error("Error creating league:", error);
+      // Handle error (e.g., display error message)
+    }
   };
 
   const handleCancel = () => {
-    viewNavigate("/leagus"); // UPDATE THIS if needed
-  };
-
-  const handleCreateButtonClick = () => {
-    void handleCreateLeague();
-  };
-
-  const [name, setName] = React.useState("");
-  const [startDate, setStartDate] = React.useState("");
-  const [endDate, setEndDate] = React.useState("");
-
-  const handleNameChange = (value: string) => {
-    setName(value);
-  };
-  const handleStartDateChange = (value: string) => {
-    setStartDate(value);
-  };
-
-  const handleEndDateChange = (value: string) => {
-    setEndDate(value);
+    // Handle cancellation (e.g., navigate back)
   };
 
   return (
-    <Page>
-      <Page.Header>
+    <Form onSubmit={handleCreateLeague}>
+      <Form.Header>
         <Header.Back />
         New League
-        <Header.Right>
-          {/* Adjust as needed */}
-          <FontAwesomeIcon icon={faPlus} />
-        </Header.Right>
-      </Page.Header>
+      </Form.Header>
 
-      <Page.Body>
-        <Form onSubmit={handleCreateLeague}>
-          <div style={{ padding: "10px 0" }} /> {/* Empty div with padding */}
-          <SelectSport sports={sportsOptions} currentSport={currentSport} />
-          <div style={{ padding: "10px 0" }} /> {/* Empty div with padding */}
-          <Input type="text" placeholder="Name" onChange={handleNameChange} />
-          <div style={{ padding: "10px 0" }} /> {/* Empty div with padding */}
-          <Input
-            type="date"
-            placeholder="Start date"
-            onChange={handleStartDateChange}
-          />
-          <div style={{ padding: "10px 0" }} /> {/* Empty div with padding */}
-          <Input
-            type="date"
-            placeholder="End date"
-            onChange={handleEndDateChange}
-          />
-          <div style={{ padding: "10px 0" }} /> {/* Empty div with padding */}
-          <div className="flex">
-            <RadioButton
-              name="visibility"
-              value="public"
-              label="Public"
-              checked={selectedOption === "public"}
-              onChange={handleOptionChange}
-              isFirst
-            />
-            <RadioButton
-              name="visibility"
-              value="private"
-              label="Private"
-              checked={selectedOption === "private"}
-              onChange={handleOptionChange}
-              isLast
-            />
-          </div>
-        </Form>
-      </Page.Body>
-
-      <Page.Footer>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            gap: "10px",
+      <Form.Body>
+        <SelectSport
+          className="mt-2"
+          sports={[Sport.Tennis, Sport.Badminton, Sport.Squash]}
+          onChange={(sport: Sport) => {
+            console.log(sport);
           }}
-        >
+        />
+        <Input
+          className="mt-2"
+          type="text"
+          placeholder="Name"
+          initVal={name}
+          onChange={setName}
+        />
+        <Input
+          className="mt-2"
+          type="date"
+          placeholder="Start date"
+          initVal={startDate}
+          onChange={setStartDate}
+        />
+        <Input
+          className="mt-2"
+          type="date"
+          placeholder="End date"
+          initVal={endDate}
+          onChange={setEndDate}
+        />
+        <div className="flex mt-2">
+          <RadioButton
+            name="visibility"
+            value="public"
+            label="Public"
+            checked={visibility}
+            onChange={() => {
+              setVisibility(true);
+            }}
+            isFirst
+          />
+          <RadioButton
+            name="visibility"
+            value="private"
+            label="Private"
+            checked={!visibility}
+            onChange={() => {
+              setVisibility(false);
+            }}
+            isLast
+          />
+        </div>
+      </Form.Body>
+
+      <Form.Footer>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Button onClick={handleCancel} backgroundColor="bg-p-red-100">
             <Icon icon={faBan} style={{ marginRight: "10px" }} /> Cancel
           </Button>
-          <Button onClick={handleCreateButtonClick}>
+          <Button type="submit">
             <Icon icon={faFloppyDisk} style={{ marginRight: "10px" }} /> Create
           </Button>
         </div>
-      </Page.Footer>
-    </Page>
+      </Form.Footer>
+    </Form>
   );
 }
