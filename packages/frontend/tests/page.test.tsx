@@ -31,7 +31,6 @@ describe("Page", () => {
     );
 
     expect(thing.container.childNodes.length).toBe(1);
-    console.log(thing.container.innerHTML);
     expect(thing.container.childNodes.item(0).childNodes.length).toBe(2);
   });
 

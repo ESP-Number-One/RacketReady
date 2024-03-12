@@ -44,6 +44,20 @@ export function AnotherTestPage() {
               league: new ObjectId("65ea51e74a4ce720adfda7f4"),
               round: 1,
             }}
+            opponent={{
+              _id: new ObjectId("65df0cc4c3a02eabf84efbaf"),
+              sports: [],
+              description: "Apples",
+              name: "Test Bot",
+              profilePicture: "",
+              rating: {
+                "1": 12,
+                "2": 33,
+                "3": 43,
+                "4": 12,
+                "5": 23,
+              },
+            }}
           />
         ) : (
           <p>Loading</p>

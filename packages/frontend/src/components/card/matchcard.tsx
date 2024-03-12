@@ -1,9 +1,6 @@
-import { makeWebP, type Match, type ObjectId } from "@esp-group-one/types";
+import { type CensoredUser, makeWebP, type Match } from "@esp-group-one/types";
 import type { Moment } from "moment";
-import { useContext, type JSX } from "react";
 import moment from "moment";
-import { API } from "../../state/auth";
-import { ErrorHandler, useAsync } from "../../lib/async";
 import { Profile } from "../profile";
 import { Tag } from "../tags";
 
@@ -16,28 +13,8 @@ export function MatchCard({
   match: Match;
   opponent: CensoredUser;
 }) {
-  const api = useContext(API);
-  const errorHandler = useContext(ErrorHandler);
-
-  const { ok, loading, error } = useAsync(async () => {
-    const { _id: myId } = await api.user().me();
-
-    const opId = players.find(
-      (id) => id.toString() !== myId.toString(),
-    ) as unknown as ObjectId;
-
-    const op = await api.user().getId(opId);
-    const profilePic = await api
-      .user()
-      .getId(opId)
-      .then((u) => makeWebP(u.profilePicture));
-
-    return { profilePic };
-  })
-    .catch(errorHandler)
-    .await();
-
-  if (error) return error as JSX.Element;
+  const op = opponent;
+  const profilePic = makeWebP(op.profilePicture);
 
   const startTime = moment(date);
   const info = formatDate(startTime);
@@ -45,18 +22,12 @@ export function MatchCard({
   return (
     <a
       href={`/match/${matchId.toString()}`}
-      className="rounded-lg border w-full border-gray-300 p-2 flex items-center bg-p-grey-200"
+      className={`${className} rounded-lg border w-full border-gray-300 p-2 flex items-center bg-p-grey-200`}
     >
       <div className="mr-4">
-        {ok ? (
-          <div className="image-container">
-            <Profile imgSrc={ok.profilePic} />
-          </div>
-        ) : (
-          <div className="flex place-content-center w-24 h-24 rounded-2xl overflow-hidden">
-            {loading}
-          </div>
-        )}
+        <div className="image-container">
+          <Profile imgSrc={profilePic} />
+        </div>
       </div>
       <div className="flex flex-col flex-1">
         <div className="font-title font-bold text-2xl text-white">
