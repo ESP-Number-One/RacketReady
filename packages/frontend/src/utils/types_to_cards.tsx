@@ -5,6 +5,7 @@ import type { APIClient } from "@esp-group-one/api-client";
 import moment from "moment";
 import { Proposal } from "../components/proposal";
 import { RecProfile } from "../components/rec_profile";
+import { LeagueCard } from "../components/card/league";
 
 export namespace Cards {
   export function fromUsers(users: CensoredUser[], api: APIClient) {
@@ -31,10 +32,9 @@ export namespace Cards {
     });
   }
 
-  export function fromLeagues(leagues: CensoredLeague[], _api: APIClient) {
-    console.error("Not implemented");
+  export function fromLeagues(leagues: CensoredLeague[]) {
     return leagues.map((league) => {
-      return (<div key={league._id.toString()} />) as ReactNode;
+      return (<LeagueCard data={league} />) as ReactNode;
     });
   }
   export function fromMatches(matches: Match[], api: APIClient) {

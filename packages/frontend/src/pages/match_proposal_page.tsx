@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { useContext } from "react";
 import { Page } from "../components/page";
 import { Header } from "../components/page/header";
@@ -12,21 +11,11 @@ export function MatchProposal() {
   const api = useContext(API);
   const viewNavigate = useViewNav();
 
-  const nextPage = (pageNum: number): Promise<ReactNode[]> => {
-    let result: ReactNode[];
-    api
-      .match()
-      .findProposed({ pageStart: pageNum })
-      .then((matches) => {
-        result = Cards.fromMatches(matches, api);
-      })
-      .catch((error) => {
-        console.warn(error);
-        result = [];
-      });
-    return new Promise<ReactNode[]>((res) => {
-      res(result);
-    });
+  const nextPage = async (pageNum: number) => {
+    return Cards.fromMatches(
+      await api.match().findProposed({ pageStart: pageNum }),
+      api,
+    );
   };
 
   return (

@@ -25,21 +25,21 @@ export function YourLeagues() {
         </Header.Right>
       </Page.Header>
       <Page.Body>
-        <div className="h-full">
+        <div className="h-fit items-end">
           <CardList
             nextPage={(pageNum: number) => {
               return api
                 .league()
                 .find({ pageStart: pageNum, query: { amIn: true } })
                 .then((leagues) => {
-                  return Cards.fromLeagues(leagues, api);
+                  return Cards.fromLeagues(leagues);
                 });
             }}
             emptyListPlaceholder="You aren't a member of any leagues."
           />
           <div className="h-1 w-full bg-p-grey-900 my-2" />
           <button
-            className=" flex flex-row justify-end"
+            className="flex flex-row"
             onClick={() => {
               viewNavigate("/leagues/discover");
             }}

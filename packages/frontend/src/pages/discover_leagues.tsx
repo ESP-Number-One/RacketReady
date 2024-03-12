@@ -19,7 +19,7 @@ export function DiscoverLeagues() {
           .league()
           .find({ pageStart: pageNum })
           .then((leagues) => {
-            return Cards.fromLeagues(leagues, api);
+            return Cards.fromLeagues(leagues);
           })
           .catch((e) => {
             console.warn(e);
