@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import type { APIClient } from "@esp-group-one/api-client";
 import { Proposal } from "../components/proposal";
 import { RecProfile } from "../components/rec_profile";
+import moment from "moment";
 
 export namespace Cards {
   export function fromUsers(users: CensoredUser[], api: APIClient) {
@@ -14,8 +15,12 @@ export namespace Cards {
             <RecProfile
               key={user._id.toString()}
               user={user}
-              pfp={await api.user().getProfileSrc(user._id)}
-              availability={await api.user().findAvailabilityWith(user._id, {})}
+              profilePicture={await api.user().getProfileSrc(user._id)}
+              availability={(
+                await api.user().findAvailabilityWith(user._id, {})
+              ).map((time) => {
+                return moment(time);
+              })}
               displayAbility={false}
             />
           );
