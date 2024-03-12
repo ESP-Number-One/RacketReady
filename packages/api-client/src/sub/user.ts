@@ -24,6 +24,15 @@ export class UserAPIClient extends SubAPIClient<
   }
 
   /**
+   * @param details - An object containing the information you want to edit
+   *   about the user
+   * @returns void
+   */
+  public editMe(details: Partial<UserCreation>): Promise<void> {
+    return this.post("me/edit", details);
+  }
+
+  /**
    * @param id - ID of the user to get
    * @returns webp base64 encoded image with prefix `data:image/webp;base64,` so can be assigned to img.src
    */

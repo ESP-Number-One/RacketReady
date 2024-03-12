@@ -1,4 +1,4 @@
-import type { ObjectId, QueryOptions } from "@esp-group-one/types";
+import type { ObjectId, PageOptions, SortQuery } from "@esp-group-one/types";
 import { APIClientBase } from "../base.js";
 
 export class SubAPIClient<
@@ -27,7 +27,9 @@ export class SubAPIClient<
   /**
    * @returns all users found matching the query
    */
-  public find(query: QueryOptions<Query>): Promise<Censored[]> {
+  public find(
+    query: PageOptions<Query, SortQuery<FullType>>,
+  ): Promise<Censored[]> {
     return this.post("find", query);
   }
 }
