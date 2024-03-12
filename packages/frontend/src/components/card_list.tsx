@@ -4,17 +4,17 @@ import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface CardListProps<T extends ReactNode> {
+  emptyListPlaceholder?: string;
   nextPage: (nextPage: number) => Promise<T[]>;
   refreshPage?: () => void;
   startPage?: number;
-  emptyListPlaceholder?: string;
 }
 
 export function CardList<T extends ReactNode>({
+  emptyListPlaceholder = "No more results",
   nextPage,
   refreshPage,
   startPage,
-  emptyListPlaceholder = "No more results",
 }: CardListProps<T>) {
   const [pageNum, setPageNum] = useState(
     startPage !== undefined && startPage >= 0 ? startPage : 0,

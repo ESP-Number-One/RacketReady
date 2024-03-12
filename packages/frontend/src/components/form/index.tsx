@@ -1,12 +1,13 @@
 import type { ReactNode } from "react";
 import { useCallback, useState } from "react";
+import { ErrorDiv } from "../error";
 
-interface Propss {
+interface FormProps {
   onSubmit: () => Promise<void>;
   children: ReactNode;
 }
 
-export function Form({ onSubmit, children }: Propss) {
+export function Form({ onSubmit, children }: FormProps) {
   const [error, setError] = useState("");
 
   const onSubmitWrapper = useCallback(() => {
@@ -19,12 +20,7 @@ export function Form({ onSubmit, children }: Propss) {
   return (
     <div className="padding-20px">
       {children}
-      <div
-        className="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50"
-        role="alert"
-      >
-        <span className="font-medium">{error}</span>
-      </div>
+      <ErrorDiv className="mb-4" error={error} />
       <button
         className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
         onClick={onSubmitWrapper}

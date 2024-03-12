@@ -7,10 +7,15 @@ describe("SelectSport", () => {
   test("Change colour on select", async () => {
     const user = userEvent.setup();
 
+    const expected = [Sport.Tennis, Sport.Badminton];
+    const changeSelection = (val: Sport) => {
+      expect(val).toBe(expected.shift());
+    };
+
     const component = render(
       <SelectSport
         sports={[Sport.Tennis, Sport.Badminton]}
-        currentSport={Sport.Tennis}
+        onChange={changeSelection}
       />,
     );
 
@@ -32,6 +37,10 @@ describe("SelectSport", () => {
     const dropdown = screen.getByText("Badminton");
     expect(dropdown).toBeInTheDocument();
 
+    expect(intComp.classList).not.toContain("bg-tennis");
+
+    await user.selectOptions(intComp, "Tennis");
+    expect(intComp.value).toBe(Sport.Tennis);
     expect(intComp.classList).toContain("bg-tennis");
 
     // Check text updates when selected

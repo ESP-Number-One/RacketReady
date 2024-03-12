@@ -3,9 +3,9 @@ import { useMemo, useState } from "react";
 import { Tag } from "./tags";
 
 interface Info {
-  sports: SportInfo[];
-  image: string;
   displayAbility?: boolean;
+  image: string;
+  sports: SportInfo[];
 }
 
 function getAbilityColour(abilityLevel: AbilityLevel) {
@@ -26,9 +26,9 @@ function getAbilityLevel(sports: SportInfo[], selected: Sport): AbilityLevel {
 }
 
 export function ProfilePic({
-  sports: initialSports,
-  image,
   displayAbility = true,
+  image,
+  sports: initialSports,
 }: Info) {
   const [selectedSport, setSelectedSport] = useState(initialSports[0].sport);
 

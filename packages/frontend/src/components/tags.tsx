@@ -1,11 +1,11 @@
 import { Sport } from "@esp-group-one/types";
 
 interface Tagging {
-  sportName: Sport;
   active?: boolean;
+  sportName: Sport;
 }
 
-export function Tag({ sportName, active }: Tagging) {
+export function Tag({ active, sportName }: Tagging) {
   return (
     <div
       className={`inline-block rounded-full py-1 px-5 font-bold font-title text-white text-md ${getSportColorClass(

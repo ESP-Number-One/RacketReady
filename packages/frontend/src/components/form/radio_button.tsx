@@ -1,25 +1,25 @@
-import type { ChangeEvent, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 interface RadioButtonProps {
-  name: string;
-  value: string;
-  label?: ReactNode;
-  icon?: ReactNode;
   checked?: boolean;
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  icon?: ReactNode;
   isFirst?: boolean;
   isLast?: boolean;
+  label?: ReactNode;
+  name?: string;
+  onChange?: (val: boolean) => void;
+  value: string;
 }
 
 export function RadioButton({
-  name,
-  value,
-  label,
-  icon,
   checked = false,
-  onChange,
+  icon,
   isFirst = false,
   isLast = false,
+  label,
+  name,
+  onChange,
+  value,
 }: RadioButtonProps) {
   const backgroundColor = checked ? "bg-p-green-100" : "bg-p-grey-100";
   let borderRadius = "rounded"; // default border radius on all sides
@@ -28,6 +28,7 @@ export function RadioButton({
   } else if (isLast) {
     borderRadius = "rounded-r-lg"; // keep the medium border radius on the right side
   }
+
   return (
     <label
       className={`font-body text-xl font-bold text-white ${backgroundColor} active:scale-95 focus:outline-none ${
@@ -39,7 +40,9 @@ export function RadioButton({
         name={name}
         value={value}
         checked={checked}
-        onChange={onChange}
+        onChange={(e) => {
+          if (onChange) onChange(e.target.checked);
+        }}
         className="hidden" // hide the radio input
       />
       {icon && <span className="mr-4 align-middle">{icon}</span>}

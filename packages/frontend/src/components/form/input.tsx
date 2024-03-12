@@ -1,49 +1,44 @@
 import type { ChangeEvent, ReactElement, ReactNode } from "react";
-import { useState } from "react";
 import type { IconProps } from "../icon";
 
 interface InputProps {
-  onChange: (val: string) => void;
-  type: "text" | "textarea" | "time" | "date";
-  placeholder: string;
-  icon?: ReactElement<IconProps>;
   backgroundColor?: string;
+  className?: string;
+  disabled?: boolean;
+  icon?: ReactElement<IconProps>;
+  id?: string;
+  onChange: (val: string) => void;
+  placeholder: string;
+  required?: boolean;
   textColor?: string;
+  type: "text" | "textarea" | "time" | "date";
+  value: string;
 }
 
 export function Input({
-  type,
-  placeholder,
+  backgroundColor = "bg-p-grey-100",
+  className = "",
+  disabled,
+  id,
   icon,
   onChange,
-  backgroundColor = "bg-p-grey-100",
+  placeholder,
+  required,
   textColor = "text-white",
+  type,
+  value,
 }: InputProps) {
-  const [inputValue, setInputValue] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
-
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     onChange(e.target.value);
-    setInputValue(e.target.value);
-  };
-
-  const handleFocus = () => {
-    setIsFocused(true);
-  };
-
-  const handleBlur = () => {
-    if (inputValue === "") {
-      setIsFocused(false);
-    }
   };
 
   // Common styles for all input types
-  const commonStyles = `font-body text-2xl font-bold text-white w-full bg-transparent focus:outline-none
-  inline-flex items-center w-full transform transition duration-150 ease-in-out m-0 ${
-    isFocused ? "" : "placeholder-white"
-  } ${icon ? "pl-5" : "pl-6"}`;
+  const commonStyles = `${
+    icon ? "pl-3" : "pl-3"
+  } font-body text-lg font-bold text-white w-full bg-transparent focus:outline-none
+  inline-flex items-center w-full m-0 focus:placeholder-white`;
 
   let inp: ReactNode;
 
@@ -51,56 +46,62 @@ export function Input({
     case "text":
       inp = (
         <input
-          type="text"
-          placeholder={isFocused ? "" : placeholder}
-          value={inputValue}
-          onChange={handleInputChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
           className={commonStyles}
+          disabled={disabled}
+          id={id}
+          onChange={handleInputChange}
+          placeholder={placeholder}
+          required={required}
+          type="text"
+          value={value}
         />
       );
       break;
     case "textarea":
       inp = (
         <textarea
-          placeholder={isFocused ? "" : placeholder}
-          value={inputValue}
+          className={`${commonStyles} resize-y`}
+          disabled={disabled}
+          id={id}
           onChange={handleInputChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          className={`${commonStyles} resize-none`}
+          placeholder={placeholder}
+          required={required}
+          value={value}
         />
       );
       break;
     case "time":
       inp = (
         <input
-          type="time"
-          value={inputValue}
-          onChange={handleInputChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
           className={commonStyles}
+          disabled={disabled}
+          id={id}
+          onChange={handleInputChange}
+          required={required}
+          type="time"
+          value={value}
         />
       );
       break;
     case "date":
       inp = (
         <input
-          type="date"
-          value={inputValue}
-          onChange={handleInputChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
           className={commonStyles}
+          disabled={disabled}
+          id={id}
+          onChange={handleInputChange}
+          required={required}
+          type="date"
+          value={value}
         />
       );
       break;
   }
 
   return (
-    <div className={`relative ${backgroundColor} ${textColor} rounded-lg p-2`}>
+    <div
+      className={`${className} ${backgroundColor} ${textColor} relative rounded-lg p-2`}
+    >
       {icon && (
         <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
           {icon}

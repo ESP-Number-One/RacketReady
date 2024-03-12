@@ -1,12 +1,14 @@
 import type { ReactNode, JSX, CSSProperties } from "react";
 import { Slot } from "../../lib/slotting";
+import { BottomBar } from "../bottom_bar";
 import { Header } from "./header";
 
-function PageImpl({
-  children: _children,
-}: {
+interface PageProps {
   children: ReactNode[] | ReactNode;
-}) {
+  page?: "search" | "home" | "leagues" | "profile";
+}
+
+function PageImpl({ children: _children, page }: PageProps) {
   let children: ReactNode[];
   if (!(_children instanceof Array)) {
     children = [_children];
@@ -20,17 +22,15 @@ function PageImpl({
 
   return (
     <div className="root-page flex h-screen w-screen flex-col">
-      {header !== undefined ? (
-        <div className="flex-none w-full p-5 bg-slate-500 text-white font-title text-2xl font-bold">
+      {header !== undefined && (
+        <div className="flex-none w-full p-2 text-p-grey-900 font-title text-2xl font-bold">
           <div className="relative flex w-full">{header}</div>
         </div>
-      ) : null}
+      )}
       <div className="flex-1 min-h-0 h-full px-2">{body}</div>
-      {footer !== undefined ? (
-        <div className="flex-none w-full p-5 bg-slate-400 text-white font-title justify-end">
-          {footer}
-        </div>
-      ) : null}
+      <div className="flex-initial w-full font-title justify-end">
+        {footer ? footer : <BottomBar activePage={page} />}
+      </div>
     </div>
   );
 }
@@ -43,7 +43,7 @@ interface BodyProps {
 
 PageImpl.Header = Header;
 
-PageImpl.Body = function Body({ children, className }: BodyProps) {
+PageImpl.Body = function Body({ children, className = "" }: BodyProps) {
   return (
     <div
       className={`h-full ${className}`}
@@ -59,7 +59,7 @@ PageImpl.Footer = function Footer({ children }: { children: ReactNode }) {
 };
 
 interface PageT {
-  (_: { children: ReactNode }): JSX.Element;
+  (_: PageProps): JSX.Element;
   Header: (_: { children: ReactNode }) => JSX.Element;
   Body: (_: BodyProps) => JSX.Element;
   Footer: (_: { children: ReactNode }) => JSX.Element;

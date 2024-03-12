@@ -1,12 +1,6 @@
 import { act, render } from "@testing-library/react"; //should pass all tests
 import "@testing-library/jest-dom";
-import type { ObjectId } from "@esp-group-one/types";
-import {
-  MatchStatus,
-  Sport,
-  AbilityLevel,
-  censorUser,
-} from "@esp-group-one/types";
+import { MatchStatus, Sport, AbilityLevel } from "@esp-group-one/types";
 import {
   PICTURES,
   getMatch,
@@ -22,6 +16,11 @@ describe("Tags", () => {
     sport: Sport.Badminton,
   });
 
+  const DUMMY_OP = getUser({
+    name: "Bot1",
+    sports: [{ sport: Sport.Badminton, ability: AbilityLevel.Beginner }],
+  });
+
   const MockedAPI = MockAPI({
     user() {
       return {
@@ -33,18 +32,6 @@ describe("Tags", () => {
               ],
             }),
           ),
-        getId: (_id: ObjectId) =>
-          Promise.resolve(
-            censorUser(
-              getUser({
-                _id,
-                name: "Bot1",
-                sports: [
-                  { sport: Sport.Badminton, ability: AbilityLevel.Beginner },
-                ],
-              }),
-            ),
-          ),
         getProfileSrc: (_: string) =>
           Promise.resolve(`data:image/web,base64,${PICTURES[0]}`),
       };
@@ -53,7 +40,7 @@ describe("Tags", () => {
   test("Basics", async () => {
     const component = render(
       <MockedAPI>
-        <MatchCard match={DUMMY_DATA} />
+        <MatchCard match={DUMMY_DATA} opponent={DUMMY_OP} />
       </MockedAPI>,
     );
 
@@ -89,7 +76,7 @@ describe("Tags", () => {
     const proposal = render(
       <ErrorHandling>
         <FailingAPI>
-          <MatchCard match={DUMMY_DATA} />
+          <MatchCard match={DUMMY_DATA} opponent={DUMMY_OP} />
         </FailingAPI>
       </ErrorHandling>,
     );

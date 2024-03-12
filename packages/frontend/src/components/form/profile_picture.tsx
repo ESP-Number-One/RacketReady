@@ -5,11 +5,13 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 interface ProfilePicturePickerProps {
   backgroundColor?: string;
+  className?: string;
   onChange: (img: string) => void; // Define the onChange prop
 }
 
 export function ProfilePicturePicker({
   backgroundColor = "bg-p-grey-100",
+  className = "",
   onChange, // Include the onChange prop in the props interface
 }: ProfilePicturePickerProps) {
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
@@ -39,7 +41,7 @@ export function ProfilePicturePicker({
 
   return (
     <div
-      className={`relative flex items-center justify-center rounded-lg overflow-hidden ${backgroundColor} w-full aspect-w-1 aspect-h-1`}
+      className={`${className} relative flex items-center justify-center rounded-lg overflow-hidden ${backgroundColor} w-full aspect-square`}
     >
       <div className="absolute inset-0">
         {selectedImage ? (
