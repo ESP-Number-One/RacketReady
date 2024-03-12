@@ -99,22 +99,6 @@ export class UsersController extends ControllerWrap<User> {
   }
 
   /**
-   * @returns a string which can be put into an img element's src to display
-   *   the image
-   */
-  @Response<Error>(500, "Internal Server Error")
-  @Get("{userId}/profile_picture")
-  public async getProfilePicture(
-    @Path() userId: ID,
-  ): Promise<WithError<string>> {
-    const id = new ObjectId(userId);
-
-    const res = await this.get(id);
-    if (!res.success) return res;
-    return newAPISuccess(`data:image/webp;base64,${res.data.profilePicture}`);
-  }
-
-  /**
    * This returns the users matching the given query, except the user currently
    * logged in.
    */

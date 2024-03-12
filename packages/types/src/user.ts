@@ -49,6 +49,7 @@ export interface CensoredUser extends MongoDBItem {
   description: string;
   sports: SportInfo[];
   rating: Ratings;
+  profilePicture: string;
 }
 
 export function censorUser(user: User): CensoredUser {
@@ -58,6 +59,7 @@ export function censorUser(user: User): CensoredUser {
     description: user.description,
     sports: user.sports,
     rating: user.rating,
+    profilePicture: user.profilePicture,
   };
 }
 

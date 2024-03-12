@@ -1,4 +1,4 @@
-import type { CensoredUser, Match } from "@esp-group-one/types";
+import { makeWebP, type Match, type ObjectId } from "@esp-group-one/types";
 import type { Moment } from "moment";
 import { useContext, type JSX } from "react";
 import moment from "moment";
@@ -20,7 +20,17 @@ export function MatchCard({
   const errorHandler = useContext(ErrorHandler);
 
   const { ok, loading, error } = useAsync(async () => {
-    const profilePic = await api.user().getProfileSrc(opponent._id);
+    const { _id: myId } = await api.user().me();
+
+    const opId = players.find(
+      (id) => id.toString() !== myId.toString(),
+    ) as unknown as ObjectId;
+
+    const op = await api.user().getId(opId);
+    const profilePic = await api
+      .user()
+      .getId(opId)
+      .then((u) => makeWebP(u.profilePicture));
 
     return { profilePic };
   })
@@ -34,8 +44,8 @@ export function MatchCard({
   const endinfo = formatDate(startTime.clone().add(1, "hour"));
   return (
     <a
-      href={`/match?id=${matchId.toString()}`}
-      className={`${className} rounded-lg border border-gray-300 p-2 flex items-center w-full bg-p-grey-200`}
+      href={`/match/${matchId.toString()}`}
+      className="rounded-lg border w-full border-gray-300 p-2 flex items-center bg-p-grey-200"
     >
       <div className="mr-4">
         {ok ? (

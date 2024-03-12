@@ -212,32 +212,6 @@ describe("edit", () => {
   );
 });
 
-describe("profile_picture", () => {
-  const profilePicture = readStaticFile("res-webp.webp");
-  test("get", async () => {
-    const u = await addUser(db.get(), auth0Id, { profilePicture });
-    const res = await requestWithAuth(app, "github|111111").get(
-      `/user/${u._id.toString()}/profile_picture`,
-    );
-
-    expect(res.status).toBe(200);
-    const body = res.body as Success<string>;
-    expect(body.data).toBe(`data:image/webp;base64,${profilePicture}`);
-  });
-
-  test("no user", async () => {
-    const res = await requestWithAuth(app, "github|111111").get(
-      `/user/${IDS[0]}/profile_picture`,
-    );
-
-    expect(res.status).toBe(404);
-    expect(res.body).toStrictEqual({
-      success: false,
-      error: "Failed to get obj",
-    });
-  });
-});
-
 describe("find", () => {
   test("with query", async () => {
     await addUser(db.get(), auth0Id);
