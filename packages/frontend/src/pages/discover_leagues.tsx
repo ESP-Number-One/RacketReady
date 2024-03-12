@@ -6,9 +6,11 @@ import { Page } from "../components/page";
 import { Header } from "../components/page/header";
 import { API } from "../state/auth";
 import { Cards } from "../utils/types_to_cards";
+import { useViewNav } from "../state/nav";
 
 export function DiscoverLeagues() {
   const api = useContext(API);
+  const viewNavigate = useViewNav();
 
   const nextPage = async (pageNum: number) => {
     return new Promise<ReactNode[]>((res) => {
@@ -30,7 +32,11 @@ export function DiscoverLeagues() {
   return (
     <Page>
       <Page.Header>
-        <Header.Back />
+        <Header.Back
+          onClick={() => {
+            viewNavigate("/leagues");
+          }}
+        />
         Discover Leagues
       </Page.Header>
       <Page.Body>

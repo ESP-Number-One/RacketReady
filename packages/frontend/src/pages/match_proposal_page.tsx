@@ -6,9 +6,11 @@ import { CardList } from "../components/card_list";
 import { API } from "../state/auth";
 import { Cards } from "../utils/types_to_cards";
 import { BottomBar } from "../components/bottom_bar";
+import { useViewNav } from "../state/nav";
 
 export function MatchProposal() {
   const api = useContext(API);
+  const viewNavigate = useViewNav();
 
   const nextPage = (pageNum: number): Promise<ReactNode[]> => {
     let result: ReactNode[];
@@ -30,7 +32,11 @@ export function MatchProposal() {
   return (
     <Page>
       <Page.Header>
-        <Header.Back />
+        <Header.Back
+          onClick={() => {
+            viewNavigate("/");
+          }}
+        />
         Proposed Matches
       </Page.Header>
       <Page.Body>

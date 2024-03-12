@@ -7,7 +7,7 @@ import { CardList } from "../components/card_list";
 import { Cards } from "../utils/types_to_cards";
 import { BottomBar } from "../components/bottom_bar";
 
-export function TestPage() {
+export function SuggestedPeople() {
   const api = useContext(API);
   const userAPI = api.user();
 
