@@ -6,7 +6,7 @@ import { API } from "../state/auth";
 import { Page } from "../components/page";
 import { Header } from "../components/page/header";
 import { useViewNav } from "../state/nav";
-import { MatchCard } from "../components/card/matchcard";
+import { MatchCard } from "../components/card/match";
 
 export function AnotherTestPage() {
   const api = useContext(API);

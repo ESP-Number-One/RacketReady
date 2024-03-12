@@ -5,7 +5,7 @@ import {
   getMatch,
   getUser,
 } from "@esp-group-one/types/build/tests/helpers/utils";
-import { MatchCard } from "../../../src/components/card/matchcard";
+import { MatchCard } from "../../../src/components/card/match";
 
 describe("Tags", () => {
   const DUMMY_DATA = getMatch({
