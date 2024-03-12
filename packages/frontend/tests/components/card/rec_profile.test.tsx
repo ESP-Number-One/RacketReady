@@ -1,6 +1,7 @@
 import { AbilityLevel, ObjectId, Sport } from "@esp-group-one/types";
 import { PICTURES } from "@esp-group-one/types/build/tests/helpers/utils";
 import { cleanup, render } from "@testing-library/react";
+import moment from "moment";
 import { RecProfile } from "../../../src/components/rec_profile";
 
 afterAll(cleanup);
@@ -18,11 +19,11 @@ const mockProfile = {
     ],
     rating: { 1: 2, 2: 3, 3: 4, 4: 5, 5: 6 },
   },
-  pfp: `data:image/web,base64,${PICTURES[0]}`,
+  profilePicture: `data:image/web,base64,${PICTURES[0]}`,
   availability: [
-    "2024-03-12T11:30:00Z",
-    "2024-03-13T13:30:00Z",
-    "2024-03-14T15:30:00Z",
+    moment("2024-03-12T11:30:00Z"),
+    moment("2024-03-13T13:30:00Z"),
+    moment("2024-03-14T15:30:00Z"),
   ],
   displayAbility: false,
 };
@@ -40,7 +41,7 @@ const mockUnavailableProfile = {
     ],
     rating: { 1: 2, 2: 3, 3: 4, 4: 5, 5: 6 },
   },
-  pfp: `data:image/web,base64,${PICTURES[0]}`,
+  profilePicture: `data:image/web,base64,${PICTURES[0]}`,
   availability: [],
   displayAbility: false,
 };
@@ -50,7 +51,7 @@ describe("RecProfile", () => {
     render(
       <RecProfile
         user={mockProfile.user}
-        pfp={mockProfile.pfp}
+        profilePicture={mockProfile.profilePicture}
         availability={mockProfile.availability}
         displayAbility={mockProfile.displayAbility}
       />,
@@ -61,7 +62,7 @@ describe("RecProfile", () => {
     const component = render(
       <RecProfile
         user={mockProfile.user}
-        pfp={mockProfile.pfp}
+        profilePicture={mockProfile.profilePicture}
         availability={mockProfile.availability}
         displayAbility={mockProfile.displayAbility}
       />,
@@ -82,7 +83,7 @@ describe("RecProfile", () => {
     const component = render(
       <RecProfile
         user={mockUnavailableProfile.user}
-        pfp={mockUnavailableProfile.pfp}
+        profilePicture={mockUnavailableProfile.profilePicture}
         availability={mockUnavailableProfile.availability}
         displayAbility={mockUnavailableProfile.displayAbility}
       />,

@@ -1,17 +1,22 @@
 import { calculateAverageRating } from "@esp-group-one/types";
 import type { CensoredUser } from "@esp-group-one/types";
-import moment from "moment";
+import type { Moment } from "moment";
 import { ProfilePic } from "./profile_pic";
 import { Stars } from "./stars";
 
 interface Info {
   user: CensoredUser;
-  pfp: string;
-  availability: string[];
+  profilePicture: string;
+  availability: Moment[];
   displayAbility: boolean;
 }
 
-export function RecProfile({ user, pfp, availability, displayAbility }: Info) {
+export function RecProfile({
+  user,
+  profilePicture,
+  availability,
+  displayAbility,
+}: Info) {
   const sports = user.sports;
   const name = user.name;
   const desc = user.description;
@@ -21,7 +26,7 @@ export function RecProfile({ user, pfp, availability, displayAbility }: Info) {
     <div className="h-fit max-h-fit mt-2 mb-2 snap-start">
       <div className="overflow-clip max-h-fit rounded-t-lg">
         <ProfilePic
-          image={pfp}
+          image={profilePicture}
           sports={sports}
           displayAbility={displayAbility}
         />
@@ -51,10 +56,10 @@ export function RecProfile({ user, pfp, availability, displayAbility }: Info) {
                 className="bg-slate-600 flex justify-between text-white text-xl text-bold text-body px-5 pt-3 pb-3 rounded-lg"
                 key={`${user._id.toString()}-${i}`}
               >
-                <p className="text-left">{`${moment(time).format(
-                  "hh:mm",
-                )}-${moment(time).add(1, "hours").format("hh:mm")}`}</p>
-                <p className="text-right">{moment(time).format("dddd")}</p>
+                <p className="text-left">{`${time.format("hh:mm")}-${time
+                  .add(1, "hours")
+                  .format("hh:mm")}`}</p>
+                <p className="text-right">{time.format("dddd")}</p>
               </div>
             );
           })}
