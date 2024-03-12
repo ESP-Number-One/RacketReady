@@ -10,11 +10,14 @@ import {
   LeaguePageOptions,
 } from "@esp-group-one/types";
 import type {
+  AbilityLevel,
   Error,
   LeagueQuery,
   CensoredLeague,
   League,
   WithError,
+  MatchProposal,
+  User,
 } from "@esp-group-one/types";
 import { type Filter, type OptionalId } from "mongodb";
 import {
@@ -320,7 +323,7 @@ export class LeaguesController extends ControllerWrap<League> {
           }
         }
       }
-      //Return match proposals
+
       return newAPISuccess(matchProposals);
     });
   }
