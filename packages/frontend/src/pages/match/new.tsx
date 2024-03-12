@@ -17,8 +17,8 @@ export function NewMatchPage() {
 
   const [sport, setSport] = useState<Sport | undefined>();
   const [opponent, setOpponent] = useState<ObjectId | undefined>();
-  const [date, setDate] = useState<string | undefined>();
-  const [time, setTime] = useState<string | undefined>();
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
   const [myError, setMyError] = useState<string>("");
   const viewNav = useViewNav();
 
@@ -105,9 +105,8 @@ export function NewMatchPage() {
             <Input
               className="mt-2"
               type="date"
-              onChange={(val) => {
-                setDate(val);
-              }}
+              onChange={setDate}
+              value={date}
               placeholder="Select date for the match"
               required
             />
@@ -115,10 +114,9 @@ export function NewMatchPage() {
             <Input
               className="mt-2"
               type="time"
-              onChange={(val) => {
-                setTime(val);
-              }}
+              onChange={setTime}
               placeholder="Select date for the match"
+              value={time}
               required
             />
           </>
