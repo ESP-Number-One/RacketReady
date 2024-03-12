@@ -1,9 +1,10 @@
-import type { CensoredUser, Match } from "@esp-group-one/types";
+import {
+  type CensoredUser,
+  makeImgSrc,
+  type Match,
+} from "@esp-group-one/types";
 import type { Moment } from "moment";
-import { useContext, type JSX } from "react";
 import moment from "moment";
-import { API } from "../../state/auth";
-import { ErrorHandler, useAsync } from "../../lib/async";
 import { Profile } from "../profile";
 import { Tag } from "../tags";
 
@@ -16,37 +17,21 @@ export function MatchCard({
   match: Match;
   opponent: CensoredUser;
 }) {
-  const api = useContext(API);
-  const errorHandler = useContext(ErrorHandler);
-
-  const { ok, loading, error } = useAsync(async () => {
-    const profilePic = await api.user().getProfileSrc(opponent._id);
-
-    return { profilePic };
-  })
-    .catch(errorHandler)
-    .await();
-
-  if (error) return error as JSX.Element;
+  const op = opponent;
+  const profilePic = makeImgSrc(op.profilePicture);
 
   const startTime = moment(date);
   const info = formatDate(startTime);
   const endinfo = formatDate(startTime.clone().add(1, "hour"));
   return (
     <a
-      href={`/match?id=${matchId.toString()}`}
-      className={`${className} rounded-lg border border-gray-300 p-2 flex items-center w-full bg-p-grey-200`}
+      href={`/match/${matchId.toString()}`}
+      className={`${className} rounded-lg border w-full border-gray-300 p-2 flex items-center bg-p-grey-200`}
     >
       <div className="mr-4">
-        {ok ? (
-          <div className="image-container">
-            <Profile imgSrc={ok.profilePic} />
-          </div>
-        ) : (
-          <div className="flex place-content-center w-24 h-24 rounded-2xl overflow-hidden">
-            {loading}
-          </div>
-        )}
+        <div className="image-container">
+          <Profile imgSrc={profilePic} />
+        </div>
       </div>
       <div className="flex flex-col flex-1">
         <div className="font-title font-bold text-2xl text-white">

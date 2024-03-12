@@ -33,14 +33,6 @@ export class UserAPIClient extends SubAPIClient<
   }
 
   /**
-   * @param id - ID of the user to get
-   * @returns webp base64 encoded image with prefix `data:image/webp;base64,` so can be assigned to img.src
-   */
-  public getProfileSrc(id: ObjectId): Promise<string> {
-    return this.get(`${id.toString()}/profile_picture`, {});
-  }
-
-  /**
    * @param availability - The availability to set on your user
    * @param query - To control the paging
    * @returns The time strings where the current user and the given user are

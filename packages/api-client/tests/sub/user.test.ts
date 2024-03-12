@@ -50,20 +50,6 @@ describe("edit", () => {
   runErrorTests(endpoint, () => api.editMe({ description: "Something" }));
 });
 
-describe("getProfilePic", () => {
-  const id = OIDS[0];
-  const resObj = "data:image/webp;base64,AAAAAAAA";
-  const endpoint = `user/${id.toString()}/profile_picture`;
-  test("Normal", async () => {
-    fetchMockEndpointOnce(endpoint, newAPISuccess(resObj));
-
-    await expect(api.getProfileSrc(id)).resolves.toStrictEqual(resObj);
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-  });
-
-  runErrorTests(endpoint, () => api.getProfileSrc(id));
-});
-
 describe("findAvailabilityWith", () => {
   const id = OIDS[0];
   const query: QueryOptions<undefined> = { pageSize: 10 };

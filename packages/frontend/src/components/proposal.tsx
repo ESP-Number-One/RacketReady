@@ -1,4 +1,9 @@
-import type { CensoredUser, Match, ObjectId } from "@esp-group-one/types";
+import {
+  makeImgSrc,
+  type CensoredUser,
+  type Match,
+  type ObjectId,
+} from "@esp-group-one/types";
 import moment from "moment";
 import { useContext, type JSX } from "react";
 import { type APIClient } from "@esp-group-one/api-client";
@@ -22,7 +27,10 @@ async function load(api: APIClient, data: Match) {
     ),
   ).then(Object.fromEntries)) as Record<string, CensoredUser>;
 
-  const profilePic = await api.user().getProfileSrc(data.owner);
+  const profilePic = await api
+    .user()
+    .getId(data.owner)
+    .then((u) => makeImgSrc(u.profilePicture));
 
   return { data, users, profilePic };
 }
