@@ -1,4 +1,3 @@
-import * as fs from "node:fs";
 import type {
   Success,
   User,
@@ -22,7 +21,11 @@ import {
 import { getAvailability } from "@esp-group-one/types/build/tests/helpers/utils.js";
 import moment from "moment";
 import { app } from "../../src/app.js";
-import { expectAPIRes, requestWithAuth } from "../helpers/utils.js";
+import {
+  expectAPIRes,
+  readStaticFile,
+  requestWithAuth,
+} from "../helpers/utils.js";
 import { addCommonTests, setup } from "../helpers/controller.js";
 import { TestUser } from "../helpers/user.js";
 
@@ -344,16 +347,6 @@ addCommonTests({
     ]);
   },
 });
-
-function readStaticFile(filename: string): string {
-  let file = `tests/static/${filename}`;
-  if (!fs.existsSync(file)) {
-    file = `packages/backend/${file}`;
-  }
-
-  const bitmap = fs.readFileSync(file);
-  return Buffer.from(bitmap).toString("base64");
-}
 
 function testWithProfilePicture<T, R>(
   endpoint: string,
