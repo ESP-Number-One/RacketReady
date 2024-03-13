@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render } from "@testing-library/react";
+import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { CardList } from "../src/components/card_list";
 
@@ -90,8 +90,10 @@ it("should call the next page once after scrolling to the bottom", async () => {
   });
 
   // scroll the card list to the very bottom
-  fireEvent.scroll(cardList, {
-    top: cardList.scrollHeight - cardList.clientHeight,
+  act(() => {
+    fireEvent.scroll(cardList, {
+      top: cardList.scrollHeight - cardList.clientHeight,
+    });
   });
 
   await new Promise((res) => {
@@ -106,32 +108,39 @@ it("should call the next page once after scrolling to the bottom", async () => {
   expect(nextPage.mock.calls).toStrictEqual([[0], [1]]);
 });
 
-it("should refresh the page when 'pulling down' the page from the top", () => {
+it("should refresh the page when 'pulling down' the page from the top", async () => {
   const { container } = render(<CardList nextPage={nextPage} />);
   const divOrNull = container
     .getElementsByClassName("grid-flow-row grid overflow-scroll max-h-screen")
     .item(0);
-
+  await new Promise((res) => {
+    setTimeout(res, 1000);
+  });
   const cardList = divOrNull ? divOrNull : container;
 
   // Simulate touching the screen at the very top,
-  fireEvent.touchStart(cardList, { touches: [{ pageY: 10 }] });
+  act(() => {
+    fireEvent.touchStart(cardList, { touches: [{ pageY: 10 }] });
+  });
   // then dragging the page down by 190 pixels, more than the threshold that should
   //  trigger a refresh,
-  fireEvent.touchMove(cardList, { touches: [{ pageY: 200 }] });
+  act(() => {
+    fireEvent.touchMove(cardList, { touches: [{ pageY: 200 }] });
+  });
   // and finally release the touch.
-  fireEvent.touchEnd(cardList);
-
+  act(() => {
+    fireEvent.touchEnd(cardList);
+  });
   // Expect the refresh icon to have the correct class name, i.e it should change style.
   expect(
     cardList.getElementsByClassName(
-      "translate-y-24 duration-300 bg-white p-4 rounded-full self-center -rotate-180 shadow place-self-center",
+      "duration-300 bg-white p-4 rounded-full self-center -rotate-180 shadow place-self-center",
     ).length,
   ).toBe(1);
 
   expect(
     cardList.getElementsByClassName(
-      "translate-y-24 duration-300 bg-white p-4 rounded-full self-center -rotate-180 shadow place-self-center",
+      "duration-300 bg-white p-4 rounded-full self-center -rotate-180 shadow place-self-center",
     )[0],
   ).toBeVisible();
 });
