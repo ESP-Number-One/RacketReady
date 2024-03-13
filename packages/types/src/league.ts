@@ -1,26 +1,21 @@
 import type { PageOptions, Query, SortQuery } from "./db_client.js";
 import type { MongoDBItem, ObjectId, Sport } from "./utils.js";
-import type { AbilityLevel, User } from "@esp-group-one/types";
+
 interface BaseLeague extends MongoDBItem {
   name: string;
   ownerIds: ObjectId[];
   sport: Sport;
   round: number;
-  people: User[];
-}
-
-export interface MatchProposal {
-  ownerId: ObjectId;
-  players: ObjectId[];
-  abilityLevel: AbilityLevel;
 }
 
 interface PublicLeague extends BaseLeague {
+  round: number;
   private: false;
 }
 
 interface PrivateLeague extends BaseLeague {
   private: true;
+  round: number;
   inviteCode: string;
 }
 
@@ -31,7 +26,6 @@ export interface LeagueCreation {
   sport: Sport;
   private: boolean;
   round: number;
-  people: User[];
 }
 
 export interface CensoredLeague extends MongoDBItem {
@@ -39,7 +33,6 @@ export interface CensoredLeague extends MongoDBItem {
   sport: Sport;
   private: boolean;
   round: number;
-  people: User[];
 }
 
 export function censorLeague(league: League): CensoredLeague {
@@ -49,7 +42,6 @@ export function censorLeague(league: League): CensoredLeague {
     sport: league.sport,
     private: league.private,
     round: league.round,
-    people: league.people,
   };
 }
 
