@@ -17,9 +17,9 @@ const mockProfile = {
       { sport: Sport.Tennis, ability: AbilityLevel.Intermediate },
       { sport: Sport.Squash, ability: AbilityLevel.Advanced },
     ],
+    profilePicture: `data:image/web,base64,${PICTURES[0]}`,
     rating: { 1: 2, 2: 3, 3: 4, 4: 5, 5: 6 },
   },
-  profilePicture: `data:image/web,base64,${PICTURES[0]}`,
   availability: [
     moment("2024-03-12T11:30:00Z"),
     moment("2024-03-13T13:30:00Z"),
@@ -39,9 +39,9 @@ const mockUnavailableProfile = {
       { sport: Sport.Tennis, ability: AbilityLevel.Intermediate },
       { sport: Sport.Squash, ability: AbilityLevel.Advanced },
     ],
+    profilePicture: `data:image/web,base64,${PICTURES[0]}`,
     rating: { 1: 2, 2: 3, 3: 4, 4: 5, 5: 6 },
   },
-  profilePicture: `data:image/web,base64,${PICTURES[0]}`,
   availability: [],
   displayAbility: false,
 };
@@ -51,9 +51,9 @@ describe("RecProfile", () => {
     render(
       <RecProfile
         user={mockProfile.user}
-        profilePicture={mockProfile.profilePicture}
         availability={mockProfile.availability}
         displayAbility={mockProfile.displayAbility}
+        proposeMatch={() => void 0}
       />,
     );
   });
@@ -62,9 +62,9 @@ describe("RecProfile", () => {
     const component = render(
       <RecProfile
         user={mockProfile.user}
-        profilePicture={mockProfile.profilePicture}
         availability={mockProfile.availability}
         displayAbility={mockProfile.displayAbility}
+        proposeMatch={() => void 0}
       />,
     );
     expect(component.container).toHaveTextContent(mockProfile.user.name);
@@ -83,9 +83,9 @@ describe("RecProfile", () => {
     const component = render(
       <RecProfile
         user={mockUnavailableProfile.user}
-        profilePicture={mockUnavailableProfile.profilePicture}
         availability={mockUnavailableProfile.availability}
         displayAbility={mockUnavailableProfile.displayAbility}
+        proposeMatch={() => void 0}
       />,
     );
 

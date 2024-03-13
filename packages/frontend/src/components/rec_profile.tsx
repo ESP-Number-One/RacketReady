@@ -1,21 +1,27 @@
 import { calculateAverageRating } from "@esp-group-one/types";
-import type { CensoredUser } from "@esp-group-one/types";
+import type {
+  CensoredUser,
+  DateTimeString,
+  ObjectId,
+  Sport,
+  StarCount,
+} from "@esp-group-one/types";
 import type { Moment } from "moment";
 import { ProfilePic } from "./profile_pic";
 import { Stars } from "./stars";
 
 interface Info {
   user: CensoredUser;
-  profilePicture: string;
   availability: Moment[];
+  proposeMatch: (date: DateTimeString, to: ObjectId, sport: Sport) => void;
   displayAbility: boolean;
 }
 
 export function RecProfile({
   user,
-  profilePicture,
   availability,
   displayAbility,
+  proposeMatch,
 }: Info) {
   const sports = user.sports;
   const name = user.name;
@@ -26,8 +32,8 @@ export function RecProfile({
     <div className="h-fit max-h-fit mt-2 mb-2 snap-start">
       <div className="overflow-clip max-h-fit rounded-t-lg">
         <ProfilePic
-          image={profilePicture}
-          sports={sports}
+          image={user.profilePicture}
+          sports={sports.slice(0, 1)}
           displayAbility={displayAbility}
         />
       </div>
@@ -36,7 +42,10 @@ export function RecProfile({
           {name}
         </h1>
         <div className="flex flex-row-reverse p-2">
-          <Stars rating={rating} />
+          <Stars
+            rating={Math.min(5, Math.max(1, Math.floor(rating))) as StarCount}
+            disabled={true}
+          />
         </div>
         <div
           className={
@@ -52,15 +61,18 @@ export function RecProfile({
         <div className="bg-slate-400 px-5 pt-2 pb-2 mt-1 space-y-2 overflow-scroll rounded-b-lg">
           {availability.map((time, i) => {
             return (
-              <div
+              <button
                 className="bg-slate-600 flex justify-between text-white text-xl text-bold text-body px-5 pt-3 pb-3 rounded-lg"
                 key={`${user._id.toString()}-${i}`}
+                onClick={() => {
+                  proposeMatch(time.toISOString(), user._id, sports[0].sport);
+                }}
               >
                 <p className="text-left">{`${time.format("hh:mm")}-${time
                   .add(1, "hours")
                   .format("hh:mm")}`}</p>
                 <p className="text-right">{time.format("dddd")}</p>
-              </div>
+              </button>
             );
           })}
         </div>
