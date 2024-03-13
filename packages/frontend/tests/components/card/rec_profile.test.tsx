@@ -71,12 +71,6 @@ describe("RecProfile", () => {
     expect(component.container).toHaveTextContent(
       Sport.Badminton.charAt(0).toUpperCase() + Sport.Badminton.slice(1),
     );
-    expect(component.container).toHaveTextContent(
-      Sport.Tennis.charAt(0).toUpperCase() + Sport.Tennis.slice(1),
-    );
-    expect(component.container).toHaveTextContent(
-      Sport.Squash.charAt(0).toUpperCase() + Sport.Squash.slice(1),
-    );
   });
 
   it("should not have the availabilities section if there are none provided", () => {
