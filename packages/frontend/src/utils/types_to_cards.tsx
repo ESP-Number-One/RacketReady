@@ -1,5 +1,12 @@
 import { MatchStatus } from "@esp-group-one/types";
-import type { CensoredLeague, CensoredUser, Match } from "@esp-group-one/types";
+import type {
+  CensoredLeague,
+  CensoredUser,
+  DateTimeString,
+  Match,
+  ObjectId,
+  Sport,
+} from "@esp-group-one/types";
 import type { ReactNode } from "react";
 import type { APIClient } from "@esp-group-one/api-client";
 import moment from "moment";
@@ -16,13 +23,23 @@ export namespace Cards {
             <RecProfile
               key={user._id.toString()}
               user={user}
-              profilePicture={await api.user().getProfileSrc(user._id)}
               availability={(
                 await api.user().findAvailabilityWith(user._id, {})
               ).map((time) => {
                 return moment(time);
               })}
               displayAbility={false}
+              proposeMatch={(
+                date: DateTimeString,
+                to: ObjectId,
+                sport: Sport,
+              ) => {
+                api
+                  .match()
+                  .create({ date, to, sport })
+                  .then()
+                  .catch(console.warn);
+              }}
             />
           );
         });
