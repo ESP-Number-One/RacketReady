@@ -38,15 +38,17 @@ export function YourLeagues() {
             emptyListPlaceholder="You aren't a member of any leagues."
           />
           <div className="h-1 w-full bg-p-grey-900 my-2" />
-          <button
-            className="flex flex-row"
-            onClick={() => {
-              viewNavigate("/leagues/discover");
-            }}
-          >
-            Discover more
-            <Icon icon={faArrowRight} size="lg" />
-          </button>
+          <div className=" flex flex-row place-content-end pr-2">
+            <button
+              className="flex flex-row align-middle h-full"
+              onClick={() => {
+                viewNavigate("/leagues/discover");
+              }}
+            >
+              <p className="pr-2 font-title text-xl">Discover more</p>
+              <Icon icon={faArrowRight} size="xl" />
+            </button>
+          </div>
         </div>
       </Page.Body>
       <Page.Footer>
