@@ -1,5 +1,5 @@
-import { CensoredUser } from "./user.js";
-import { Sport } from "./utils.js";
+import type { CensoredUser } from "./user.js";
+import type { Sport } from "./utils.js";
 
 export interface Success<T> {
   success: true;
