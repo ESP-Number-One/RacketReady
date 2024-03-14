@@ -29,7 +29,6 @@ export namespace Cards {
               ).map((time) => {
                 return moment(time);
               })}
-              displayAbility={false}
               proposeMatch={(
                 date: DateTimeString,
                 to: ObjectId,
@@ -73,7 +72,6 @@ export namespace Cards {
               ).map((time) => {
                 return moment(time);
               })}
-              displayAbility={false}
               proposeMatch={(
                 date: DateTimeString,
                 to: ObjectId,
