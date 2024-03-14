@@ -52,7 +52,6 @@ describe("RecProfile", () => {
       <RecProfile
         user={mockProfile.user}
         availability={mockProfile.availability}
-        displayAbility={mockProfile.displayAbility}
         proposeMatch={() => void 0}
       />,
     );
@@ -63,7 +62,6 @@ describe("RecProfile", () => {
       <RecProfile
         user={mockProfile.user}
         availability={mockProfile.availability}
-        displayAbility={mockProfile.displayAbility}
         proposeMatch={() => void 0}
       />,
     );
@@ -78,7 +76,6 @@ describe("RecProfile", () => {
       <RecProfile
         user={mockUnavailableProfile.user}
         availability={mockUnavailableProfile.availability}
-        displayAbility={mockUnavailableProfile.displayAbility}
         proposeMatch={() => void 0}
       />,
     );
