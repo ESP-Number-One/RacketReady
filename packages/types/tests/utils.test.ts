@@ -1,6 +1,7 @@
 import { expect, test } from "@jest/globals";
 import { ObjectId, makeImgSrc } from "../src/utils.js";
 import { IDS } from "./helpers/utils.js";
+import { Default } from "../src/defaults.js";
 
 describe("Object ID", () => {
   test("from JSON", () => {
@@ -58,5 +59,11 @@ describe("Object ID", () => {
 describe("makeWebP", () => {
   test("prepend", () => {
     expect(makeImgSrc(`12`)).toBe("data:image/webp;base64,12");
+  });
+  test("idempotency", () => {
+    expect(makeImgSrc("data:image/webp;base64,12")).toBe(
+      "data:image/webp;base64,12",
+    );
+    expect(makeImgSrc(Default.PICTURE)).toBe(Default.PICTURE);
   });
 });
