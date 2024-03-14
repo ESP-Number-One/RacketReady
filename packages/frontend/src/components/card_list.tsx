@@ -129,7 +129,7 @@ export function CardList<T extends ReactNode>({
     const target: EventTarget = event.target;
     const targetDiv: HTMLDivElement = target as HTMLDivElement;
     if (
-      targetDiv.scrollTop + targetDiv.clientHeight <
+      targetDiv.clientHeight <
         targetDiv.scrollHeight - targetDiv.clientHeight * 0.1 ||
       isLastPage ||
       isLoading ||
@@ -162,14 +162,14 @@ export function CardList<T extends ReactNode>({
       <FontAwesomeIcon
         className={
           isRefreshing
-            ? "duration-300 bg-white p-4 rounded-full self-center -rotate-180 shadow place-self-center"
-            : "-translate-y-72 duration-300 bg-white p-4 rounded-full self-center rotate-180 shadow opacity-0 h-0 w-0"
+            ? "duration-300 bg-white p-4 rounded-full self-center -rotate-180 shadow place-self-center z-10 absolute"
+            : "-translate-y-72 duration-300 bg-white p-4 rounded-full self-center rotate-180 shadow place-self-center opacity-0 z-10 absolute"
         }
         icon={faRefresh}
         size="lg"
       />
       <div
-        className="overflow-scroll absolute"
+        className="overflow-scroll"
         onScroll={(e) => {
           handleScroll(e);
         }}

@@ -33,7 +33,13 @@ export function RecProfile({ user, availability, sport, proposeMatch }: Info) {
           displayAbility={false}
         />
       </div>
-      <div className="bg-slate-400 overflow-hidden">
+      <div
+        className={
+          availability.length === 0
+            ? "bg-slate-400 overflow-hidden rounded-b-lg"
+            : "bg-slate-400 overflow-hidden"
+        }
+      >
         <h1 className="text-white font-title font-bold text-right px-5 text-3xl pt-3">
           {name}
         </h1>
