@@ -6,6 +6,7 @@ import type {
   Match,
   ObjectId,
   Sport,
+  UserMatchReturn,
 } from "@esp-group-one/types";
 import type { ReactNode } from "react";
 import type { APIClient } from "@esp-group-one/api-client";
@@ -25,6 +26,50 @@ export namespace Cards {
               user={user}
               availability={(
                 await api.user().findAvailabilityWith(user._id, {})
+              ).map((time) => {
+                return moment(time);
+              })}
+              displayAbility={false}
+              proposeMatch={(
+                date: DateTimeString,
+                to: ObjectId,
+                sport: Sport,
+              ) => {
+                api
+                  .match()
+                  .create({ date, to, sport })
+                  .then()
+                  .catch(console.warn);
+              }}
+            />
+          );
+        });
+      })(),
+    ).then((cards) => {
+      return cards;
+    });
+  }
+
+  export function fromRecommendedUsers(users: UserMatchReturn, api: APIClient) {
+    return Promise.all(
+      (() => {
+        return users.map(async (user) => {
+          return (
+            <RecProfile
+              key={user.u._id.toString()}
+              user={{
+                ...user.u,
+                sports: [
+                  {
+                    sport: user.sport,
+                    ability: user.u.sports.filter((info) => {
+                      return info.sport === user.sport;
+                    })[0].ability,
+                  },
+                ],
+              }}
+              availability={(
+                await api.user().findAvailabilityWith(user.u._id, {})
               ).map((time) => {
                 return moment(time);
               })}
