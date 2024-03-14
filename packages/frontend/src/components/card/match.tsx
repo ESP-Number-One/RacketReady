@@ -29,9 +29,7 @@ export function MatchCard({
       className={`${className} rounded-lg border w-full border-gray-300 p-2 flex items-center bg-p-grey-200`}
     >
       <div className="mr-4">
-        <div className="image-container">
-          <Profile imgSrc={profilePic} />
-        </div>
+        <div className="image-container">{<Profile imgSrc={profilePic} />}</div>
       </div>
       <div className="flex flex-col flex-1">
         <div className="font-title font-bold text-2xl text-white">

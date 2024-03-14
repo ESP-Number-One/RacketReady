@@ -83,7 +83,7 @@ export function hasId(arr: ObjectId[], id: ObjectId): boolean {
  * @param base64 The raw base64 string.
  * @returns Valid `src` for an `<img >` tag.
  */
-export function makeImgSrc(base64: string | null): string {
+export function makeImgSrc(base64: string | null | undefined): string {
   // Make this operation idempotent.
   if (
     base64?.startsWith("data:image/webp;base64,") ||
