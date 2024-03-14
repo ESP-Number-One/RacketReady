@@ -8,9 +8,9 @@ import type {
 } from "@esp-group-one/types";
 import type { Moment } from "moment";
 import { useState } from "react";
+import moment from "moment";
 import { ProfilePic } from "./profile_pic";
 import { Stars } from "./stars";
-import moment, { now } from "moment";
 
 interface Info {
   user: CensoredUser;
