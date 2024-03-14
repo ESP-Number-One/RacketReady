@@ -1,3 +1,6 @@
+import { CensoredUser } from "./user.js";
+import { Sport } from "./utils.js";
+
 export interface Success<T> {
   success: true;
   data: T;
@@ -9,6 +12,8 @@ export interface Error {
 }
 
 export type WithError<T> = Success<T> | Error;
+
+export type UserMatchReturn = { u: CensoredUser; sport: Sport }[];
 
 export function newAPISuccess<T>(data: T): WithError<T> {
   return { success: true, data };
