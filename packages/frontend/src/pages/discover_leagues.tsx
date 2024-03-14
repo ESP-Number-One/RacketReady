@@ -17,7 +17,7 @@ export function DiscoverLeagues() {
       res(
         api
           .league()
-          .find({ pageStart: pageNum })
+          .find({ query: { amIn: false }, pageStart: pageNum })
           .then((leagues) => {
             return Cards.fromLeagues(leagues);
           })
