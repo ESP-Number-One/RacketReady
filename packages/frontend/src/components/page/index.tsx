@@ -23,7 +23,7 @@ function PageImpl({ children: _children, page }: PageProps) {
   return (
     <div className="root-page flex h-screen w-screen flex-col">
       {header !== undefined && (
-        <div className="flex-none w-full p-2 text-p-grey-900 font-title text-2xl font-bold">
+        <div className="flex-none w-full text-p-grey-900 font-title text-2xl font-bold">
           <div className="relative flex w-full">{header}</div>
         </div>
       )}
