@@ -19,6 +19,7 @@ test("user", () => {
       { sport: Sport.Tennis, ability: AbilityLevel.Beginner },
       { sport: Sport.Squash, ability: AbilityLevel.Advanced },
     ],
+    profilePicture: expect.any(String),
   });
 });
 

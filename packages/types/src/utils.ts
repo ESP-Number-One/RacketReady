@@ -75,6 +75,15 @@ export function hasId(arr: ObjectId[], id: ObjectId): boolean {
   return arr.some((i) => i.equals(id));
 }
 
+/**
+ * Prepares the base64 for \<img\> tag.
+ * @param base64 The raw base64 string.
+ * @returns Valid `src` for an `<img >` tag.
+ */
+export function makeImgSrc(base64: string): `data:image/webp;base64,${string}` {
+  return `data:image/webp;base64,${base64}`;
+}
+
 export interface MongoDBItem {
   _id: ObjectId;
 }

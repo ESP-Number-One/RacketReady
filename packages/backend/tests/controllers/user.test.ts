@@ -5,7 +5,12 @@ import type {
   UserCreation,
   UserPageOptions,
 } from "@esp-group-one/types";
-import { ObjectId, censorUser } from "@esp-group-one/types";
+import {
+  AbilityLevel,
+  ObjectId,
+  Sport,
+  censorUser,
+} from "@esp-group-one/types";
 import { describe, expect, test } from "@jest/globals";
 import { generateRandomString } from "ts-randomstring/lib/index.js";
 import {
@@ -212,32 +217,6 @@ describe("edit", () => {
   );
 });
 
-describe("profile_picture", () => {
-  const profilePicture = readStaticFile("res-webp.webp");
-  test("get", async () => {
-    const u = await addUser(db.get(), auth0Id, { profilePicture });
-    const res = await requestWithAuth(app, "github|111111").get(
-      `/user/${u._id.toString()}/profile_picture`,
-    );
-
-    expect(res.status).toBe(200);
-    const body = res.body as Success<string>;
-    expect(body.data).toBe(`data:image/webp;base64,${profilePicture}`);
-  });
-
-  test("no user", async () => {
-    const res = await requestWithAuth(app, "github|111111").get(
-      `/user/${IDS[0]}/profile_picture`,
-    );
-
-    expect(res.status).toBe(404);
-    expect(res.body).toStrictEqual({
-      success: false,
-      error: "Failed to get obj",
-    });
-  });
-});
-
 describe("find", () => {
   test("with query", async () => {
     await addUser(db.get(), auth0Id);
@@ -255,7 +234,73 @@ describe("find", () => {
       .send({ query: { profileText: "bot 1$" } } as UserPageOptions);
 
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({
+    expectAPIRes(res.body).toEqual({
+      success: true,
+      data: [censorUser(users[0])],
+    });
+  });
+
+  test("with sports", async () => {
+    await db.reset();
+    await addUser(db.get(), auth0Id);
+
+    const sports = [Sport.Tennis, Sport.Squash, Sport.Badminton];
+    const promises = [];
+    for (const s of sports) {
+      promises.push(
+        addUser(db.get(), generateRandomString(), {
+          sports: [{ sport: s, ability: AbilityLevel.Beginner }],
+        }),
+      );
+    }
+
+    const users = await Promise.all(promises);
+
+    console.log(await (await db.get().users()).find({}));
+
+    const res = await requestWithAuth(app, auth0Id)
+      .post("/user/find")
+      .send({ query: { sports: Sport.Tennis } } as UserPageOptions);
+
+    expect(res.status).toBe(200);
+    expectAPIRes(res.body).toEqual({
+      success: true,
+      data: [censorUser(users[0])],
+    });
+  });
+
+  test("with multi", async () => {
+    await addUser(db.get(), auth0Id);
+
+    const names = [
+      {
+        name: "Test bot 1",
+        sport: [{ sport: Sport.Tennis, ability: AbilityLevel.Beginner }],
+      },
+      {
+        name: "Test Bot 1",
+        sports: [{ sport: Sport.Squash, ability: AbilityLevel.Beginner }],
+      },
+      {
+        name: "Test bot 2",
+        sports: [{ sport: Sport.Tennis, ability: AbilityLevel.Beginner }],
+      },
+    ];
+    const promises = [];
+    for (const n of names) {
+      promises.push(addUser(db.get(), generateRandomString(), n));
+    }
+
+    const users = await Promise.all(promises);
+
+    const res = await requestWithAuth(app, auth0Id)
+      .post("/user/find")
+      .send({
+        query: { profileText: "bot 1$", sports: Sport.Tennis },
+      } as UserPageOptions);
+
+    expect(res.status).toBe(200);
+    expectAPIRes(res.body).toEqual({
       success: true,
       data: [censorUser(users[0])],
     });
