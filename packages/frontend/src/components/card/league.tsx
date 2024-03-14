@@ -64,7 +64,7 @@ export function LeagueCard({
             className="h-full aspect-square rounded-2xl"
           />
           {badge ? (
-            <div className="absolute flex justify-center font-title font-semibold text-xl w-3/5 left-[-10%] top-[-10%] rounded-full bg-p-red-200">
+            <div className="badge absolute flex justify-center font-title font-semibold text-xl w-3/5 left-[-10%] top-[-10%] rounded-full bg-p-red-200">
               {badge}
             </div>
           ) : null}
