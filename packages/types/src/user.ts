@@ -76,13 +76,13 @@ export type UserQuery = Query<{
   leagues: ObjectId[];
 }> & { profileText?: string };
 
-export function calculateAverageRating(rate: Ratings): number {
+export function calculateAverageRating(rate: Ratings): StarCount {
   const count = Object.values(rate).reduce((a, b) => a + b, 0);
   const sum = Object.entries(rate)
     .map(([stars, ratings]) => Number(stars) * ratings)
     .reduce((a, b) => a + b, 0);
 
-  return sum / count;
+  return Math.round(sum / count) as StarCount;
 }
 
 export type UserPageOptions = PageOptions<UserQuery, SortQuery<User>>;
