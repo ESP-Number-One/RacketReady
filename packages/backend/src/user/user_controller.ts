@@ -15,6 +15,7 @@ import type {
   DateTimeString,
   Error,
   User,
+  UserMatchReturn,
   WithError,
 } from "@esp-group-one/types";
 import { type Filter } from "mongodb";
@@ -33,8 +34,11 @@ import {
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
 import * as express from "express";
 import { ControllerWrap } from "../controller.js";
-import { getUserId, mapUser } from "../lib/utils.js";
-import { setAvailabilityCache } from "../lib/availability_cache.js";
+import { getUserId, mapUser, shuffle } from "../lib/utils.js";
+import {
+  getAvailabilityCache,
+  setAvailabilityCache,
+} from "../lib/availability_cache.js";
 
 @Security("auth0")
 @Route("user")
@@ -116,24 +120,32 @@ export class UsersController extends ControllerWrap<User> {
           const text = opts.query.profileText;
           delete opts.query.profileText;
           let query = opts.query as Filter<User>;
+          if (query.sports) {
+            query["sports.sport"] = query.sports;
+            delete query.sports;
+          }
 
           if (text) {
-            const textQuery: Filter<string> = {
+            const regQuery: Filter<string> = {
               $regex: text,
               $options: "i",
             };
-            query = {
+
+            const textQuery = {
               $or: [
                 {
-                  ...query,
-                  name: textQuery,
+                  name: regQuery,
                 },
                 {
-                  ...query,
-                  description: textQuery,
+                  description: regQuery,
                 },
               ],
             };
+
+            query =
+              Object.keys(query).length === 0
+                ? textQuery
+                : { $and: [textQuery, query] };
           }
 
           queries.push(query);
@@ -152,6 +164,46 @@ export class UsersController extends ControllerWrap<User> {
         return res;
       }),
     );
+  }
+
+  /**
+   * Returns a list of users which is thought to be a good match by
+   * our super secret algorithm (unless there are no recommendations).
+   *
+   * Users may be repeated for different sports
+   */
+  @Get("recommendations")
+  public async match(
+    @Request() req: express.Request,
+  ): Promise<WithError<UserMatchReturn>> {
+    return this.withUser(req, async (currUser) => {
+      const db = this.getDb();
+      const users = await this.getCollection();
+
+      const ids = await getAvailabilityCache(db, currUser._id);
+      const potentialUsers = await users.find({
+        _id: { $in: ids },
+        sports: { $in: currUser.sports },
+      });
+
+      const res: UserMatchReturn = potentialUsers.flatMap((u) => {
+        const censored = censorUser(u);
+        return u.sports
+          .filter((s) =>
+            currUser.sports.some(
+              (o) => o.sport === s.sport && o.ability === s.ability,
+            ),
+          )
+          .map((s) => {
+            return { u: censored, sport: s.sport };
+          });
+      });
+
+      // Randomise the order
+      shuffle(res);
+
+      return newAPISuccess(res);
+    });
   }
 
   /**

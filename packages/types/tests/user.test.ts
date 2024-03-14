@@ -39,8 +39,8 @@ describe("calculateAverageRating", () => {
     expect(calculateAverageRating(rate)).toBe(3);
   });
 
-  test("float output", () => {
+  test("round output", () => {
     const rate: Ratings = { 1: 0, 2: 0, 3: 0, 4: 2, 5: 2 };
-    expect(calculateAverageRating(rate)).toBe(4.5);
+    expect(calculateAverageRating(rate)).toBe(5);
   });
 });

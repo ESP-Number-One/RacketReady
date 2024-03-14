@@ -6,6 +6,9 @@ import { API, type AuthResult, handleApi } from "./state/auth.js";
 import { LoginButton } from "./components/auth.js";
 import { useAPIClient } from "./lib/auth.js";
 import { UpcomingMatch } from "./pages/upcoming.js";
+import { ProfilePage } from "./pages/profile.js";
+import { SetAvailability } from "./pages/me/availability.js";
+import { NewMatchPage } from "./pages/match/new.js";
 
 export function App() {
   const [result, setResult] = useState({ type: "loading" } as AuthResult);
@@ -38,6 +41,9 @@ export function App() {
       <Routes>
         <Route index element={<UpcomingMatch />} />
         <Route path="/another" element={<AnotherTestPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/me/availability" element={<SetAvailability />} />
+        <Route path="/match/new" element={<NewMatchPage />} />
       </Routes>
     </API.Provider>
   ) : (

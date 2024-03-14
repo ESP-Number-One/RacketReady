@@ -6,6 +6,7 @@ import type {
   QueryOptions,
   User,
   UserCreation,
+  UserMatchReturn,
   UserQuery,
 } from "@esp-group-one/types";
 import { SubAPIClient } from "./base.js";
@@ -43,6 +44,13 @@ export class UserAPIClient extends SubAPIClient<
     query: QueryOptions<undefined>,
   ): Promise<DateTimeString[]> {
     return this.post(`${id.toString()}/availability`, query);
+  }
+
+  /**
+   * @returns recommended users for the current user
+   */
+  public recommendations(): Promise<UserMatchReturn> {
+    return this.get("recommendations", {});
   }
 
   /**
