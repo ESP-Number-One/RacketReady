@@ -11,6 +11,7 @@ describe("Censor league", () => {
       sport: Sport.Squash,
       round: 0,
       private: false,
+      picture: null,
     });
   });
 
@@ -21,6 +22,7 @@ describe("Censor league", () => {
       sport: Sport.Squash,
       round: 0,
       private: true,
+      picture: null,
     });
   });
 });

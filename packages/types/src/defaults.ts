@@ -3,5 +3,5 @@ export namespace Default {
   /**
    * The fancy aristo-ball.
    */
-  export const PICTURE: string = "/static/img/aristoball.webp";
+  export const PICTURE = "/static/img/aristoball.webp";
 }

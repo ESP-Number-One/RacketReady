@@ -31,6 +31,7 @@ export function getLeague(obj: Partial<League>): League {
     sport: obj.sport ?? Sport.Squash,
     ownerIds: obj.ownerIds ?? [new ObjectId(IDS[1])],
     round: 0,
+    picture: null,
   };
 
   if (obj.private) {

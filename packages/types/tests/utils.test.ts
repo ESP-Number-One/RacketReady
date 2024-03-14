@@ -1,7 +1,7 @@
 import { expect, test } from "@jest/globals";
 import { ObjectId, makeImgSrc } from "../src/utils.js";
-import { IDS } from "./helpers/utils.js";
 import { Default } from "../src/defaults.js";
+import { IDS } from "./helpers/utils.js";
 
 describe("Object ID", () => {
   test("from JSON", () => {

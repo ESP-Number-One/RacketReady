@@ -127,10 +127,12 @@ describe("find", () => {
 
 describe("new", () => {
   test("private", async () => {
-    const res = await user
-      .request(app)
-      .post("/league/new")
-      .send({ name: "Something", private: true, sport: Sport.Tennis });
+    const res = await user.request(app).post("/league/new").send({
+      name: "Something",
+      private: true,
+      sport: Sport.Tennis,
+      picture: null,
+    });
 
     expect(res.statusCode).toBe(201);
     expectAPIRes(res.body).toStrictEqual({
@@ -143,6 +145,7 @@ describe("new", () => {
         round: 0,
         private: true,
         inviteCode: expect.any(String),
+        picture: null,
       },
     });
   });
@@ -379,60 +382,6 @@ describe("edit", () => {
   );
 });
 
-describe("picture", () => {
-  test("doesn't exist", async () => {
-    const res = await user.request(app).get(`/league/${IDS[0]}/picture`).send();
-
-    expect(res.statusCode).toBe(404);
-    expect(res.body).toStrictEqual({
-      success: false,
-      error: "Failed to get obj",
-    });
-  });
-
-  test("private league", async () => {
-    const league = await addLeague(db.get(), { private: true });
-
-    const res = await user
-      .request(app)
-      .get(`/league/${league._id.toString()}/picture`);
-
-    expect(res.statusCode).toBe(404);
-    expect(res.body).toStrictEqual({
-      success: false,
-      error: "Failed to get obj",
-    });
-  });
-
-  test("success: no image set", async () => {
-    const league = await addLeague(db.get(), { picture: undefined });
-
-    const res = await user
-      .request(app)
-      .get(`/league/${league._id.toString()}/picture`);
-
-    expect(res.statusCode).toBe(200);
-    expect(res.body).toStrictEqual({
-      success: true,
-      data: null,
-    });
-  });
-
-  test("success: picture set", async () => {
-    const league = await addLeague(db.get(), { picture: "DUMMY!" });
-
-    const res = await user
-      .request(app)
-      .get(`/league/${league._id.toString()}/picture`);
-
-    expect(res.statusCode).toBe(200);
-    expect(res.body).toStrictEqual({
-      success: true,
-      data: "data:image/webp;base64,DUMMY!",
-    });
-  });
-});
-
 function testWithPicture<L extends object>(
   endpoint: () => Promise<{ path: string; refresh?: () => Promise<League> }>,
   base: Partial<L>,
@@ -502,7 +451,7 @@ function testWithPicture<L extends object>(
       const res = await user
         .request(app)
         .post(path)
-        .send({ ...base, picture: undefined } as L);
+        .send({ ...base, picture: null } as L);
 
       expect(res.statusCode).toBe(successCode);
     });
@@ -516,6 +465,7 @@ addCommonTests({
       name: "Test League",
       sport: Sport.Tennis,
       private: false,
+      picture: null,
     } as LeagueCreation;
   },
   addObj: (_, creation) => addLeague(db.get(), creation),
@@ -530,6 +480,7 @@ addCommonTests({
         ownerIds: [currUser._id],
         name: "Test League",
         sport: Sport.Tennis,
+        picture: null,
         private: false,
         round: 0,
       },

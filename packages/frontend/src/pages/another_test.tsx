@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { ObjectId, Sport, type User } from "@esp-group-one/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { PICTURES } from "@esp-group-one/types/build/tests/helpers/utils";
 import { API } from "../state/auth";
 import { Page } from "../components/page";
 import { Header } from "../components/page/header";
 import { useViewNav } from "../state/nav";
 import { LeagueCard } from "../components/card/league";
-import { PICTURES } from "@esp-group-one/types/build/tests/helpers/utils";
 
 export function AnotherTestPage() {
   const api = useContext(API);

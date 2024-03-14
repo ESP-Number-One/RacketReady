@@ -19,6 +19,7 @@ const WITHOUT_PICTURE = {
   name: "My Super Cool League",
   sport: Sport.Badminton,
   private: false,
+  picture: null,
 } as League;
 
 const WITH_PICTURE = {
