@@ -13,6 +13,10 @@ import { NewMatchPage } from "./pages/match/new.js";
 import { SingleMatchPage } from "./pages/single_match.js";
 import { CompleteMatchForm } from "./pages/match/complete.js";
 import { YourProfile } from "./pages/your_profile.js";
+import { MatchProposal } from "./pages/match_proposal_page.js";
+import { YourLeagues } from "./pages/your_leagues.js";
+import { DiscoverLeagues } from "./pages/discover_leagues.js";
+import { SuggestedPeople } from "./pages/suggested_people.js";
 
 export function App() {
   const [result, setResult] = useState({ type: "loading" } as AuthResult);
@@ -51,7 +55,11 @@ export function App() {
         <Route path="/match/new" element={<NewMatchPage />} />
         <Route path="/match" element={<SingleMatchPage />} />
         <Route path="/match/complete" element={<CompleteMatchForm />} />
+        <Route path="/match/proposals" element={<MatchProposal />} />
         <Route path="/league/new" element={<NewLeaguePage />} />
+        <Route path="/leagues" element={<YourLeagues />} />
+        <Route path="/leagues/discover" element={<DiscoverLeagues />} />
+        <Route path="/search" element={<SuggestedPeople />} />
       </Routes>
     </API.Provider>
   ) : (
