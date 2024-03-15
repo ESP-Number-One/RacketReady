@@ -1,0 +1,192 @@
+import {
+  useContext,
+  type JSX,
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+} from "react";
+import { redirect, useNavigate, useParams } from "react-router-dom";
+import { type CensoredUser, ObjectId, Sort } from "@esp-group-one/types";
+import moment from "moment";
+import {
+  faBan,
+  faCalendar,
+  faShareSquare,
+} from "@fortawesome/free-solid-svg-icons";
+import { API } from "../../state/auth";
+import { useAsync } from "../../lib/async";
+import { Page } from "../../components/page";
+import { Header } from "../../components/page/header";
+import { Button } from "../../components/button";
+import { Icon } from "../../components/icon";
+import { LeagueMatch } from "../../components/card/league_match";
+import { Feed } from "../../components/card/feed";
+
+function RoundMatches({ round, league }: { round: number; league: ObjectId }) {
+  const api = useContext(API);
+  const playerCache = useMemo(
+    () => ({}) as Record<string, CensoredUser>,
+    [round],
+  );
+
+  useEffect(() => {
+    console.log("ROUND ", round);
+  }, [round]);
+
+  const nextPage = useCallback(
+    async (pageStart: number) => {
+      const matches = await api.match().find({
+        query: { league, round },
+        sort: { date: Sort.ASC },
+        pageStart,
+      });
+
+      const toGet = matches
+        .flatMap(({ players }) => players)
+        .filter((player) => !(player.toString() in playerCache));
+
+      if (toGet.length > 0) {
+        const users = api.user();
+        await Promise.all(
+          toGet.map((id) =>
+            users
+              .getId(id)
+              .then((pl) => [id.toString(), pl] as [string, CensoredUser]),
+          ),
+        ).then((players) => {
+          players.forEach(([id, pl]) => (playerCache[id] = pl));
+        });
+      }
+
+      return matches.map((match, i) => {
+        return <LeagueMatch key={i} match={match} players={playerCache} />;
+      });
+    },
+    [round],
+  );
+
+  return <Feed next={nextPage} />;
+}
+
+export function SingleLeaguePage() {
+  const api = useContext(API);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [selectedRound, setSelectedRound] = useState(1);
+
+  if (id === undefined) {
+    redirect("/me/leagues");
+    return <></>;
+  }
+
+  let leagueId: ObjectId;
+  try {
+    leagueId = new ObjectId(id);
+  } catch (e) {
+    return <>Error: not valid league id!</>;
+  }
+
+  const { loading, error, ok } = useAsync(async () => ({
+    league: await api.league().getId(leagueId),
+    firstMatch: await api.match().find({
+      query: { league: leagueId },
+      sort: { date: Sort.ASC },
+      pageSize: 1,
+    }),
+    lastMatch: await api.match().find({
+      query: { league: leagueId },
+      sort: { date: Sort.DESC },
+      pageSize: 1,
+    }),
+    rounds: await api.league().rounds(leagueId),
+  })).await();
+
+  if (!ok) return (loading ?? error) as JSX.Element;
+  const {
+    league,
+    firstMatch,
+    lastMatch,
+    rounds: { rounds },
+  } = ok;
+  let [firstDate, lastDate] = ["TBD", "TBD"];
+
+  if (firstMatch.length && lastMatch.length) {
+    firstDate = moment(firstMatch[0].date).format("DD/MM");
+    lastDate = moment(lastMatch[0].date).format("DD/MM");
+  }
+
+  return (
+    <Page page="leagues">
+      <Page.Header>
+        <Header.Back defaultLink="/leagues" />
+        {league.name}
+      </Page.Header>
+      <Page.Body className="flex flex-col">
+        <div className="w-full flex items-center p-2">
+          <div className="text-3xl font-title font-bold text-p-grey-900 p-1">
+            {firstDate}
+          </div>
+          <div className="flex-grow justify-center flex">
+            <div className="spacer h-[4px] w-[20vw] bg-p-grey-900" />
+          </div>
+          <div className="text-3xl font-title font-bold text-p-grey-900 p-1">
+            {lastDate}
+          </div>
+        </div>
+        <div className="p-4 flex flex-col grow">
+          <Button
+            backgroundColor="bg-p-grey-200"
+            onClick={() => {
+              navigate("/me/matches", { state: { filter: { match: id } } });
+            }}
+            icon={<Icon icon={faCalendar} />}
+          >
+            Your Matches
+          </Button>
+          <div className="row grid grid-cols-2 mt-2 gap-2">
+            <Button
+              icon={<Icon icon={faShareSquare} />}
+              onClick={() => {
+                // Only works on phones.
+                void navigator.share({
+                  url: location.href,
+                  title: league.name,
+                  text: `Checkout "${league.name}" on RacketReady!`,
+                });
+              }}
+            >
+              Share
+            </Button>
+            <Button backgroundColor="bg-p-red-100" icon={<Icon icon={faBan} />}>
+              Leave
+            </Button>
+          </div>
+          <div className="rounds grid grid-flow-col auto-cols-max gap-x-2 overflow-x-scroll py-2">
+            {rounds.map((number, i) => (
+              <div
+                key={i}
+                className={`rounded-full text-white font-bold text-xl px-4 py-[2px] tracking-widest transition-all ${
+                  Number(number) === selectedRound
+                    ? "bg-p-blue"
+                    : "bg-p-grey-200"
+                }`}
+                onClick={() => {
+                  setSelectedRound(number);
+                }}
+              >
+                RND. {number}
+              </div>
+            ))}
+          </div>
+          <div className="divider w-full flex my-1">
+            <div className="spacer h-[4px] flex-grow bg-p-grey-900" />
+          </div>
+          <div className="flex-grow p-2">
+            <RoundMatches round={selectedRound} league={leagueId} />
+          </div>
+        </div>
+      </Page.Body>
+    </Page>
+  );
+}
