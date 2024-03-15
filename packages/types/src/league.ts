@@ -5,14 +5,17 @@ interface BaseLeague extends MongoDBItem {
   name: string;
   ownerIds: ObjectId[];
   sport: Sport;
+  round: number;
 }
 
 interface PublicLeague extends BaseLeague {
+  round: number;
   private: false;
 }
 
 interface PrivateLeague extends BaseLeague {
   private: true;
+  round: number;
   inviteCode: string;
 }
 
@@ -28,6 +31,7 @@ export interface CensoredLeague extends MongoDBItem {
   name: string;
   sport: Sport;
   private: boolean;
+  round: number;
 }
 
 export function censorLeague(league: League): CensoredLeague {
@@ -36,12 +40,14 @@ export function censorLeague(league: League): CensoredLeague {
     name: league.name,
     sport: league.sport,
     private: league.private,
+    round: league.round,
   };
 }
 
 export type LeagueQuery = Query<{
   sport: Sport;
   name: string;
+  round: number;
 }> & { amIn?: boolean };
 
 export type LeaguePageOptions = PageOptions<LeagueQuery, SortQuery<League>>;
