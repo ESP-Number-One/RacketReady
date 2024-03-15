@@ -1,13 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import { ObjectId, Sport, type User } from "@esp-group-one/types";
+import { MatchStatus, ObjectId, Sport, type User } from "@esp-group-one/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { PICTURES } from "@esp-group-one/types/build/tests/helpers/utils";
 import { API } from "../state/auth";
 import { Page } from "../components/page";
 import { Header } from "../components/page/header";
 import { useViewNav } from "../state/nav";
-import { LeagueCard } from "../components/card/league";
+import { MatchCard } from "../components/card/match";
 
 export function AnotherTestPage() {
   const api = useContext(API);
@@ -30,46 +29,35 @@ export function AnotherTestPage() {
       <Page.Body>
         {user !== undefined ? (
           // <div className=" bg-red-700">{JSON.stringify(user)}</div>
-          // <MatchCard
-          //   match={{
-          //     _id: new ObjectId("65ea530aae8cf768c16d488c"),
-          //     date: "2024-03-07T23:51:38.606Z",
-          //     messages: [],
-          //     owner: new ObjectId("65df0cc4c3a02eabf84efbaf"),
-          //     players: [
-          //       new ObjectId("65df0cc4c3a02eabf84efbaf"),
-          //       new ObjectId("65e5d03224bc2262eb90c038"),
-          //     ],
-          //     sport: Sport.Badminton,
-          //     status: MatchStatus.Accepted,
-          //     league: new ObjectId("65ea51e74a4ce720adfda7f4"),
-          //     round: 1,
-          //   }}
-          //   opponent={{
-          //     _id: new ObjectId("65df0cc4c3a02eabf84efbaf"),
-          //     sports: [],
-          //     description: "Apples",
-          //     name: "Test Bot",
-          //     profilePicture: "",
-          //     rating: {
-          //       "1": 12,
-          //       "2": 33,
-          //       "3": 43,
-          //       "4": 12,
-          //       "5": 23,
-          //     },
-          //   }}
-          // />
-          <LeagueCard
-            data={{
-              _id: new ObjectId("65f26223137565f412f3cd7d"),
-              name: "My Super Cool League",
-              // ownerIds: [new ObjectId("65f253ac96c09f6ff6907d6b")],
+          <MatchCard
+            match={{
+              _id: new ObjectId("65ea530aae8cf768c16d488c"),
+              date: "2024-03-07T23:51:38.606Z",
+              messages: [],
+              owner: new ObjectId("65df0cc4c3a02eabf84efbaf"),
+              players: [
+                new ObjectId("65df0cc4c3a02eabf84efbaf"),
+                new ObjectId("65e5d03224bc2262eb90c038"),
+              ],
               sport: Sport.Badminton,
-              picture: PICTURES[0],
-              private: false,
+              status: MatchStatus.Accepted,
+              league: new ObjectId("65ea51e74a4ce720adfda7f4"),
+              round: 1,
             }}
-            badge={1}
+            opponent={{
+              _id: new ObjectId("65df0cc4c3a02eabf84efbaf"),
+              sports: [],
+              description: "Apples",
+              name: "Test Bot",
+              profilePicture: "",
+              rating: {
+                "1": 12,
+                "2": 33,
+                "3": 43,
+                "4": 12,
+                "5": 23,
+              },
+            }}
           />
         ) : (
           <p>Loading</p>
