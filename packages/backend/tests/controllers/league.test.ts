@@ -200,6 +200,7 @@ describe("new", () => {
         private: true,
         inviteCode: expect.any(String),
         picture: null,
+        ability: AbilityLevel.Beginner,
       },
     });
   });
