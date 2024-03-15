@@ -159,6 +159,7 @@ export class MatchsController extends ControllerWrap<Match> {
         await coll.edit(id, {
           $set: {
             status: MatchStatus.Complete,
+            usersRated: [],
             score: scores,
           },
         });

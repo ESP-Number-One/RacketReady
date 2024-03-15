@@ -49,14 +49,16 @@ export function SingleMatchPage(): ReactNode {
       if (!id) throw new Error("not even close");
       const objId = new ObjectId(id);
 
-      const user = api.user().me();
+      const user = await api.user().me();
 
       const match = await api.match().getId(objId);
-      const opponent = api.user().getId(match.players[1]);
+      const opponent = api
+        .user()
+        .getId(match.players.filter((i) => i.equals(user._id))[0]);
 
       setDisableMessage(match.status !== MatchStatus.Accepted);
 
-      return { match, opponent: await opponent, user: await user };
+      return { match, opponent: await opponent, user };
     },
     { refresh: true },
   )
@@ -130,14 +132,14 @@ export function SingleMatchPage(): ReactNode {
     if (!hasRated) {
       if (showRating) {
         lastButton = (
-          <div className="flex place-content-center w-full pt-2">
+          <div className="flex place-content-center w-full mt-2">
             <Stars rating={0 as StarCount} onRatingChange={rateMatch} />
           </div>
         );
       } else {
         lastButton = (
           <Button
-            className="pt-2"
+            className="mt-2"
             icon={<FontAwesomeIcon icon={faStar} />}
             onClick={() => {
               setShowRating(!showRating);
@@ -148,11 +150,22 @@ export function SingleMatchPage(): ReactNode {
         );
       }
     }
+  } else if (moment(ok.match.date).isBefore(moment())) {
+    lastButton = (
+      <Button
+        className="mt-2"
+        onClick={() => {
+          viewNavigate(`/match/complete?id=${ok.match._id.toString()}`);
+        }}
+      >
+        Complete
+      </Button>
+    );
   } else {
     lastButton = (
       <Button
         backgroundColor="bg-p-red-200"
-        className="pt-2"
+        className="mt-2"
         icon={<FontAwesomeIcon icon={faCancel} />}
         onClick={cancelMatch}
       >
@@ -179,7 +192,7 @@ export function SingleMatchPage(): ReactNode {
           <ErrorDiv className="mt-2" error={myError} />
           <div className={`pt-2`}>
             <Button
-              backgroundColor="bg-p-grey-100 pt-2"
+              backgroundColor="bg-p-grey-100 mt-2"
               icon={<FontAwesomeIcon icon={faUser} />}
               onClick={() => {
                 viewNavigate("/profile");
@@ -189,7 +202,7 @@ export function SingleMatchPage(): ReactNode {
             </Button>
             {isLeague && (
               <Button
-                backgroundColor="bg-p-grey-100 pt-2"
+                backgroundColor="bg-p-grey-100 mt-2"
                 icon={<FontAwesomeIcon icon={faTrophy} />}
                 onClick={() => {
                   viewNavigate("/league");
