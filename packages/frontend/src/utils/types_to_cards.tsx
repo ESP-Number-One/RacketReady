@@ -1,7 +1,5 @@
 import type { CensoredUser, League, Match, User } from "@esp-group-one/types";
 
-/* eslint-disable-next-line @typescript-eslint/no-namespace -- Using namespaces to improve readability
- */
 export namespace Cards {
   export function fromUsers(users: User[] | CensoredUser[]) {
     console.error("Not implemented");

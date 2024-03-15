@@ -1,10 +1,10 @@
-import type { LeagueCreation } from "@esp-group-one/types";
+import type { League, LeagueCreation } from "@esp-group-one/types";
 import { ObjectId, Sport, censorLeague } from "@esp-group-one/types";
 import { expect } from "@jest/globals";
 import { generateRandomString } from "ts-randomstring/lib/index.js";
 import { IDS, OIDS, addLeague, addUser } from "@esp-group-one/test-helpers";
 import { addCommonTests, setup } from "../helpers/controller.js";
-import { expectAPIRes } from "../helpers/utils.js";
+import { expectAPIRes, readStaticFile } from "../helpers/utils.js";
 import { app } from "../../src/app.js";
 import { TestUser } from "../helpers/user.js";
 
@@ -55,7 +55,6 @@ describe("find", () => {
       .post("/league/find")
       .send({ query: { amIn: false } });
 
-    console.log(res.body);
     expect(res.statusCode).toBe(200);
     expectAPIRes(res.body).toStrictEqual({
       success: true,
@@ -128,10 +127,12 @@ describe("find", () => {
 
 describe("new", () => {
   test("private", async () => {
-    const res = await user
-      .request(app)
-      .post("/league/new")
-      .send({ name: "Something", private: true, sport: Sport.Tennis });
+    const res = await user.request(app).post("/league/new").send({
+      name: "Something",
+      private: true,
+      sport: Sport.Tennis,
+      picture: null,
+    });
 
     expect(res.statusCode).toBe(201);
     expectAPIRes(res.body).toStrictEqual({
@@ -144,9 +145,23 @@ describe("new", () => {
         round: 0,
         private: true,
         inviteCode: expect.any(String),
+        picture: null,
       },
     });
   });
+
+  testWithPicture<LeagueCreation>(
+    () =>
+      Promise.resolve({
+        path: `/league/new`,
+      }),
+    {
+      name: "Shiny new league!",
+      sport: Sport.Tennis,
+      private: true,
+    },
+    { successCode: 201 },
+  );
 });
 
 describe("invite", () => {
@@ -352,7 +367,96 @@ describe("edit", () => {
     const edittedLeague = await (await db.get().leagues()).get(league._id);
     expect(edittedLeague?.name).toBe("HI!");
   });
+
+  testWithPicture<League>(
+    async () => {
+      const league = await addLeague(db.get(), { ownerIds: [user.id()] });
+      return {
+        path: `/league/${league._id.toString()}/edit`,
+        refresh: async () =>
+          (await db.get().leagues()).get(league._id) as Promise<League>,
+      };
+    },
+    { name: "Changed!" },
+    { successCode: 200 },
+  );
 });
+
+function testWithPicture<L extends object>(
+  endpoint: () => Promise<{ path: string; refresh?: () => Promise<League> }>,
+  base: Partial<L>,
+  { successCode }: { successCode: number },
+) {
+  describe("withPicture", () => {
+    // Test valid image conversions to `.webp`
+    ["png", "jpeg", "webp"]
+      .map((filetype) => ({
+        filetype,
+        picture: readStaticFile(`profile.${filetype}`),
+        // The results have been manually vailidated due to the small differences
+        converted: readStaticFile(`res-${filetype}.webp`),
+      }))
+      .forEach(({ filetype, picture, converted }) => {
+        test(filetype, async () => {
+          const { path, refresh } = await endpoint();
+          const res = await user
+            .request(app)
+            .post(path)
+            .send({ ...base, picture } as L);
+
+          expect(res.status).toBe(successCode);
+
+          const updatedPicture =
+            refresh !== undefined
+              ? (await refresh()).picture
+              : (res.body as { data: { picture: string } | undefined }).data
+                  ?.picture;
+
+          expect(updatedPicture).toBe(converted);
+        });
+      });
+
+    test("Invalid base64", async () => {
+      const { path } = await endpoint();
+      const res = await user
+        .request(app)
+        .post(path)
+        .send({ ...base, picture: "as;lkdfj'z=['/-ф" } as L);
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toStrictEqual({
+        success: false,
+        error: "Unknown image format",
+      });
+    });
+
+    test("Invalid image", async () => {
+      const { path } = await endpoint();
+      const picture = readStaticFile("not_an_image.txt");
+
+      const res = await user
+        .request(app)
+        .post(path)
+        .send({ ...base, picture } as L);
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body).toStrictEqual({
+        success: false,
+        error: "Unknown image format",
+      });
+    });
+
+    test("No image", async () => {
+      const { path } = await endpoint();
+      const res = await user
+        .request(app)
+        .post(path)
+        .send({ ...base, picture: null } as L);
+
+      expect(res.statusCode).toBe(successCode);
+    });
+  });
+}
 
 addCommonTests({
   prefix: "/league",
@@ -361,6 +465,7 @@ addCommonTests({
       name: "Test League",
       sport: Sport.Tennis,
       private: false,
+      picture: null,
     } as LeagueCreation;
   },
   addObj: (_, creation) => addLeague(db.get(), creation),
@@ -375,6 +480,7 @@ addCommonTests({
         ownerIds: [currUser._id],
         name: "Test League",
         sport: Sport.Tennis,
+        picture: null,
         private: false,
         round: 0,
       },

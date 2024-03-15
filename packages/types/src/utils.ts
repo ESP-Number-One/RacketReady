@@ -1,5 +1,7 @@
 /* eslint-disable tsdoc/syntax -- tsoa has custom tags */
 
+import { Default } from "./defaults.js";
+
 /**
  * @minLength 24 input must be a 24 character hex string
  * @maxLength 24 input must be a 24 character hex string
@@ -76,12 +78,20 @@ export function hasId(arr: ObjectId[], id: ObjectId): boolean {
 }
 
 /**
- * Prepares the base64 for \<img\> tag.
+ * Prepares the base64 for \<img\> tag,
+ * or return a default image.
  * @param base64 The raw base64 string.
  * @returns Valid `src` for an `<img >` tag.
  */
-export function makeImgSrc(base64: string): `data:image/webp;base64,${string}` {
-  return `data:image/webp;base64,${base64}`;
+export function makeImgSrc(base64: string | null | undefined): string {
+  // Make this operation idempotent.
+  if (
+    base64?.startsWith("data:image/webp;base64,") ||
+    base64 === Default.PICTURE
+  )
+    return base64;
+
+  return base64 ? `data:image/webp;base64,${base64}` : Default.PICTURE;
 }
 
 export interface MongoDBItem {

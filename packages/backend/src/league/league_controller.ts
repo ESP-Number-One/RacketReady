@@ -38,6 +38,7 @@ import * as express from "express";
 import { generateRandomString } from "ts-randomstring/lib/index.js";
 import type { Moment } from "moment";
 import moment from "moment";
+import sharp from "sharp";
 import { ControllerWrap } from "../controller.js";
 import { safeEqual } from "../lib/utils.js";
 
@@ -71,6 +72,36 @@ export class LeaguesController extends ControllerWrap<League> {
         return newAPISuccess(censorLeague(res.data));
       }
       return res;
+    });
+  }
+
+  /**
+   * @returns a string which can be put into an img element's src to display
+   *   the image
+   */
+  @Response<Error>(500, "Internal Server Error")
+  @Get("{leagueId}/picture")
+  public async getProfilePicture(
+    @Path() leagueId: ID,
+    @Request() req: express.Request,
+  ): Promise<WithError<string | null>> {
+    const id = new ObjectId(leagueId);
+
+    return this.withUser(req, async (currUser) => {
+      const res = await this.get(id);
+      if (!res.success) return res;
+
+      if (res.data.private && !currUser.leagues.includes(id)) {
+        // Don't want to give away the league exists if user does not have
+        // access
+        return this.notFound();
+      }
+
+      // MongoDB serializes `undefined` as null,
+      // so there's a general "falsey" check here instead of === undefined.
+      return newAPISuccess(
+        !res.data.picture ? null : `data:image/webp;base64,${res.data.picture}`,
+      );
     });
   }
 
@@ -206,6 +237,7 @@ export class LeaguesController extends ControllerWrap<League> {
    * current user
    */
   @SuccessResponse("201", "Created")
+  @Response<Error>("400", "Unknown image format")
   @Response<Error>("409", "League already exists")
   @Post("new")
   public async createLeague(
@@ -218,6 +250,15 @@ export class LeaguesController extends ControllerWrap<League> {
         if (await coll.exists({ name: creation.name })) {
           this.setStatus(409);
           return newAPIError("League already exists");
+        }
+
+        if (creation.picture) {
+          const res = await this.checkAndCompressImage<League>(
+            creation.picture,
+          );
+
+          if (typeof res !== "string") return res;
+          creation.picture = res;
         }
 
         let league: OptionalId<League>;
@@ -247,6 +288,7 @@ export class LeaguesController extends ControllerWrap<League> {
    * The edits the current leagues's information with the given info
    */
   @Response<Error>("500", "Internal Server Error")
+  @Response<Error>("400", "Unknown image format")
   @Post("{leagueId}/edit")
   public async editLeagues(
     @Path() leagueId: ID,
@@ -261,6 +303,15 @@ export class LeaguesController extends ControllerWrap<League> {
 
         const league = getRes.data;
         if (!hasId(league.ownerIds, currUser)) return this.notFound();
+
+        if (updateQuery.picture) {
+          const res = await this.checkAndCompressImage<undefined>(
+            updateQuery.picture,
+          );
+
+          if (typeof res !== "string") return res;
+          updateQuery.picture = res;
+        }
 
         const coll = await this.getCollection();
         const res: Promise<WithError<undefined>> = coll
@@ -395,5 +446,23 @@ export class LeaguesController extends ControllerWrap<League> {
 
       return newAPISuccess(undefined);
     });
+  }
+  private async checkAndCompressImage<T>(
+    image: string,
+  ): Promise<string | WithError<T>> {
+    // This doesn't seem to crash
+    const imageBuffer = Buffer.from(image, "base64");
+
+    try {
+      return (
+        await sharp(imageBuffer)
+          .resize(512, 512)
+          .webp({ quality: 20 })
+          .toBuffer()
+      ).toString("base64");
+    } catch (e) {
+      this.setStatus(400);
+      return newAPIError("Unknown image format");
+    }
   }
 }
