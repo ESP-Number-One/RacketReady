@@ -1,10 +1,7 @@
-import {
-  FontAwesomeIcon,
-  FontAwesomeIconProps,
-} from "@fortawesome/react-fontawesome";
-import { CSSProperties } from "react";
+import type { FontAwesomeIconProps } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export type IconProps = FontAwesomeIconProps & { style?: CSSProperties };
+export type IconProps = Omit<FontAwesomeIconProps, "style">;
 
 export function Icon(props: IconProps) {
   return <FontAwesomeIcon {...props} className="flex" />;
