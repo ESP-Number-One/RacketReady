@@ -1,9 +1,8 @@
 import { calculateAverageRating } from "@esp-group-one/types";
 import type {
   CensoredUser,
-  DateTimeString,
-  ObjectId,
-  Sport,
+  MatchProposal,
+  SportInfo,
   StarCount,
 } from "@esp-group-one/types";
 import type { Moment } from "moment";
@@ -13,13 +12,13 @@ import { ProfilePic } from "./profile_pic";
 import { Stars } from "./stars";
 
 interface Info {
-  user: CensoredUser;
   availability: Moment[];
-  proposeMatch: (date: DateTimeString, to: ObjectId, sport: Sport) => void;
+  proposeMatch: (proposal: MatchProposal) => void;
+  user: CensoredUser;
+  sport: SportInfo;
 }
 
-export function RecProfile({ user, availability, proposeMatch }: Info) {
-  const sports = user.sports;
+export function RecProfile({ user, availability, sport, proposeMatch }: Info) {
   const name = user.name;
   const desc = user.description;
   const rating = calculateAverageRating(user.rating);
@@ -30,7 +29,7 @@ export function RecProfile({ user, availability, proposeMatch }: Info) {
       <div className="overflow-clip max-h-fit rounded-t-lg">
         <ProfilePic
           image={user.profilePicture}
-          sports={sports.slice(0, 1)}
+          sports={[sport]}
           displayAbility={false}
         />
       </div>
@@ -64,7 +63,11 @@ export function RecProfile({ user, availability, proposeMatch }: Info) {
                 className="bg-slate-600 flex justify-between w-full text-white text-xl text-bold text-body px-5 pt-3 pb-3 rounded-lg"
                 key={`${user._id.toString()}-${i}`}
                 onClick={() => {
-                  proposeMatch(time.toISOString(), user._id, sports[0].sport);
+                  proposeMatch({
+                    date: time.toISOString(),
+                    to: user._id,
+                    sport: sport.sport,
+                  });
                   setAvailabilities(
                     availabilities.filter((t) => {
                       return t !== time;

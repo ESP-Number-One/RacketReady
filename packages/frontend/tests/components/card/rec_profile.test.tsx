@@ -25,7 +25,6 @@ const mockProfile = {
     moment("2024-03-13T13:30:00Z"),
     moment("2024-03-14T15:30:00Z"),
   ],
-  displayAbility: false,
 };
 
 const mockUnavailableProfile = {
@@ -51,6 +50,7 @@ describe("RecProfile", () => {
     render(
       <RecProfile
         user={mockProfile.user}
+        sport={mockProfile.user.sports[0]}
         availability={mockProfile.availability}
         proposeMatch={() => void 0}
       />,
@@ -61,6 +61,7 @@ describe("RecProfile", () => {
     const component = render(
       <RecProfile
         user={mockProfile.user}
+        sport={mockProfile.user.sports[0]}
         availability={mockProfile.availability}
         proposeMatch={() => void 0}
       />,
@@ -75,6 +76,7 @@ describe("RecProfile", () => {
     const component = render(
       <RecProfile
         user={mockUnavailableProfile.user}
+        sport={mockProfile.user.sports[0]}
         availability={mockUnavailableProfile.availability}
         proposeMatch={() => void 0}
       />,
