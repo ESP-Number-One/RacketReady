@@ -50,7 +50,7 @@ export function BottomBar(props: {
       </button>
       <button
         onClick={() => {
-          viewNavigate("/profile");
+          viewNavigate("/me");
         }}
         className={`${
           props.activePage === "profile" ? "text-p-blue font-bold" : ""

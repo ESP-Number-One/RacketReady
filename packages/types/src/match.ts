@@ -64,6 +64,7 @@ export type MatchQuery = Query<{
   round: number;
   sport: Sport;
   status: MatchStatus;
+  date: DateTimeString;
 }>;
 
 export interface CensoredLeagueMatch {

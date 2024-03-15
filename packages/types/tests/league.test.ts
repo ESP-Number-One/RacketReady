@@ -9,7 +9,9 @@ describe("Censor league", () => {
       _id: new ObjectId(IDS[0]),
       name: "My custom League",
       sport: Sport.Squash,
+      round: 0,
       private: false,
+      picture: null,
     });
   });
 
@@ -18,7 +20,9 @@ describe("Censor league", () => {
       _id: new ObjectId(IDS[0]),
       name: "My custom League",
       sport: Sport.Squash,
+      round: 0,
       private: true,
+      picture: null,
     });
   });
 });

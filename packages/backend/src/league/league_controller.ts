@@ -1,3 +1,4 @@
+import { randomInt } from "node:crypto";
 import type { FilterOptions } from "@esp-group-one/db-client";
 import {
   censorLeague,
@@ -8,6 +9,9 @@ import {
   ID,
   hasId,
   LeaguePageOptions,
+  MatchStatus,
+  AbilityLevel,
+  Sport,
 } from "@esp-group-one/types";
 import type {
   Error,
@@ -15,6 +19,7 @@ import type {
   CensoredLeague,
   League,
   WithError,
+  Match,
 } from "@esp-group-one/types";
 import { type Filter, type OptionalId } from "mongodb";
 import {
@@ -31,6 +36,9 @@ import {
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
 import * as express from "express";
 import { generateRandomString } from "ts-randomstring/lib/index.js";
+import type { Moment } from "moment";
+import moment from "moment";
+import sharp from "sharp";
 import { ControllerWrap } from "../controller.js";
 import { safeEqual } from "../lib/utils.js";
 
@@ -64,6 +72,36 @@ export class LeaguesController extends ControllerWrap<League> {
         return newAPISuccess(censorLeague(res.data));
       }
       return res;
+    });
+  }
+
+  /**
+   * @returns a string which can be put into an img element's src to display
+   *   the image
+   */
+  @Response<Error>(500, "Internal Server Error")
+  @Get("{leagueId}/picture")
+  public async getProfilePicture(
+    @Path() leagueId: ID,
+    @Request() req: express.Request,
+  ): Promise<WithError<string | null>> {
+    const id = new ObjectId(leagueId);
+
+    return this.withUser(req, async (currUser) => {
+      const res = await this.get(id);
+      if (!res.success) return res;
+
+      if (res.data.private && !currUser.leagues.includes(id)) {
+        // Don't want to give away the league exists if user does not have
+        // access
+        return this.notFound();
+      }
+
+      // MongoDB serializes `undefined` as null,
+      // so there's a general "falsey" check here instead of === undefined.
+      return newAPISuccess(
+        !res.data.picture ? null : `data:image/webp;base64,${res.data.picture}`,
+      );
     });
   }
 
@@ -199,6 +237,7 @@ export class LeaguesController extends ControllerWrap<League> {
    * current user
    */
   @SuccessResponse("201", "Created")
+  @Response<Error>("400", "Unknown image format")
   @Response<Error>("409", "League already exists")
   @Post("new")
   public async createLeague(
@@ -213,12 +252,22 @@ export class LeaguesController extends ControllerWrap<League> {
           return newAPIError("League already exists");
         }
 
+        if (creation.picture) {
+          const res = await this.checkAndCompressImage<League>(
+            creation.picture,
+          );
+
+          if (typeof res !== "string") return res;
+          creation.picture = res;
+        }
+
         let league: OptionalId<League>;
         if (creation.private) {
           league = {
             ...creation,
             private: true,
             ownerIds: [currUser],
+            round: 0,
             inviteCode: generateRandomString({ length: 32 }),
           };
         } else {
@@ -226,6 +275,7 @@ export class LeaguesController extends ControllerWrap<League> {
             ...creation,
             private: false,
             ownerIds: [currUser],
+            round: 0,
           };
         }
 
@@ -238,6 +288,7 @@ export class LeaguesController extends ControllerWrap<League> {
    * The edits the current leagues's information with the given info
    */
   @Response<Error>("500", "Internal Server Error")
+  @Response<Error>("400", "Unknown image format")
   @Post("{leagueId}/edit")
   public async editLeagues(
     @Path() leagueId: ID,
@@ -253,6 +304,15 @@ export class LeaguesController extends ControllerWrap<League> {
         const league = getRes.data;
         if (!hasId(league.ownerIds, currUser)) return this.notFound();
 
+        if (updateQuery.picture) {
+          const res = await this.checkAndCompressImage<undefined>(
+            updateQuery.picture,
+          );
+
+          if (typeof res !== "string") return res;
+          updateQuery.picture = res;
+        }
+
         const coll = await this.getCollection();
         const res: Promise<WithError<undefined>> = coll
           .edit(id, { $set: updateQuery })
@@ -265,5 +325,144 @@ export class LeaguesController extends ControllerWrap<League> {
         return res;
       }),
     );
+  }
+
+  /**
+   * Generates match proposal
+   */
+  @Post("{leagueId}/round/next")
+  public async generateMatchProposals(
+    @Path() leagueId: ID,
+    @Request() req: express.Request,
+  ): Promise<WithError<undefined>> {
+    const id = new ObjectId(leagueId);
+
+    return this.withUser(req, async (currUser) => {
+      const res = await this.get(id);
+      if (!res.success) {
+        return res;
+      }
+
+      const league = res.data;
+      if (!hasId(league.ownerIds, currUser._id)) {
+        return this.notFound();
+      }
+
+      // Increments the round of the league
+      const coll = await this.getCollection();
+      await coll.edit(id, { $inc: { round: 1 } });
+      league.round += 1;
+
+      const matchProposals: Promise<OptionalId<Match>>[] = [];
+
+      // Fetch users associated with the league from the database
+      const users = await (
+        await this.getDb().users()
+      ).find({ leagues: league._id });
+
+      // Group users by sport and ability level
+      const peopleBySportAndAbilityLevel = Object.fromEntries(
+        Object.keys(Sport).map((sport) => [
+          sport,
+          Object.fromEntries(
+            Object.keys(AbilityLevel).map((ability) => [
+              ability,
+              [] as ObjectId[],
+            ]),
+          ),
+        ]),
+      ) as Record<Sport, Record<AbilityLevel, ObjectId[]>>;
+
+      for (const user of users) {
+        for (const sportInfo of user.sports) {
+          peopleBySportAndAbilityLevel[sportInfo.sport][sportInfo.ability].push(
+            user._id,
+          );
+        }
+      }
+
+      // Generate match proposals for each sport and ability level
+      const availColl = await this.getDb().availabilityCaches();
+      for (const sport of [league.sport]) {
+        for (const abilityLevel in AbilityLevel) {
+          const people =
+            peopleBySportAndAbilityLevel[sport as Sport][
+              abilityLevel as AbilityLevel
+            ];
+
+          // Randomly pair people
+          for (let i = 0; i < people.length; i += 2) {
+            if (i + 1 < people.length) {
+              const proposal: Promise<OptionalId<Match>> = availColl
+                .page({
+                  query: {
+                    $and: [
+                      {
+                        start: { $gt: moment().toISOString() },
+                      },
+                      {
+                        availablePeople: people[i],
+                      },
+                      {
+                        availablePeople: people[i + 1],
+                      },
+                    ],
+                  },
+                  pageSize: 1,
+                  pageStart: 1,
+                })
+                .then((availability) => {
+                  let date: Moment;
+                  if (availability.length > 0) {
+                    date = moment(availability[0].start);
+                  } else {
+                    // Generate a random time in the working hours
+                    // if there are no available times
+                    date = moment().startOf("day").set("hour", 9);
+                    date = date.add(randomInt(7) + 1, "day");
+                    date = date.add(randomInt(8), "hour");
+                  }
+
+                  return {
+                    date: date.toISOString(),
+                    messages: [],
+                    owner: league._id,
+                    players: [people[i], people[i + 1]],
+                    sport: sport as Sport,
+                    status: MatchStatus.Request,
+                    league: league._id,
+                    round: league.round,
+                  };
+                });
+
+              matchProposals.push(proposal);
+            }
+          }
+        }
+      }
+
+      const proposals = await Promise.all(matchProposals);
+      await (await this.getDb().matches()).insert(...proposals);
+
+      return newAPISuccess(undefined);
+    });
+  }
+  private async checkAndCompressImage<T>(
+    image: string,
+  ): Promise<string | WithError<T>> {
+    // This doesn't seem to crash
+    const imageBuffer = Buffer.from(image, "base64");
+
+    try {
+      return (
+        await sharp(imageBuffer)
+          .resize(512, 512)
+          .webp({ quality: 20 })
+          .toBuffer()
+      ).toString("base64");
+    } catch (e) {
+      this.setStatus(400);
+      return newAPIError("Unknown image format");
+    }
   }
 }

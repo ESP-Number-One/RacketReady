@@ -15,7 +15,6 @@ import {
  * to indicate the positioning of its children in the correct place
  * (in the `Y` 'section' or 'slot' of `X`).
  */
-// eslint-disable-next-line @typescript-eslint/no-namespace -- I like your style ♪.
 export namespace Slot {
   /**
    * Looks through children to find a particular slot.

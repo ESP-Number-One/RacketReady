@@ -25,6 +25,7 @@ module.exports = {
     "import/no-default-export": ["warn"],
     "no-console": "off",
     "turbo/no-undeclared-env-vars": "off",
+    "@typescript-eslint/no-namespace": "off",
     "unicorn/filename-case": [
       "error",
       {

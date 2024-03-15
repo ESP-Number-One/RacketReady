@@ -1,3 +1,4 @@
+import * as fs from "node:fs";
 import type { VerifyJwtResult } from "access-token-jwt";
 import { jwtVerifier } from "access-token-jwt";
 import { ObjectId } from "@esp-group-one/types";
@@ -8,6 +9,16 @@ import { asFuncMock } from "@esp-group-one/test-helpers";
 import type Test from "supertest/lib/test.js";
 
 const mockedJWTVerifier = asFuncMock(jwtVerifier);
+
+export function readStaticFile(filename: string): string {
+  let file = `tests/static/${filename}`;
+  if (!fs.existsSync(file)) {
+    file = `packages/backend/${file}`;
+  }
+
+  const bitmap = fs.readFileSync(file);
+  return Buffer.from(bitmap).toString("base64");
+}
 
 export function expectAPIRes<T>(inp: T) {
   return expect(ObjectId.fromObj(inp) as T);
