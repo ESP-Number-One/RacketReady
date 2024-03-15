@@ -1,5 +1,6 @@
 import type {
   SortQuery,
+  StarCount,
   Match,
   MatchProposal,
   MatchQuery,
@@ -19,6 +20,10 @@ export class MatchAPIClient extends SubAPIClient<
     return this.post(`${id.toString()}/accept`, {});
   }
 
+  public cancel(id: ObjectId): Promise<void> {
+    return this.post(`${id.toString()}/cancel`, {});
+  }
+
   public complete(id: ObjectId, scores: Scores): Promise<void> {
     return this.post(`${id.toString()}/complete`, scores);
   }
@@ -27,5 +32,13 @@ export class MatchAPIClient extends SubAPIClient<
     opts: PageOptions<undefined, SortQuery<Match>>,
   ): Promise<Match[]> {
     return this.post("find/proposed", opts);
+  }
+
+  public message(id: ObjectId, text: string): Promise<void> {
+    return this.post(`${id.toString()}/message`, { message: text });
+  }
+
+  public rate(id: ObjectId, stars: StarCount): Promise<void> {
+    return this.post(`${id.toString()}/rate`, { stars });
   }
 }

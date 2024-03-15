@@ -7,8 +7,8 @@ interface InputProps {
   disabled?: boolean;
   icon?: ReactElement<IconProps>;
   id?: string;
-  onChange: (val: string) => void;
-  placeholder: string;
+  onChange?: (val: string) => void;
+  placeholder?: string;
   required?: boolean;
   textColor?: string;
   type: "text" | "textarea" | "time" | "date";
@@ -21,8 +21,8 @@ export function Input({
   disabled,
   id,
   icon,
-  onChange,
-  placeholder,
+  onChange = () => void 0,
+  placeholder = "",
   required,
   textColor = "text-white",
   type,

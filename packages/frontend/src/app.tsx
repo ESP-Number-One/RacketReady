@@ -9,6 +9,8 @@ import { UpcomingMatch } from "./pages/upcoming.js";
 import { ProfilePage } from "./pages/profile.js";
 import { SetAvailability } from "./pages/me/availability.js";
 import { NewMatchPage } from "./pages/match/new.js";
+import { SingleMatchPage } from "./pages/single_match.js";
+import { CompleteMatchForm } from "./pages/match/complete.js";
 import { YourProfile } from "./pages/your_profile.js";
 
 export function App() {
@@ -46,6 +48,8 @@ export function App() {
         <Route path="/me" element={<YourProfile />} />
         <Route path="/me/availability" element={<SetAvailability />} />
         <Route path="/match/new" element={<NewMatchPage />} />
+        <Route path="/match" element={<SingleMatchPage />} />
+        <Route path="/match/complete" element={<CompleteMatchForm />} />
       </Routes>
     </API.Provider>
   ) : (
