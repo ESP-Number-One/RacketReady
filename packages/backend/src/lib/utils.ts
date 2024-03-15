@@ -4,7 +4,6 @@ import { UnauthorizedError, type VerifyJwtResult } from "access-token-jwt";
 import type { Request } from "express";
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace -- we need to override request
   namespace Express {
     interface Request {
       auth0Id?: string;
