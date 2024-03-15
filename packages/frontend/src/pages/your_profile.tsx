@@ -1,94 +1,84 @@
-// code your profile page
-import { Stars } from "../components/stars";
-import { useViewNav } from "../state/nav";
-import { Page } from "../components/page";
-import { useState } from "react";
-import { ProfilePic } from "../components/profile_pic.tsx";
-import { AbilityLevel, Sport } from "@esp-group-one/types";
-import { PICTURES } from "@esp-group-one/types/build/tests/helpers/utils";
-import { Button } from "../components/button.tsx";
+import type { ReactNode } from "react";
+import { useContext } from "react";
+import { calculateAverageRating, makeImgSrc } from "@esp-group-one/types";
 import {
   faCalendar,
   faGear,
   faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useNavigate } from "react-router-dom";
+import { Button } from "../components/button.tsx";
+import { ProfilePic } from "../components/profile_pic.tsx";
+import { Page } from "../components/page";
+import { Stars } from "../components/stars";
+import { API } from "../state/auth.ts";
+import { useAsync } from "../lib/async.tsx";
+import { useViewNav } from "../state/nav.ts";
 
 export function YourProfile() {
-  const [rating, setRating] = useState(4);
-  const viewNavigate = useViewNav();
+  const viewNav = useViewNav();
+  const api = useContext(API);
 
-  const navigate = useNavigate();
+  const { loading, error, ok } = useAsync(async () => {
+    const user = api.user().me();
+
+    return { user: await user };
+  })
+    .catch((err) => <>{err.message}</>)
+    .await();
+
+  if (!ok) return (loading ?? error) as ReactNode;
 
   return (
     <Page>
       <Page.Header>
         <ProfilePic
-          image={`data:image/webp;base64,${PICTURES[0]}`}
-          sports={[{ sport: Sport.Tennis, ability: AbilityLevel.Beginner }]}
+          image={makeImgSrc(ok.user.profilePicture)}
+          sports={ok.user.sports}
         />
       </Page.Header>
-      <Page.Body>
-        <p className={"text-right font-title py-2 px-3 text-3xl font-bold"}>
-          Name
+      <Page.Body className="overflow-y-scroll">
+        <p className="text-right font-title pt-2 px-3 text-3xl font-bold">
+          {ok.user.name}
         </p>
-        <div className={"flex justify-end "}>
+        <div className="flex justify-end">
           <Stars
-            rating={rating}
-            onRatingChange={setRating}
-            disabled={true}
-            size={"lg"}
+            rating={calculateAverageRating(ok.user.rating)}
+            disabled
+            size="lg"
           />
         </div>
-        <p className={"py-2 px-3 text-center"}>Description</p>
-        <div className={"flex flex-col space-y-4"}>
+        <p className="py-2 px-3 text-center">{ok.user.description}</p>
+        <div className="flex flex-col space-y-2 mb-2">
           <Button
-            backgroundColor={"bg-p-grey-100"}
-            onClick={() => navigate("/calendar")}
+            backgroundColor="bg-p-grey-100"
+            icon={<FontAwesomeIcon className={"mr-2"} icon={faCalendar} />}
+            onClick={() => {
+              viewNav("/me/availability");
+            }}
           >
-            <FontAwesomeIcon className={"mr-2"} icon={faCalendar} />
             Calendar
           </Button>
           <Button
-            backgroundColor={"bg-p-grey-100"}
-            onClick={() => navigate("/editProfile")}
+            backgroundColor="bg-p-grey-100"
+            icon={<FontAwesomeIcon className={"mr-2"} icon={faPenToSquare} />}
+            onClick={() => {
+              viewNav("/me/edit");
+            }}
           >
-            <FontAwesomeIcon className={"mr-2"} icon={faPenToSquare} />
             Edit Profile
           </Button>
           <Button
-            backgroundColor={"bg-p-grey-100"}
-            onClick={() => navigate("/settings")}
+            backgroundColor="bg-p-grey-100"
+            icon={<FontAwesomeIcon className={"mr-2"} icon={faGear} />}
+            onClick={() => {
+              viewNav("/settings");
+            }}
           >
-            <FontAwesomeIcon className={"mr-2"} icon={faGear} />
             Settings
           </Button>
         </div>
       </Page.Body>
-      <Page.Footer>
-        <button
-          onClick={() => {
-            viewNavigate("/");
-          }}
-        >
-          First Test page
-        </button>
-        <button
-          onClick={() => {
-            viewNavigate("/another");
-          }}
-        >
-          Another page.
-        </button>
-        <button
-          onClick={() => {
-            viewNavigate("/profile");
-          }}
-        >
-          Profile
-        </button>
-      </Page.Footer>
     </Page>
   );
 }

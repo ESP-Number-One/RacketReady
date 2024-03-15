@@ -29,6 +29,6 @@ describe("BottomBar", () => {
     buttons.forEach((b) => {
       b.click();
     });
-    expect(history).toStrictEqual(["/", "/search", "/leagues", "/profile"]);
+    expect(history).toStrictEqual(["/", "/search", "/leagues", "/me"]);
   });
 });
