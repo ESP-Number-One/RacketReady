@@ -141,6 +141,7 @@ describe("new", () => {
         ownerIds: [user.id()],
         name: "Something",
         sport: Sport.Tennis,
+        round: 0,
         private: true,
         inviteCode: expect.any(String),
       },
@@ -375,6 +376,7 @@ addCommonTests({
         name: "Test League",
         sport: Sport.Tennis,
         private: false,
+        round: 0,
       },
     ]);
   },

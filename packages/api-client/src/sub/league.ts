@@ -39,4 +39,11 @@ export class LeagueAPIClient extends SubAPIClient<
   public join(id: ObjectId, inviteCode?: string): Promise<void> {
     return this.post(`${id.toString()}/join`, { inviteCode });
   }
+
+  /**
+   * Continues league to the next round
+   */
+  public nextRound(id: ObjectId): Promise<void> {
+    return this.post(`${id.toString()}/round/next`, {});
+  }
 }

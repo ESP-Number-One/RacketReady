@@ -25,7 +25,6 @@ export interface LeagueCreation {
   name: string;
   sport: Sport;
   private: boolean;
-  round: number;
 }
 
 export interface CensoredLeague extends MongoDBItem {
