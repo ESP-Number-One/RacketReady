@@ -2,17 +2,21 @@ import { Route, Routes } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { AnotherTestPage } from "./pages/another_test.js";
-import { NewLeaguePage } from "./pages/new_league.js";
+import { NewLeaguePage } from "./pages/league/new.js";
 import { API, type AuthResult, handleApi } from "./state/auth.js";
 import { LoginButton } from "./components/auth.js";
 import { useAPIClient } from "./lib/auth.js";
-import { UpcomingMatch } from "./pages/upcoming.js";
+import { UpcomingMatch } from "./pages/match/upcoming.js";
 import { ProfilePage } from "./pages/profile.js";
 import { SetAvailability } from "./pages/me/availability.js";
 import { NewMatchPage } from "./pages/match/new.js";
-import { SingleMatchPage } from "./pages/single_match.js";
+import { SingleMatchPage } from "./pages/match/index.js";
 import { CompleteMatchForm } from "./pages/match/complete.js";
-import { YourProfile } from "./pages/your_profile.js";
+import { YourProfile } from "./pages/me/index.js";
+import { MatchProposal } from "./pages/match/proposal.js";
+import { YourLeagues } from "./pages/league/your.js";
+import { DiscoverLeagues } from "./pages/league/discover.js";
+import { SuggestedPeople } from "./pages/suggested_people.js";
 
 export function App() {
   const [result, setResult] = useState({ type: "loading" } as AuthResult);
@@ -51,7 +55,11 @@ export function App() {
         <Route path="/match/new" element={<NewMatchPage />} />
         <Route path="/match" element={<SingleMatchPage />} />
         <Route path="/match/complete" element={<CompleteMatchForm />} />
+        <Route path="/match/proposals" element={<MatchProposal />} />
         <Route path="/league/new" element={<NewLeaguePage />} />
+        <Route path="/leagues" element={<YourLeagues />} />
+        <Route path="/leagues/discover" element={<DiscoverLeagues />} />
+        <Route path="/search" element={<SuggestedPeople />} />
       </Routes>
     </API.Provider>
   ) : (

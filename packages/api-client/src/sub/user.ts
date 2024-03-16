@@ -50,7 +50,7 @@ export class UserAPIClient extends SubAPIClient<
    * @returns recommended users for the current user
    */
   public recommendations(): Promise<UserMatchReturn> {
-    return this.get("recommendations", {});
+    return this.post("recommendations", {});
   }
 
   /**

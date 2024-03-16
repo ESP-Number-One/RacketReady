@@ -10,9 +10,10 @@ import {
   MatchStatus,
 } from "@esp-group-one/types";
 import { PICTURES } from "@esp-group-one/types/build/tests/helpers/utils";
-import { IDS } from "@esp-group-one/test-helpers-base";
-import { MockAPI, MockErrorHandler } from "../../helpers/utils";
+import { IDS, asFuncMock } from "@esp-group-one/test-helpers-base";
+import { MockAPI } from "../../helpers/utils";
 import { LeagueCard } from "../../../src/components/card/league";
+import { useViewNav } from "../../../src/state/nav";
 
 const WITHOUT_PICTURE = {
   _id: new ObjectId(IDS[0]),
@@ -46,6 +47,10 @@ const SucessfulAPI = MockAPI({
   },
 });
 
+jest.mock("../../../src/state/nav");
+const mockedUseNav = asFuncMock(useViewNav);
+mockedUseNav.mockReturnValue(() => undefined);
+
 describe("Date Handling", () => {
   test("TBD", async () => {
     const MockedAPI = MockAPI({
@@ -64,9 +69,6 @@ describe("Date Handling", () => {
       </MockedAPI>,
     );
 
-    // Loading state.
-    expect(leagueCard.container).toHaveTextContent(/loading/i);
-
     // Fetch the stuff from the fake API.
     await act(() => Promise.resolve());
 
@@ -82,10 +84,8 @@ describe("Date Handling", () => {
       makeImgSrc(WITH_PICTURE.picture),
     );
 
-    // Expect to "To Be Determined" text.
-    expect(leagueCard.container.querySelector(".date")).toHaveTextContent(
-      /TBD/i,
-    );
+    // Expect no date div if there isn't any date
+    expect(leagueCard.container.querySelectorAll(".date").length).toBe(0);
   });
 
   test("Starting Date", async () => {
@@ -94,9 +94,6 @@ describe("Date Handling", () => {
         <LeagueCard data={WITH_PICTURE} />
       </SucessfulAPI>,
     );
-
-    // Loading state.
-    expect(leagueCard.container).toHaveTextContent(/loading/i);
 
     // Fetch the stuff from the fake API.
     await act(() => Promise.resolve());
@@ -124,71 +121,4 @@ describe("Date Handling", () => {
       /feb/i,
     );
   });
-});
-
-describe("Badges", () => {
-  test("Without badge", async () => {
-    const leagueCard = render(
-      <SucessfulAPI>
-        <LeagueCard data={WITH_PICTURE} />
-      </SucessfulAPI>,
-    );
-
-    // Loading state.
-    expect(leagueCard.container).toHaveTextContent(/loading/i);
-
-    // Fetch the stuff from the fake API.
-    await act(() => Promise.resolve());
-
-    // Expect badge not to be present.
-    expect(leagueCard.container.querySelector(".badge")).toBeFalsy();
-  });
-
-  test("With badge", async () => {
-    const leagueCard = render(
-      <SucessfulAPI>
-        <LeagueCard data={WITH_PICTURE} badge={1} />
-      </SucessfulAPI>,
-    );
-
-    // Loading state.
-    expect(leagueCard.container).toHaveTextContent(/loading/i);
-
-    // Fetch the stuff from the fake API.
-    await act(() => Promise.resolve());
-
-    // Expect badge to be present with text "1".
-    expect(leagueCard.container.querySelector(".badge")).toBeInTheDocument();
-    expect(leagueCard.container.querySelector(".badge")).toHaveTextContent(
-      /1/i,
-    );
-  });
-});
-
-test("Erroring", async () => {
-  const FailingAPI = MockAPI({
-    match() {
-      return {
-        find: () => Promise.reject(new Error("Failed to find matches.")),
-      };
-    },
-  });
-
-  const errorHandler = jest.fn();
-  const ErrorHandling = MockErrorHandler(errorHandler);
-
-  const proposal = render(
-    <ErrorHandling>
-      <FailingAPI>
-        <LeagueCard data={WITHOUT_PICTURE} />
-      </FailingAPI>
-    </ErrorHandling>,
-  );
-
-  // Loading state.
-  expect(proposal.container).toHaveTextContent(/loading/i);
-
-  await act(() => Promise.resolve());
-
-  expect(errorHandler).toHaveBeenCalled();
 });

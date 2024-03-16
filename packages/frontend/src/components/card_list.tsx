@@ -4,17 +4,19 @@ import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface CardListProps<T extends ReactNode> {
-  emptyListPlaceholder?: string;
   nextPage: (nextPage: number) => Promise<T[]>;
   refreshPage?: () => void;
   startPage?: number;
+  emptyListPlaceholder?: string;
+  shouldSnap?: boolean;
 }
 
 export function CardList<T extends ReactNode>({
-  emptyListPlaceholder = "No more results",
   nextPage,
   refreshPage,
   startPage,
+  emptyListPlaceholder = "No more results",
+  shouldSnap,
 }: CardListProps<T>) {
   const [pageNum, setPageNum] = useState(
     startPage !== undefined && startPage >= 0 ? startPage : 0,
@@ -127,7 +129,7 @@ export function CardList<T extends ReactNode>({
     const target: EventTarget = event.target;
     const targetDiv: HTMLDivElement = target as HTMLDivElement;
     if (
-      targetDiv.scrollTop + targetDiv.clientHeight <
+      targetDiv.clientHeight <
         targetDiv.scrollHeight - targetDiv.clientHeight * 0.1 ||
       isLastPage ||
       isLoading ||
@@ -154,9 +156,9 @@ export function CardList<T extends ReactNode>({
     >
       <FontAwesomeIcon
         className={
-          isRefreshing || isLoading
-            ? "translate-y-24 duration-300 bg-white p-4 rounded-full self-center -rotate-180 shadow place-self-center"
-            : "-translate-y-72 duration-300 bg-white p-4 rounded-full self-center rotate-180 shadow hidden"
+          isRefreshing
+            ? "duration-300 bg-white p-4 rounded-full self-center -rotate-180 shadow place-self-center z-10 absolute"
+            : "-translate-y-72 duration-300 bg-white p-4 rounded-full self-center rotate-180 shadow place-self-center opacity-0 z-10 absolute"
         }
         icon={faRefresh}
         size="lg"
@@ -166,17 +168,16 @@ export function CardList<T extends ReactNode>({
         onScroll={(e) => {
           handleScroll(e);
         }}
+        style={
+          shouldSnap
+            ? { scrollSnapType: "y mandatory", scrollSnapStop: "always" }
+            : {}
+        }
       >
         {cards.current}
-        {isLoading ? <p className="self-center font-body">Loading!</p> : null}
-        {isLastPage && cards.current.length !== 0 ? (
-          <p className="self-center font-body text-center pt-6 pb-6">
-            {emptyListPlaceholder}
-          </p>
-        ) : null}
       </div>
       {emptyListPlaceholder && cards.current.length === 0 ? (
-        <div className="flex flex-row justify-center h-full">
+        <div className="flex flex-row justify-center">
           <p className="p-2 font-title h-full text-p-grey-100">
             {emptyListPlaceholder}
           </p>

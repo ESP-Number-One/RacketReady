@@ -10,7 +10,6 @@ interface SearchProps {
 export const Search = memo(function Search({ onSubmit, hidden }: SearchProps) {
   const [search, setSearch] = useState("");
   const onSubmitWrapper = () => {
-    if (search === "") return;
     onSubmit(search);
   };
 
@@ -38,7 +37,6 @@ export const Search = memo(function Search({ onSubmit, hidden }: SearchProps) {
             setSearch(e.target.value);
           }}
           placeholder="Search people!"
-          required
           type="text"
         />
       </form>

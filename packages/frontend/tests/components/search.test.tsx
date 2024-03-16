@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, render } from "@testing-library/react";
-import { Search } from "../src/components/search";
+import { Search } from "../../src/components/search";
 
 afterEach(cleanup);
 
@@ -8,13 +8,6 @@ it("renders without crashing", () => {
   render(<Search onSubmit={onSubmit} />);
   render(<Search onSubmit={onSubmit} hidden={false} />);
   render(<Search onSubmit={onSubmit} hidden={true} />);
-});
-
-it("rejects empty input", () => {
-  const onSubmit: jest.Mock = jest.fn();
-  const { getByTestId } = render(<Search onSubmit={onSubmit} />);
-  fireEvent.click(getByTestId("search-button"));
-  expect(onSubmit.mock.calls.length).toBe(0);
 });
 
 it("calls submit once on clicking button with nonempty input", () => {

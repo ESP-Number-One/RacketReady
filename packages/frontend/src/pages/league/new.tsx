@@ -1,14 +1,14 @@
 import { useContext, useState } from "react";
 import type { LeagueCreation } from "@esp-group-one/types";
 import { Sport } from "@esp-group-one/types/src/utils";
-import { Header } from "../components/page/header";
-import { Form } from "../components/form/index";
-import { Input } from "../components/form/input";
-import { RadioButton } from "../components/form/radio_button";
-import { SelectSport } from "../components/form/select_sports";
-import { API } from "../state/auth";
-import { ProfilePicturePicker } from "../components/form/profile_picture";
-import { useViewNav } from "../state/nav";
+import { Header } from "../../components/page/header";
+import { Form } from "../../components/form/index";
+import { Input } from "../../components/form/input";
+import { RadioButton } from "../../components/form/radio_button";
+import { SelectSport } from "../../components/form/select_sports";
+import { API } from "../../state/auth";
+import { ProfilePicturePicker } from "../../components/form/profile_picture";
+import { useViewNav } from "../../state/nav";
 
 export function NewLeaguePage() {
   const api = useContext(API);

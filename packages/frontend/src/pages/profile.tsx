@@ -18,9 +18,13 @@ import { useAsync } from "../lib/async.tsx";
 import { CardList } from "../components/card_list.tsx";
 import { Tag } from "../components/tags.tsx";
 import { Button } from "../components/button.tsx";
+import { Link } from "../components/link.tsx";
+import { useViewNav } from "../state/nav.ts";
 
 export function ProfilePage() {
   const api = useContext(API);
+  const viewNav = useViewNav();
+
   const [searchParams] = useSearchParams();
   const id: ID | null = searchParams.get("id");
 
@@ -42,7 +46,7 @@ export function ProfilePage() {
         .find({ query: { players: ok?.user._id }, pageStart });
       return matches.map((m) => {
         return (
-          <a
+          <Link
             className="w-full"
             href={`match?id=${m._id.toString()}`}
             key={m._id.toString()}
@@ -55,14 +59,19 @@ export function ProfilePage() {
                 {moment(m.date).format("DD/MM HH:MM")}
               </div>
             </div>
-          </a>
+          </Link>
         );
       });
     },
     [api, ok],
   );
 
-  if (!ok) return (loading ?? error) as ReactNode;
+  if (!ok)
+    return (
+      <Page>
+        <Page.Body>{(loading ?? error) as ReactNode}</Page.Body>
+      </Page>
+    );
 
   const rating = calculateAverageRating(ok.user.rating);
 
@@ -76,12 +85,12 @@ export function ProfilePage() {
           />
         </div>
         <div className="absolute top-0 left-0 p-2">
-          <a className="text-white font-bold" href="/search">
+          <Link className="text-white font-bold" href="/search">
             <FontAwesomeIcon icon={faChevronLeft} size="lg" />
-          </a>
+          </Link>
         </div>
       </Page.Header>
-      <Page.Body className="overflow-y-scroll">
+      <Page.Body className="overflow-y-scroll text-p-grey-900">
         <p className={"text-right font-title pt-2 text-3xl font-bold"}>
           {ok.user.name}
         </p>
@@ -92,6 +101,9 @@ export function ProfilePage() {
         <Button
           icon={<FontAwesomeIcon icon={faPlus} />}
           backgroundColor="bg-p-grey-200"
+          onClick={() => {
+            viewNav(`/match/new?to=${id}`);
+          }}
         >
           Propose
         </Button>

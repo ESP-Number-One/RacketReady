@@ -333,7 +333,11 @@ export class MatchsController extends ControllerWrap<Match> {
         return this.find({
           ...opts,
           query: {
-            $and: [{ owner: { $not: { $eq: userId } } }, { players: userId }],
+            $and: [
+              { owner: { $not: { $eq: userId } } },
+              { players: userId },
+              { status: MatchStatus.Request },
+            ],
           },
         });
       }),

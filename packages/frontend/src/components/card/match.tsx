@@ -7,6 +7,7 @@ import type { Moment } from "moment";
 import moment from "moment";
 import { Profile } from "../profile";
 import { Tag } from "../tags";
+import { Link } from "../link";
 
 export function MatchCard({
   className = "",
@@ -23,9 +24,10 @@ export function MatchCard({
   const startTime = moment(date);
   const info = formatDate(startTime);
   const endinfo = formatDate(startTime.clone().add(1, "hour"));
+
   return (
-    <a
-      href={`/match/${matchId.toString()}`}
+    <Link
+      href={`/match?id=${matchId.toString()}`}
       className={`${className} rounded-lg border w-full border-gray-300 p-2 flex items-center bg-p-grey-200`}
     >
       <div className="mr-4">
@@ -42,12 +44,12 @@ export function MatchCard({
           <Tag sportName={sport} />
         </div>
       </div>
-      <div className="font-body font-bold text-base uppercase text-center pr-6 text-white">
-        <div>{info.weekday}</div>
-        <div className="text-3xl">{info.day}</div>
-        <div>{info.month}</div>
+      <div className="font-body font-bold text-base uppercase text-center pr-2 text-white">
+        <div className="leading-none">{info.weekday}</div>
+        <div className="text-3xl leading-none">{info.day}</div>
+        <div className="leading-none">{info.month}</div>
       </div>
-    </a>
+    </Link>
   );
 }
 

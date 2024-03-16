@@ -3,12 +3,13 @@ import { faChevronRight, faPlus } from "@fortawesome/free-solid-svg-icons";
 import type { ReactNode } from "react";
 import { useCallback, useContext } from "react";
 import { MatchStatus, hasId } from "@esp-group-one/types";
-import { Page } from "../components/page";
-import { Header } from "../components/page/header";
-import { useAsync } from "../lib/async";
-import { API } from "../state/auth";
-import { CardList } from "../components/card_list";
-import { MatchCard } from "../components/card/match";
+import { Page } from "../../components/page";
+import { Header } from "../../components/page/header";
+import { useAsync } from "../../lib/async";
+import { API } from "../../state/auth";
+import { CardList } from "../../components/card_list";
+import { MatchCard } from "../../components/card/match";
+import { Link } from "../../components/link";
 
 export function UpcomingMatch() {
   const api = useContext(API);
@@ -51,26 +52,35 @@ export function UpcomingMatch() {
     [api, ok],
   );
 
-  if (!ok) return (loading ?? error) as ReactNode;
+  if (!ok)
+    return (
+      <Page page="home">
+        <Page.Header>Upcoming</Page.Header>
+        <Page.Body>{(loading ?? error) as ReactNode}</Page.Body>
+      </Page>
+    );
 
   return (
     <Page page="home">
       <Page.Header>
         Upcoming
         <Header.Right>
-          <a href="/match/new" className="pr-2">
+          <Link href="/match/new" className="pr-2">
             <FontAwesomeIcon icon={faPlus} />
-          </a>
+          </Link>
         </Header.Right>
       </Page.Header>
       <Page.Body className="flex flex-col">
         {ok.count > 0 && (
-          <a className="text-2xl font-title text-white w-full" href="/proposed">
+          <Link
+            className="text-2xl font-title text-white w-full"
+            href="/match/proposals"
+          >
             <div className="bg-p-grey-900 flex-none mt-2 rounded-lg p-2 w-full flex place-content-center font-bold">
               <h2>{ok.count > 10 ? "10+" : ok.count} Proposed Matches</h2>
               <FontAwesomeIcon className="pl-3 pt-1" icon={faChevronRight} />
             </div>
-          </a>
+          </Link>
         )}
 
         <div className="rounded-t-lg mt-2 flex-1 overflow-y-scroll">

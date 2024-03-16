@@ -3,15 +3,15 @@ import { Sport } from "@esp-group-one/types";
 interface Tagging {
   active?: boolean;
   sportName: Sport;
+  textSize?: string;
 }
 
-export function Tag({ active, sportName }: Tagging) {
+export function Tag({ active, sportName, textSize }: Tagging) {
   return (
     <div
-      className={`inline-block rounded-full py-1 px-5 font-bold font-title text-white text-md ${getSportColorClass(
-        sportName,
-        active,
-      )}`}
+      className={`inline-block rounded-full py-1 px-5 font-bold font-title text-white ${
+        textSize ?? "text-md"
+      } ${getSportColorClass(sportName, active)}`}
     >
       {sportName.charAt(0).toUpperCase() + sportName.slice(1)}
     </div>

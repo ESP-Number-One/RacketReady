@@ -46,7 +46,7 @@ export function ProfilePic({
     <div className="w-full">
       <div className="relative aspect-square">
         <img src={image} className="w-full" />
-        <div className="h-min absolute bottom-0 left-0 bottom-0 p-2">
+        <div className="h-min absolute left-0 bottom-0 p-2">
           <div className="flex flex-wrap items-center gap-2">
             {initialSports.map((sport) => (
               <button

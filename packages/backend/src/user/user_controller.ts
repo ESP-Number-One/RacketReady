@@ -172,8 +172,8 @@ export class UsersController extends ControllerWrap<User> {
    *
    * Users may be repeated for different sports
    */
-  @Get("recommendations")
-  public async match(
+  @Post("recommendations")
+  public async recommendations(
     @Request() req: express.Request,
   ): Promise<WithError<UserMatchReturn>> {
     return this.withUser(req, async (currUser) => {
