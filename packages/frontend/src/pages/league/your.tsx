@@ -1,30 +1,30 @@
 import { faArrowRight, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useContext } from "react";
-import { Button } from "../components/button";
-import { Icon } from "../components/icon";
-import { Page } from "../components/page";
-import { Header } from "../components/page/header";
-import { CardList } from "../components/card_list";
-import { API } from "../state/auth";
-import { Cards } from "../utils/types_to_cards";
-import { BottomBar } from "../components/bottom_bar";
-import { useViewNav } from "../state/nav";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon } from "../../components/icon";
+import { Page } from "../../components/page";
+import { Header } from "../../components/page/header";
+import { CardList } from "../../components/card_list";
+import { API } from "../../state/auth";
+import { Cards } from "../../utils/types_to_cards";
+import { useViewNav } from "../../state/nav";
+import { Link } from "../../components/link";
 
 export function YourLeagues() {
   const api = useContext(API);
   const viewNavigate = useViewNav();
 
   return (
-    <Page>
+    <Page page="leagues">
       <Page.Header>
         Your Leagues
         <Header.Right>
-          <Button>
-            <Icon icon={faPlus} />
-          </Button>
+          <Link href="/league/new" className="pr-2">
+            <FontAwesomeIcon icon={faPlus} />
+          </Link>
         </Header.Right>
       </Page.Header>
-      <Page.Body>
+      <Page.Body className="overflow-y-scroll">
         <div className="h-fit items-end">
           <CardList
             nextPage={(pageNum: number) => {
@@ -51,9 +51,6 @@ export function YourLeagues() {
           </div>
         </div>
       </Page.Body>
-      <Page.Footer>
-        <BottomBar activePage={"leagues"} />
-      </Page.Footer>
     </Page>
   );
 }

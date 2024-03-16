@@ -1,5 +1,5 @@
 import { cleanup, render } from "@testing-library/react";
-import { ProgressBar } from "../src/components/progress_bar";
+import { ProgressBar } from "../../src/components/progress_bar";
 
 afterEach(cleanup);
 

@@ -1,7 +1,7 @@
 import { fireEvent, render } from "@testing-library/react";
 import type { StarCount } from "@esp-group-one/types";
-import { Stars } from "../src/components/stars";
-import { track } from "./helpers/utils";
+import { Stars } from "../../src/components/stars";
+import { track } from "../helpers/utils";
 
 /* Jest + React Guides: https://jestjs.io/docs/tutorial-react */
 

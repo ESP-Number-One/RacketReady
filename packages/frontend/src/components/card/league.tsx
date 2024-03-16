@@ -4,21 +4,24 @@ import moment from "moment";
 import { API } from "../../state/auth";
 import { ErrorHandler, useAsync } from "../../lib/async";
 import { Tag } from "../tags";
+import { Profile } from "../profile";
+import { Link } from "../link";
 
 function Loading() {
   return <>Loading.</>;
 }
 
 export function LeagueCard({
+  className = "",
   data,
-  badge = undefined,
 }: {
+  className?: string;
   data: CensoredLeague;
-  badge?: number;
 }): JSX.Element {
   const api = useContext(API);
   const errorHandler = useContext(ErrorHandler);
-  const { loading, error, ok } = useAsync(async () => ({
+
+  const { ok } = useAsync(async () => ({
     firstMatch: await api.match().find({
       query: { league: data._id },
       // sort: { date: Sort.ASC },
@@ -29,58 +32,42 @@ export function LeagueCard({
     .catch(errorHandler)
     .await();
 
-  if (!ok) return (loading ?? error) as JSX.Element;
-
-  const date = ok.firstMatch[0]?.date ? (
+  const date = ok?.firstMatch[0]?.date ? (
     (() => {
       const firstMatchDate = moment(ok.firstMatch[0].date);
       return (
-        <>
-          <div className="day uppercase font-bold">
-            {firstMatchDate.format("ddd")}
-          </div>
-          <div className="date font-bold text-5xl">
+        <div className="date font-body font-bold text-base uppercase text-center pr-2 text-white pt-2">
+          <div className="leading-none">{firstMatchDate.format("ddd")}</div>
+          <div className="text-3xl leading-none">
             {firstMatchDate.format("DD")}
           </div>
-          <div className="month uppercase font-bold">
-            {firstMatchDate.format("MMM")}
-          </div>
-        </>
+          <div className="leading-none">{firstMatchDate.format("MMM")}</div>
+        </div>
       );
     })()
   ) : (
-    <div className="font-bold text-5xl self-center">TBD</div>
+    <></>
   );
+
   return (
-    <a
-      className=" block w-full rounded-2xl overflow-clip text-white"
+    <Link
       href={`/league/${data._id.toString()}`}
+      className={`${className} rounded-lg border w-full border-gray-300 p-2 flex items-center bg-p-grey-200`}
     >
-      <div className="grid columns-[min-content_min-content_1fr] grid-rows-2 gap-x-4 bg-p-grey-200 p-2">
-        <div className="relative row-start-1 row-end-3 col-start-1 col-end-2 m-2 mr-0">
-          <img
-            src={makeImgSrc(data.picture)}
-            alt={`${data.name} picture.`}
-            className="h-full aspect-square rounded-2xl"
-          />
-          {badge ? (
-            <div className="badge absolute flex justify-center font-title font-semibold text-xl w-3/5 left-[-10%] top-[-10%] rounded-full bg-p-red-200">
-              {badge}
-            </div>
-          ) : null}
-        </div>
-        <div className="flex content-end flex-wrap col-start-2 col-end-3 row-start-1 row-end-2 font-title text-[1.6rem] font-bold align-bottom">
-          {data.name}
-        </div>
-        <div className="col-start-2 col-end-3 row-start-2 row-end-3 font-title text-2xl align-top">
-          <Tag sportName={data.sport} />
-        </div>
-        <div className="col-start-3 col-end-4 row-span-2 m-2">
-          <div className="date flex flex-col justify-center items-center align-middle h-full">
-            {date}
-          </div>
+      <div className="mr-4">
+        <div className="image-container">
+          <Profile imgSrc={makeImgSrc(data.picture)} />
         </div>
       </div>
-    </a>
+      <div className="flex flex-col flex-1">
+        <div className="font-title font-bold text-xl text-white">
+          {data.name}
+        </div>
+        <div className="pb-1">
+          <Tag sportName={data.sport} />
+        </div>
+      </div>
+      {date}
+    </Link>
   );
 }

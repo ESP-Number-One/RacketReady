@@ -1,6 +1,6 @@
 import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import type { ReactNode } from "react";
-import { CardList } from "../src/components/card_list";
+import { CardList } from "../../src/components/card_list";
 
 afterEach(cleanup);
 

@@ -1,74 +1,86 @@
-import type { ReactNode } from "react";
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
+import { makeImgSrc, type CensoredUser } from "@esp-group-one/types";
 import { Page } from "../components/page";
 import { Search } from "../components/search";
 import { API } from "../state/auth";
 import { CardList } from "../components/card_list";
 import { Cards } from "../utils/types_to_cards";
-import { BottomBar } from "../components/bottom_bar";
+import { ErrorDiv } from "../components/error";
+import { Profile } from "../components/profile";
+import { Link } from "../components/link";
 
 export function SuggestedPeople() {
   const api = useContext(API);
-  const userAPI = api.user();
+
   const [search, setSearch] = useState("");
-  const [isSuggested, setSuggested] = useState(true);
+  const isSuggested = useMemo(() => search === "", [search]);
+  const [myError, setMyError] = useState("");
+  const [searchRes, setSearchRes] = useState<CensoredUser[]>([]);
 
   return (
-    <Page>
+    <Page page="search">
       <Page.Header>
-        <div className="flex flex-row max-w-fit w-fit">
+        <div className="flex flex-row max-w-fit w-fit m-2">
           <Search
             onSubmit={(q) => {
-              setSuggested(false);
               setSearch(q);
+              api
+                .user()
+                .find({ query: { profileText: q }, pageSize: 10 })
+                .then((users) => {
+                  setSearchRes(users);
+                })
+                .catch((e: Error) => {
+                  setMyError(e.toString());
+                  setSearchRes([]);
+                });
             }}
           />
         </div>
       </Page.Header>
-      <Page.Body>
-        <CardList
-          key={search}
-          shouldSnap={true}
-          nextPage={async (pageNum: number) => {
-            if (isSuggested) {
-              setSuggested(false);
-              return new Promise<ReactNode[]>((res) => {
-                res(
-                  userAPI
-                    .recommendations()
-                    .then((users) => {
-                      return Cards.fromRecommendedUsers(users, api);
-                    })
-                    .catch((e) => {
-                      console.warn(e);
-                      return [];
-                    }),
-                );
-              });
-            } else if (search === "") {
-              return new Promise<ReactNode[]>((res) => {
-                res([]);
-              });
-            }
-            return new Promise<ReactNode[]>((res) => {
-              res(
-                userAPI
-                  .find({ query: { profileText: search }, pageStart: pageNum })
+      <Page.Body className="overflow-y-scroll">
+        <ErrorDiv error={myError} />
+        {isSuggested ? (
+          <CardList
+            shouldSnap
+            nextPage={(pageNum: number) => {
+              if (pageNum === 0) {
+                const userAPI = api.user();
+                return userAPI
+                  .recommendations()
                   .then((users) => {
-                    return Cards.fromUsers(users, api);
+                    return Cards.fromRecommendedUsers(users, api);
                   })
                   .catch((e) => {
                     console.warn(e);
                     return [];
-                  }),
-              );
-            });
-          }}
-        />
+                  });
+              }
+
+              return Promise.resolve([]);
+            }}
+          />
+        ) : (
+          searchRes.map((u) => (
+            <Link
+              key={u._id.toString()}
+              href={`/profile?id=${u._id.toString()}`}
+              className="rounded-lg border w-full border-gray-300 p-2 flex items-center bg-p-grey-200 mt-2"
+            >
+              <div className="mr-4">
+                <div className="image-container">
+                  <Profile imgSrc={makeImgSrc(u.profilePicture)} />
+                </div>
+              </div>
+              <div className="flex flex-col flex-1">
+                <div className="font-title font-bold text-2xl text-white">
+                  {u.name}
+                </div>
+              </div>
+            </Link>
+          ))
+        )}
       </Page.Body>
-      <Page.Footer>
-        <BottomBar activePage={"search"} />
-      </Page.Footer>
     </Page>
   );
 }

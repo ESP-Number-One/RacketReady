@@ -1,0 +1,247 @@
+  console.warn
+    Had error: Error: Not found
+
+      31 |     .then(() => false)
+      32 |     .catch((e) => {
+    > 33 |       console.warn(`Had error: ${e}`);
+         |               ^
+      34 |       return true;
+      35 |     });
+      36 | }
+
+      at src/lib/auth.ts:33:15
+      at Object.<anonymous> (tests/lib/auth.test.tsx:57:12)
+
+  console.error
+    Warning: An update to CardList inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at CardList (/home/hugo/Documents/uni/dev/course_work/year_2/esp/MatchyoSports/packages/frontend/src/components/card_list.tsx:15:3)
+
+      118 |         }
+      119 |         cards.current = cards.current.concat(result);
+    > 120 |         setIsLoading(false);
+          |         ^
+      121 |       })
+      122 |       .catch((err) => {
+      123 |         console.error(err);
+
+      at printWarning (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:27589:9)
+      at scheduleUpdateOnFiber (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:25508:5)
+      at dispatchSetState (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:17527:7)
+      at src/components/card_list.tsx:120:9
+
+  console.error
+    Warning: An update to CardList inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at CardList (/home/hugo/Documents/uni/dev/course_work/year_2/esp/MatchyoSports/packages/frontend/src/components/card_list.tsx:15:3)
+
+      118 |         }
+      119 |         cards.current = cards.current.concat(result);
+    > 120 |         setIsLoading(false);
+          |         ^
+      121 |       })
+      122 |       .catch((err) => {
+      123 |         console.error(err);
+
+      at printWarning (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:27589:9)
+      at scheduleUpdateOnFiber (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:25508:5)
+      at dispatchSetState (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:17527:7)
+      at src/components/card_list.tsx:120:9
+
+  console.error
+    Warning: An update to CardList inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at CardList (/home/hugo/Documents/uni/dev/course_work/year_2/esp/MatchyoSports/packages/frontend/src/components/card_list.tsx:15:3)
+
+      118 |         }
+      119 |         cards.current = cards.current.concat(result);
+    > 120 |         setIsLoading(false);
+          |         ^
+      121 |       })
+      122 |       .catch((err) => {
+      123 |         console.error(err);
+
+      at printWarning (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:27589:9)
+      at scheduleUpdateOnFiber (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:25508:5)
+      at dispatchSetState (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:17527:7)
+      at src/components/card_list.tsx:120:9
+
+  console.error
+    Warning: Use the `defaultValue` or `value` props on <select> instead of setting `selected` on <option>.
+        at option
+        at select
+        at SelectSport (/home/hugo/Documents/uni/dev/course_work/year_2/esp/MatchyoSports/packages/frontend/src/components/form/select_sports.tsx:13:3)
+
+      13 |     };
+      14 |
+    > 15 |     const component = render(
+         |                             ^
+      16 |       <SelectSport
+      17 |         sports={[Sport.Tennis, Sport.Badminton]}
+      18 |         onChange={changeSelection}
+
+      at printWarning (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at validateProps (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:2045:7)
+      at setInitialProperties (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:9896:7)
+      at finalizeInitialChildren (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:10950:3)
+      at completeWork (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:22193:17)
+      at completeUnitOfWork (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:26593:16)
+      at performUnitOfWork (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:26568:5)
+      at workLoopSync (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:26466:5)
+      at renderRootSync (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:26434:7)
+      at performConcurrentWorkOnRoot (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:25738:74)
+      at flushActQueue (../../../../../../../../../.local/share/yarn/berry/cache/react-npm-18.2.0-1eae08fee2-10c0.zip/node_modules/react/cjs/react.development.js:2667:24)
+      at act (../../../../../../../../../.local/share/yarn/berry/cache/react-npm-18.2.0-1eae08fee2-10c0.zip/node_modules/react/cjs/react.development.js:2582:11)
+      at ../../.yarn/__virtual__/@testing-library-react-virtual-031cca859f/8/.local/share/yarn/berry/cache/@testing-library-react-npm-14.2.1-95eb1af3fb-10c0.zip/node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (../../.yarn/__virtual__/@testing-library-react-virtual-031cca859f/8/.local/share/yarn/berry/cache/@testing-library-react-npm-14.2.1-95eb1af3fb-10c0.zip/node_modules/@testing-library/react/dist/pure.js:180:26)
+      at render (../../.yarn/__virtual__/@testing-library-react-virtual-031cca859f/8/.local/share/yarn/berry/cache/@testing-library-react-npm-14.2.1-95eb1af3fb-10c0.zip/node_modules/@testing-library/react/dist/pure.js:266:10)
+      at Object.<anonymous> (tests/components/form/select_sports.test.tsx:15:29)
+
+  console.error
+    Warning: An update to CardList inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at CardList (/home/hugo/Documents/uni/dev/course_work/year_2/esp/MatchyoSports/packages/frontend/src/components/card_list.tsx:15:3)
+
+      118 |         }
+      119 |         cards.current = cards.current.concat(result);
+    > 120 |         setIsLoading(false);
+          |         ^
+      121 |       })
+      122 |       .catch((err) => {
+      123 |         console.error(err);
+
+      at printWarning (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:27589:9)
+      at scheduleUpdateOnFiber (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:25508:5)
+      at dispatchSetState (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:17527:7)
+      at src/components/card_list.tsx:120:9
+
+  console.error
+    Warning: An update to CardList inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at CardList (/home/hugo/Documents/uni/dev/course_work/year_2/esp/MatchyoSports/packages/frontend/src/components/card_list.tsx:15:3)
+
+      118 |         }
+      119 |         cards.current = cards.current.concat(result);
+    > 120 |         setIsLoading(false);
+          |         ^
+      121 |       })
+      122 |       .catch((err) => {
+      123 |         console.error(err);
+
+      at printWarning (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:27589:9)
+      at scheduleUpdateOnFiber (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:25508:5)
+      at dispatchSetState (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:17527:7)
+      at src/components/card_list.tsx:120:9
+
+  console.log
+    Refreshing messages
+
+      at touchMove (src/components/card_list.tsx:80:15)
+
+  console.error
+    Warning: An update to CardList inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at CardList (/home/hugo/Documents/uni/dev/course_work/year_2/esp/MatchyoSports/packages/frontend/src/components/card_list.tsx:15:3)
+
+      52 |         }
+      53 |         cards.current = newCards;
+    > 54 |         setIsRefreshing(false);
+         |         ^
+      55 |         setIsLoading(false);
+      56 |       })
+      57 |       .catch((e) => {
+
+      at printWarning (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:27589:9)
+      at scheduleUpdateOnFiber (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:25508:5)
+      at dispatchSetState (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:17527:7)
+      at src/components/card_list.tsx:54:9
+
+  console.error
+    Warning: An update to CardList inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at CardList (/home/hugo/Documents/uni/dev/course_work/year_2/esp/MatchyoSports/packages/frontend/src/components/card_list.tsx:15:3)
+
+      53 |         cards.current = newCards;
+      54 |         setIsRefreshing(false);
+    > 55 |         setIsLoading(false);
+         |         ^
+      56 |       })
+      57 |       .catch((e) => {
+      58 |         console.error(e);
+
+      at printWarning (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:27589:9)
+      at scheduleUpdateOnFiber (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:25508:5)
+      at dispatchSetState (../../.yarn/__virtual__/react-dom-virtual-74f7a3482d/8/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/cjs/react-dom.development.js:17527:7)
+      at src/components/card_list.tsx:55:9
+

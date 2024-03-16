@@ -2,7 +2,13 @@ import { AbilityLevel, ObjectId, Sport } from "@esp-group-one/types";
 import { PICTURES } from "@esp-group-one/types/build/tests/helpers/utils";
 import { cleanup, render } from "@testing-library/react";
 import moment from "moment";
+import { asFuncMock } from "@esp-group-one/test-helpers-base";
 import { RecProfile } from "../../../src/components/rec_profile";
+import { useViewNav } from "../../../src/state/nav";
+
+jest.mock("../../../src/state/nav");
+const mockedUseNav = asFuncMock(useViewNav);
+mockedUseNav.mockReturnValue(() => undefined);
 
 afterAll(cleanup);
 

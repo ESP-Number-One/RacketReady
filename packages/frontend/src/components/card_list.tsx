@@ -152,11 +152,6 @@ export function CardList<T extends ReactNode>({
   return (
     <div
       className="grid-flow-row grid overflow-clip h-full items-top"
-      style={
-        shouldSnap
-          ? { scrollSnapType: "y mandatory", scrollSnapStop: "always" }
-          : {}
-      }
       id="card-list"
     >
       <FontAwesomeIcon
@@ -173,6 +168,11 @@ export function CardList<T extends ReactNode>({
         onScroll={(e) => {
           handleScroll(e);
         }}
+        style={
+          shouldSnap
+            ? { scrollSnapType: "y mandatory", scrollSnapStop: "always" }
+            : {}
+        }
       >
         {cards.current}
       </div>

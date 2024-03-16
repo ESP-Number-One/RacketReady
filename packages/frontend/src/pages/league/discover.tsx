@@ -1,12 +1,11 @@
 import type { ReactNode } from "react";
 import { useContext } from "react";
-import { BottomBar } from "../components/bottom_bar";
-import { CardList } from "../components/card_list";
-import { Page } from "../components/page";
-import { Header } from "../components/page/header";
-import { API } from "../state/auth";
-import { Cards } from "../utils/types_to_cards";
-import { useViewNav } from "../state/nav";
+import { CardList } from "../../components/card_list";
+import { Page } from "../../components/page";
+import { Header } from "../../components/page/header";
+import { API } from "../../state/auth";
+import { Cards } from "../../utils/types_to_cards";
+import { useViewNav } from "../../state/nav";
 
 export function DiscoverLeagues() {
   const api = useContext(API);
@@ -30,7 +29,7 @@ export function DiscoverLeagues() {
   };
 
   return (
-    <Page>
+    <Page page="leagues">
       <Page.Header>
         <Header.Back
           onClick={() => {
@@ -39,15 +38,12 @@ export function DiscoverLeagues() {
         />
         Discover Leagues
       </Page.Header>
-      <Page.Body>
+      <Page.Body className="overflow-y-scroll">
         <CardList
           nextPage={nextPage}
           emptyListPlaceholder="No more leagues found."
         />
       </Page.Body>
-      <Page.Footer>
-        <BottomBar activePage={"leagues"} />
-      </Page.Footer>
     </Page>
   );
 }

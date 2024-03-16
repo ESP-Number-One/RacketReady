@@ -7,13 +7,13 @@ import {
   faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button } from "../components/button.tsx";
-import { ProfilePic } from "../components/profile_pic.tsx";
-import { Page } from "../components/page";
-import { Stars } from "../components/stars";
-import { API } from "../state/auth.ts";
-import { useAsync } from "../lib/async.tsx";
-import { useViewNav } from "../state/nav.ts";
+import { Button } from "../../components/button.tsx";
+import { ProfilePic } from "../../components/profile_pic.tsx";
+import { Page } from "../../components/page";
+import { Stars } from "../../components/stars";
+import { API } from "../../state/auth.ts";
+import { useAsync } from "../../lib/async.tsx";
+import { useViewNav } from "../../state/nav.ts";
 
 export function YourProfile() {
   const viewNav = useViewNav();
@@ -27,10 +27,15 @@ export function YourProfile() {
     .catch((err) => <>{err.message}</>)
     .await();
 
-  if (!ok) return (loading ?? error) as ReactNode;
+  if (!ok)
+    return (
+      <Page page="profile">
+        <Page.Body>{(loading ?? error) as ReactNode}</Page.Body>
+      </Page>
+    );
 
   return (
-    <Page>
+    <Page page="profile">
       <Page.Header>
         <ProfilePic
           image={makeImgSrc(ok.user.profilePicture)}
@@ -38,17 +43,19 @@ export function YourProfile() {
         />
       </Page.Header>
       <Page.Body className="overflow-y-scroll">
-        <p className="text-right font-title pt-2 px-3 text-3xl font-bold">
+        <p className="text-right font-title pt-2 px-3 text-3xl font-bold text-p-grey-900">
           {ok.user.name}
         </p>
-        <div className="flex justify-end">
+        <div className="flex justify-end text-p-grey-900">
           <Stars
             rating={calculateAverageRating(ok.user.rating)}
             disabled
             size="lg"
           />
         </div>
-        <p className="py-2 px-3 text-center">{ok.user.description}</p>
+        <p className="py-2 px-3 text-center text-p-grey-900">
+          {ok.user.description}
+        </p>
         <div className="flex flex-col space-y-2 mb-2">
           <Button
             backgroundColor="bg-p-grey-100"

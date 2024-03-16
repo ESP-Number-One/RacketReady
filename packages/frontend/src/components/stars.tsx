@@ -34,9 +34,10 @@ export function Stars(props: {
   onRatingChange?: (newRating: StarCount) => void;
   disabled?: boolean;
   size?: FontAwesomeIconProps["size"];
+  padding?: string;
 }) {
   return (
-    <div className="space-x-2">
+    <div className={props.padding ?? "space-x-2"}>
       {[1, 2, 3, 4, 5].map((e) => (
         <StarButton
           currentRating={props.rating}

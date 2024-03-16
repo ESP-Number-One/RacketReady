@@ -5,7 +5,13 @@ import {
   getMatch,
   getUser,
 } from "@esp-group-one/types/build/tests/helpers/utils";
+import { asFuncMock } from "@esp-group-one/test-helpers-base";
 import { MatchCard } from "../../../src/components/card/match";
+import { useViewNav } from "../../../src/state/nav";
+
+jest.mock("../../../src/state/nav");
+const mockedUseNav = asFuncMock(useViewNav);
+mockedUseNav.mockReturnValue(() => undefined);
 
 describe("Tags", () => {
   const DUMMY_DATA = getMatch({

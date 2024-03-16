@@ -573,8 +573,13 @@ describe("find/proposed", () => {
     const matches: Match[] = [];
     matches.push(
       await addMatch(db.get(), {
-        status: MatchStatus.Accepted,
+        status: MatchStatus.Request,
         owner: user.id(),
+        players: [user.id(), OIDS[0]],
+      }),
+      await addMatch(db.get(), {
+        status: MatchStatus.Request,
+        owner: OIDS[0],
         players: [user.id(), OIDS[0]],
       }),
       await addMatch(db.get(), {
@@ -583,7 +588,7 @@ describe("find/proposed", () => {
         players: [user.id(), OIDS[0]],
       }),
       await addMatch(db.get(), {
-        status: MatchStatus.Accepted,
+        status: MatchStatus.Request,
         owner: OIDS[0],
         players: [OIDS[0], OIDS[1]],
       }),

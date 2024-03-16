@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
 import { useCallback, useContext, useState } from "react";
-import type { MatchProposal, Sport, User } from "@esp-group-one/types";
+import type { ID, MatchProposal, Sport, User } from "@esp-group-one/types";
 import { ObjectId } from "@esp-group-one/types";
 import AsyncSelect from "react-select/async";
 import moment from "moment";
+import { useSearchParams } from "react-router-dom";
 import { Form } from "../../components/form";
 import { API } from "../../state/auth";
 import { Header } from "../../components/page/header";
@@ -15,8 +16,13 @@ import { useViewNav } from "../../state/nav";
 export function NewMatchPage() {
   const api = useContext(API);
 
+  const [searchParams] = useSearchParams();
+  const to: ID | null = searchParams.get("to");
+
   const [sport, setSport] = useState<Sport | undefined>();
-  const [opponent, setOpponent] = useState<ObjectId | undefined>();
+  const [opponent, setOpponent] = useState<ObjectId | undefined>(
+    to ? new ObjectId(to) : undefined,
+  );
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [myError, setMyError] = useState<string>("");
@@ -93,14 +99,16 @@ export function NewMatchPage() {
         />
         {sport && (
           <>
-            <AsyncSelect
-              className="mt-2"
-              loadOptions={loadPeople}
-              onChange={(val) => {
-                setOpponent(new ObjectId(val?.value ?? ""));
-              }}
-              required
-            />
+            {!to && (
+              <AsyncSelect
+                className="mt-2"
+                loadOptions={loadPeople}
+                onChange={(val) => {
+                  setOpponent(new ObjectId(val?.value ?? ""));
+                }}
+                required
+              />
+            )}
 
             <Input
               className="mt-2"

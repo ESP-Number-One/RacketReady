@@ -24,8 +24,7 @@ describe("BottomBar", () => {
     });
     const component = render(<BottomBar activePage={"profile"} />);
     expect(component.container).toBeInTheDocument();
-    const buttons =
-      component.container.querySelectorAll<HTMLButtonElement>("button");
+    const buttons = component.container.querySelectorAll<HTMLLinkElement>("a");
     buttons.forEach((b) => {
       b.click();
     });

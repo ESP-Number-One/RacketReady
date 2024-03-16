@@ -18,17 +18,17 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSearchParams } from "react-router-dom";
 import moment from "moment";
-import { useViewNav } from "../state/nav";
-import { Button } from "../components/button";
-import { Tag } from "../components/tags";
-import { API } from "../state/auth";
-import { ErrorDiv } from "../components/error";
-import { Message } from "../components/message";
-import { Page } from "../components/page";
-import { Header } from "../components/page/header";
-import { Input } from "../components/form/input";
-import { Stars } from "../components/stars";
-import { useAsync } from "../lib/async";
+import { useViewNav } from "../../state/nav";
+import { Button } from "../../components/button";
+import { Tag } from "../../components/tags";
+import { API } from "../../state/auth";
+import { ErrorDiv } from "../../components/error";
+import { Message } from "../../components/message";
+import { Page } from "../../components/page";
+import { Header } from "../../components/page/header";
+import { Input } from "../../components/form/input";
+import { Stars } from "../../components/stars";
+import { useAsync } from "../../lib/async";
 
 export function SingleMatchPage(): ReactNode {
   const api = useContext(API);
@@ -117,7 +117,12 @@ export function SingleMatchPage(): ReactNode {
 
   useEffect(scrollToBottom, [messagesRef.current]);
 
-  if (!ok) return (loading ?? error) as ReactNode;
+  if (!ok)
+    return (
+      <Page page="home">
+        <Page.Body>{(loading ?? error) as ReactNode}</Page.Body>
+      </Page>
+    );
 
   const isLeague = "league" in ok.match;
   const hasRated =
