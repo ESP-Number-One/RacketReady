@@ -17,6 +17,7 @@ export function Link({ className, href, children }: LinkProps) {
     },
     [href, viewNav],
   );
+
   return (
     <a className={className} href={href} onClick={onClick}>
       {children}

@@ -5,6 +5,7 @@ import {
 } from "@fortawesome/react-fontawesome";
 import type { JSX, ReactNode } from "react";
 import * as React from "react";
+import { twMerge } from "tailwind-merge";
 import { Slot } from "../../lib/slotting";
 
 interface HeaderI {
@@ -16,12 +17,9 @@ interface HeaderI {
   Right: (_: { children: ReactNode }) => JSX.Element;
 }
 
-function HeaderImpl({
-  children: _children,
-}: {
-  children: ReactNode | ReactNode[];
-}) {
+function HeaderImpl({ children: _children, ...props }: Slot.PageParams) {
   const children = Slot.children(_children);
+
   const back = Slot.find(children, HeaderImpl.Back);
   const action = Slot.find(children, HeaderImpl.Right);
   const other = children.filter(
@@ -29,7 +27,12 @@ function HeaderImpl({
   );
 
   return (
-    <>
+    <div
+      className={twMerge(
+        Slot.genClassNames({ padding: true, ...props }),
+        "relative flex w-full",
+      )}
+    >
       {back !== undefined ? (
         <div className="absolute left-0 h-full">{back}</div>
       ) : null}
@@ -37,7 +40,7 @@ function HeaderImpl({
       {action !== undefined ? (
         <div className="absolute right-0 h-full">{action}</div>
       ) : null}
-    </>
+    </div>
   );
 }
 

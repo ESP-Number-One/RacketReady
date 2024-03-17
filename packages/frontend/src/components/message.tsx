@@ -1,3 +1,5 @@
+import { twMerge } from "tailwind-merge";
+
 export function Message({
   className,
   isIncoming,
@@ -9,9 +11,11 @@ export function Message({
 }) {
   return (
     <div
-      className={`${className} ${
-        isIncoming ? "bg-p-grey-100" : "bg-p-blue"
-      } break-words rounded-lg text-white p-1 max-w-64`}
+      className={twMerge(
+        isIncoming ? "bg-p-grey-100" : "bg-p-blue",
+        "break-words rounded-lg text-white p-1 max-w-64",
+        className,
+      )}
     >
       {message}
     </div>

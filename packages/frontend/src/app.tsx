@@ -1,7 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { AnotherTestPage } from "./pages/another_test.js";
 import { NewLeaguePage } from "./pages/league/new.js";
 import { API, type AuthResult, handleApi } from "./state/auth.js";
 import { LoginButton } from "./components/auth.js";
@@ -54,7 +53,6 @@ export function App() {
     <API.Provider value={ok.client}>
       <Routes>
         <Route index element={<UpcomingMatch />} />
-        <Route path="/another" element={<AnotherTestPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/me" element={<YourProfile />} />
         <Route path="/me/availability" element={<SetAvailability />} />

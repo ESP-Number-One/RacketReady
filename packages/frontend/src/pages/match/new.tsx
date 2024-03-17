@@ -93,7 +93,6 @@ export function NewMatchPage() {
       </Form.Header>
       <Form.Body>
         <SelectSport
-          className="mt-2"
           sports={ok.user.sports.map((info) => info.sport)}
           onChange={setSport}
           value={sport}
@@ -102,7 +101,6 @@ export function NewMatchPage() {
           <>
             {!to && (
               <AsyncSelect
-                className="mt-2"
                 loadOptions={loadPeople}
                 onChange={(val) => {
                   setOpponent(new ObjectId(val?.value ?? ""));
@@ -112,7 +110,6 @@ export function NewMatchPage() {
             )}
 
             <Input
-              className="mt-2"
               type="date"
               onChange={setDate}
               value={date}
@@ -121,7 +118,6 @@ export function NewMatchPage() {
             />
 
             <Input
-              className="mt-2"
               type="time"
               onChange={setTime}
               placeholder="Select date for the match"

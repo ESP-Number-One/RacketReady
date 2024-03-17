@@ -56,7 +56,6 @@ function PhaseOne({ nextPhase, progress, submitText }: PhaseProps) {
         {progress}
 
         <ProfilePicturePicker
-          className="mt-2"
           onChange={(profilePicture) => {
             setUser({ ...user, profilePicture });
           }}
@@ -64,7 +63,6 @@ function PhaseOne({ nextPhase, progress, submitText }: PhaseProps) {
         />
 
         <Input
-          className="mt-2"
           type="text"
           icon={<FontAwesomeIcon icon={faUser} />}
           placeholder="Name"
@@ -76,7 +74,6 @@ function PhaseOne({ nextPhase, progress, submitText }: PhaseProps) {
         />
 
         <Input
-          className="mt-2"
           type="email"
           icon={<FontAwesomeIcon icon={faEnvelope} />}
           placeholder="Email"
@@ -88,7 +85,6 @@ function PhaseOne({ nextPhase, progress, submitText }: PhaseProps) {
         />
 
         <Input
-          className="mt-2"
           type="textarea"
           placeholder="Description"
           value={user.description}

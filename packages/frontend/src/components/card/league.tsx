@@ -1,6 +1,7 @@
 import { makeImgSrc, type CensoredLeague } from "@esp-group-one/types";
 import { useContext, type JSX } from "react";
 import moment from "moment";
+import { twMerge } from "tailwind-merge";
 import { API } from "../../state/auth";
 import { ErrorHandler, useAsync } from "../../lib/async";
 import { Tag } from "../tags";
@@ -52,7 +53,10 @@ export function LeagueCard({
   return (
     <Link
       href={`/league/${data._id.toString()}`}
-      className={`${className} rounded-lg border w-full border-gray-300 p-2 flex items-center bg-p-grey-200`}
+      className={twMerge(
+        "rounded-lg border w-full border-gray-300 p-2 flex items-center bg-p-grey-200",
+        className,
+      )}
     >
       <div className="mr-4">
         <div className="image-container">

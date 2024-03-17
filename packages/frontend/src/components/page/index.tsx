@@ -1,4 +1,5 @@
-import type { ReactNode, JSX } from "react";
+import { type ReactNode, type JSX } from "react";
+import { twMerge } from "tailwind-merge";
 import { Slot } from "../../lib/slotting";
 import { BottomBar } from "../bottom_bar";
 import { Header } from "./header";
@@ -9,12 +10,7 @@ interface PageProps {
 }
 
 function PageImpl({ children: _children, page }: PageProps) {
-  let children: ReactNode[];
-  if (!(_children instanceof Array)) {
-    children = [_children];
-  } else {
-    children = _children;
-  }
+  const children = Slot.children(_children);
 
   const header = Slot.find(children, PageImpl.Header);
   const body = Slot.find(children, PageImpl.Body);
@@ -24,10 +20,10 @@ function PageImpl({ children: _children, page }: PageProps) {
     <div className="root-page flex h-screen w-screen flex-col">
       {header !== undefined && (
         <div className="flex-none w-full text-p-grey-900 font-title text-2xl font-bold">
-          <div className="relative flex w-full">{header}</div>
+          {header}
         </div>
       )}
-      <div className="flex-1 min-h-0 h-full px-2">{body}</div>
+      <div className="flex-1 min-h-0 h-full">{body}</div>
       <div className="flex-initial w-full font-title justify-end">
         {footer ? footer : <BottomBar activePage={page} />}
       </div>
@@ -35,17 +31,29 @@ function PageImpl({ children: _children, page }: PageProps) {
   );
 }
 
-interface BodyProps {
-  children: ReactNode;
-  className?: string;
-}
-
 PageImpl.Header = Header;
 
-PageImpl.Body = function Body({ children, className = "" }: BodyProps) {
+export type BodySlotT = Slot.PageParams & {
+  flexCol?: boolean;
+  scrollable?: boolean;
+};
+
+PageImpl.Body = function PageBody({
+  children,
+  flexCol,
+  scrollable,
+  ...props
+}: BodySlotT) {
+  props.padding = props.padding ?? true;
+
   return (
     <div
-      className={`h-full ${className}`}
+      className={twMerge(
+        "h-full",
+        flexCol ? "flex flex-col" : "",
+        scrollable ? "overflow-y-scroll" : "",
+        Slot.genClassNames({ padding: true, paddingDir: "x", ...props }),
+      )}
       style={{ viewTransitionName: "body-content" }}
     >
       {children}
@@ -53,15 +61,15 @@ PageImpl.Body = function Body({ children, className = "" }: BodyProps) {
   );
 };
 
-PageImpl.Footer = function Footer({ children }: { children: ReactNode }) {
-  return <>{children}</>;
+PageImpl.Footer = function PageFooter({ children, ...props }: Slot.PageParams) {
+  return <div className={Slot.genClassNames(props)}>{children}</div>;
 };
 
 interface PageT {
   (_: PageProps): JSX.Element;
-  Header: (_: { children: ReactNode }) => JSX.Element;
-  Body: (_: BodyProps) => JSX.Element;
-  Footer: (_: { children: ReactNode }) => JSX.Element;
+  Header: (_: Slot.PageParams) => JSX.Element;
+  Body: (_: BodySlotT) => JSX.Element;
+  Footer: (_: Slot.PageParams) => JSX.Element;
 }
 
 export const Page = PageImpl as PageT;

@@ -24,7 +24,7 @@ export function YourLeagues() {
           </Link>
         </Header.Right>
       </Page.Header>
-      <Page.Body className="overflow-y-scroll">
+      <Page.Body scrollable spacing>
         <div className="h-fit items-end">
           <CardList
             nextPage={(pageNum: number) => {
@@ -37,7 +37,7 @@ export function YourLeagues() {
             }}
             emptyListPlaceholder="You aren't a member of any leagues."
           />
-          <div className="h-1 w-full bg-p-grey-900 my-2" />
+          <hr className="h-1 w-full bg-p-grey-900 my-2" />
           <div className=" flex flex-row place-content-end pr-2">
             <button
               className="flex flex-row align-middle h-full"

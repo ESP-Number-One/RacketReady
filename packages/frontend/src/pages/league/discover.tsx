@@ -38,7 +38,7 @@ export function DiscoverLeagues() {
         />
         Discover Leagues
       </Page.Header>
-      <Page.Body className="overflow-y-scroll">
+      <Page.Body scrollable spacing>
         <CardList
           nextPage={nextPage}
           emptyListPlaceholder="No more leagues found."

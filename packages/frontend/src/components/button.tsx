@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { twMerge } from "tailwind-merge";
 
 interface ButtonProps {
   backgroundColor?: string;
@@ -46,12 +47,16 @@ export function Button({
     <button
       disabled={disabled}
       type={type ?? "button"}
-      className={`${className} font-body text-2xl font-bold text-white ${backgroundColor} focus:outline-none ${borderRadius} px-5 py-2.5 ${
-        icon ? "justify-start" : "justify-center"
-      } inline-flex items-center w-full ${
-        !disabled &&
-        "transform active:scale-95 transition duration-150 ease-in-out"
-      }`}
+      className={twMerge(
+        "font-body text-2xl font-bold text-white focus:outline-none px-5 py-2.5 inline-flex items-center w-full",
+        backgroundColor,
+        borderRadius,
+        disabled
+          ? ""
+          : "transform active:scale-95 transition duration-150 ease-in-out",
+        icon ? "justify-start" : "justify-center",
+        className,
+      )}
       onClick={onClick}
     >
       {icon && <span className="mr-4 align-middle flex">{icon}</span>}

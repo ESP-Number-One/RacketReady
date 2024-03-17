@@ -77,7 +77,7 @@ export function ProfilePage() {
 
   return (
     <Page>
-      <Page.Header>
+      <Page.Header padding={false}>
         <div className="text-lg w-full">
           <ProfilePic
             image={makeImgSrc(ok.user.profilePicture)}
@@ -90,7 +90,7 @@ export function ProfilePage() {
           </Link>
         </div>
       </Page.Header>
-      <Page.Body className="overflow-y-scroll text-p-grey-900">
+      <Page.Body className="text-p-grey-900" scrollable>
         <p className={"text-right font-title pt-2 text-3xl font-bold"}>
           {ok.user.name}
         </p>

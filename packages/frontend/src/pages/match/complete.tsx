@@ -64,7 +64,7 @@ export function CompleteMatchForm() {
       </Form.Header>
       <Form.Body>
         {ok.players.map((p) => (
-          <div key={p._id.toString()} className="flex w-full pt-2 gap-2">
+          <div key={p._id.toString()} className="flex w-full gap-2">
             <Input type="text" disabled value={p.name} className="flex-auto" />
             <input
               type="number"
@@ -78,7 +78,7 @@ export function CompleteMatchForm() {
             />
           </div>
         ))}
-        <div className="flex place-content-center w-full pt-2">
+        <div className="flex place-content-center w-full">
           <Stars
             rating={rating}
             onRatingChange={(r) => {

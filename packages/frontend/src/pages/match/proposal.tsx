@@ -50,7 +50,7 @@ export function MatchProposal() {
         />
         Proposed Matches
       </Page.Header>
-      <Page.Body className="overflow-y-scroll">
+      <Page.Body scrollable>
         <div className="pb-2">
           <CardList
             nextPage={nextPage}
