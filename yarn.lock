@@ -1960,6 +1960,7 @@ __metadata:
     concurrently: "npm:^8.2.2"
     cors: "npm:^2.8.5"
     cross-env: "npm:^7.0.3"
+    email-validator: "npm:^2.0.4"
     eslint: "npm:^8.56.0"
     express: "npm:^4.18.2"
     jest: "npm:^29.7.0"
@@ -5883,6 +5884,13 @@ __metadata:
   version: 1.4.616
   resolution: "electron-to-chromium@npm:1.4.616"
   checksum: a02416f3293d28120d5132546a6aea614ebd2d820a684f41b1c20138331922ddc672c4a59bfc4b91bb5aee1ba608f6c10cd3f69c344cd434397e7f14a4c97348
+  languageName: node
+  linkType: hard
+
+"email-validator@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "email-validator@npm:2.0.4"
+  checksum: 580ac50374b006805589cad39b3ed2a016b95e625072f507bfa8fba2d405ba25ffe6686c3f4b06f73380da2106041415387c0dee5b06709d03e56d94013205b1
   languageName: node
   linkType: hard
 
