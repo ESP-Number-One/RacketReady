@@ -62,7 +62,7 @@ describe("Header", () => {
   test("Everything", () => {
     const header = render(
       <Page.Header>
-        <Header.Back />
+        <Header.Back defaultLink="/" />
         <Header.Title>Hello!</Header.Title>
         <Header.Right>Right-side!</Header.Right>
       </Page.Header>,

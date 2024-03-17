@@ -58,7 +58,7 @@ export function EditUser() {
   return (
     <Form onSubmit={onSubmit}>
       <Form.Header>
-        <Header.Back />
+        <Header.Back defaultLink="/me" />
         Edit Me
       </Form.Header>
       <Form.Body>
@@ -120,7 +120,7 @@ export function EditSports() {
   return (
     <Form onSubmit={onSubmit}>
       <Form.Header>
-        <Header.Back />
+        <Header.Back defaultLink="/me/edit" />
         Edit sports
       </Form.Header>
       <Form.Body>

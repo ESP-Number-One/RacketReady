@@ -182,7 +182,7 @@ export function SingleMatchPage(): ReactNode {
   return (
     <Page>
       <Page.Header>
-        <Header.Back />
+        <Header.Back defaultLink="/" />
         <div className="flex flex-col place-items-centre">
           <div className="leading-none">
             {moment(ok.match.date).format("dddd")}

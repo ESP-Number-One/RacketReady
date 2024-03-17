@@ -38,7 +38,7 @@ export function NewLeaguePage() {
   return (
     <Form onSubmit={handleCreateLeague}>
       <Form.Header>
-        <Header.Back />
+        <Header.Back defaultLink="/leagues" />
         New League
       </Form.Header>
 

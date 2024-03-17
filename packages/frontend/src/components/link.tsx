@@ -6,14 +6,15 @@ interface LinkProps {
   className?: string;
   href: string;
   children: ReactNode;
+  isBack?: boolean;
 }
 
-export function Link({ className, href, children }: LinkProps) {
+export function Link({ children, className, href, isBack }: LinkProps) {
   const viewNav = useViewNav();
   const onClick: MouseEventHandler<HTMLAnchorElement> = useCallback(
     (e) => {
       e.preventDefault();
-      viewNav(href);
+      viewNav(href, isBack);
     },
     [href, viewNav],
   );

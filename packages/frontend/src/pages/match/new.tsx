@@ -88,7 +88,7 @@ export function NewMatchPage() {
   return (
     <Form onSubmit={onSubmit} parentError={myError}>
       <Form.Header>
-        <Header.Back />
+        <Header.Back defaultLink="/" />
         Propose Match
       </Form.Header>
       <Form.Body>

@@ -9,7 +9,7 @@ import type { ReactNode } from "react";
 import { useCallback, useContext } from "react";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronLeft, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Stars } from "../components/stars";
 import { Page } from "../components/page";
 import { ProfilePic } from "../components/profile_pic.tsx";
@@ -20,6 +20,7 @@ import { Tag } from "../components/tags.tsx";
 import { Button } from "../components/button.tsx";
 import { Link } from "../components/link.tsx";
 import { useViewNav } from "../state/nav.ts";
+import { BackLink } from "../components/back_link.tsx";
 
 export function ProfilePage() {
   const api = useContext(API);
@@ -85,9 +86,7 @@ export function ProfilePage() {
           />
         </div>
         <div className="absolute top-0 left-0 p-2">
-          <Link className="text-white font-bold" href="/search">
-            <FontAwesomeIcon icon={faChevronLeft} size="lg" />
-          </Link>
+          <BackLink className="text-white front-bold" defaultLink="/search" />
         </div>
       </Page.Header>
       <Page.Body className="text-p-grey-900" scrollable>

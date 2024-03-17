@@ -227,7 +227,7 @@ export function SetAvailability() {
   return (
     <Form onSubmit={onSubmit}>
       <Form.Header>
-        <Header.Back />
+        <Header.Back defaultLink="/me" />
         Availability
       </Form.Header>
       <Form.Body>
