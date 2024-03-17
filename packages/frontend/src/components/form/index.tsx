@@ -7,12 +7,18 @@ import { ErrorDiv } from "../error";
 
 interface FormProps {
   children: ReactNode[] | ReactNode;
-  parentError?: string;
   onSubmit: () => Promise<void>;
+  parentError?: string;
+  submitText?: string;
 }
 
-function FormImpl({ children: _children, parentError, onSubmit }: FormProps) {
-  const [error, setError] = useState(parentError ?? "");
+function FormImpl({
+  children: _children,
+  onSubmit,
+  parentError,
+  submitText = "Submit",
+}: FormProps) {
+  const [error, setError] = useState("");
   const [disabled, setDisabled] = useState(false);
 
   let children: ReactNode[];
@@ -47,14 +53,17 @@ function FormImpl({ children: _children, parentError, onSubmit }: FormProps) {
         <Page.Header>{header}</Page.Header>
         <Page.Body className="flex flex-col overflow-y-scroll">
           {body}
-          <ErrorDiv className="flex-none" error={error} />
+          <ErrorDiv
+            className="flex-none mt-2"
+            error={parentError ? parentError : error}
+          />
         </Page.Body>
         <Page.Footer>
           {footer ? (
             footer
           ) : (
             <Button type="submit" disabled={disabled}>
-              Submit
+              {submitText}
             </Button>
           )}
         </Page.Footer>

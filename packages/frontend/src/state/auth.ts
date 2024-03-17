@@ -16,6 +16,7 @@ export type AuthResult =
 export function handleApi(
   hasSetAPI: MutableRefObject<boolean>,
   setResult: (client: AuthResult) => void,
+  signup: () => void,
 ): (_: APIClient | undefined) => Promise<void> {
   return async (client: APIClient | undefined) => {
     // This makes sure we haven't set the API before, as from testing Page
@@ -28,17 +29,9 @@ export function handleApi(
     }
 
     if (await isNewUser(client)) {
-      // TODO: Swap to redirect to signup form
-      client
-        .user()
-        .create({
-          description: "I am test bot 9000",
-          email: "test@bath.ac.uk",
-          name: "Test Bot",
-          profilePicture: "",
-        })
-        .catch(console.error);
+      signup();
     }
+
     setResult({ type: "ok", ok: { authenticated: true, client } });
     hasSetAPI.current = true;
   };

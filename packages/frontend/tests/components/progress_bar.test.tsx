@@ -4,15 +4,15 @@ import { ProgressBar } from "../../src/components/progress_bar";
 afterEach(cleanup);
 
 it("renders without crashing", () => {
-  render(<ProgressBar currentProgress={1} pageNames={["Page 1"]} />);
+  render(<ProgressBar currentIndex={0} pageNames={["Page 1"]} />);
 });
 
 it("renders the correct page name", () => {
-  let count = 1;
+  let count = 0;
   let pageNames = ["Page 1"];
   while (count < 20) {
     const progressBar = render(
-      <ProgressBar currentProgress={count} pageNames={pageNames} />,
+      <ProgressBar currentIndex={count} pageNames={pageNames} />,
     );
     const barText = `Page ${count}`;
     expect(progressBar.getByText(barText)).toBeDefined();
@@ -26,10 +26,12 @@ it("correctly clamps progress between 1 and pageNames.length", () => {
   const pageNames = ["A", "B", "C", "D", "E", "F", "G"];
   while (count < 20) {
     const { getByText } = render(
-      <ProgressBar currentProgress={count} pageNames={pageNames} />,
+      <ProgressBar currentIndex={count} pageNames={pageNames} />,
     );
     expect(
-      getByText(pageNames[Math.min(Math.max(1, count), pageNames.length) - 1]),
+      getByText(
+        pageNames[Math.min(Math.max(1, count + 1), pageNames.length) - 1],
+      ),
     ).toBeDefined();
     count++;
     cleanup();

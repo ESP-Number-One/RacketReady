@@ -4,6 +4,7 @@ import type {
   DateTimeString,
   ObjectId,
   QueryOptions,
+  SportInfo,
   User,
   UserCreation,
   UserMatchReturn,
@@ -22,6 +23,13 @@ export class UserAPIClient extends SubAPIClient<
    */
   public addAvailability(availability: Availability): Promise<void> {
     return this.post("me/availability/add", availability);
+  }
+
+  /**
+   * @param sports - sports to add/edit
+   */
+  public addSports(...sports: SportInfo[]): Promise<void> {
+    return this.post("me/sports/add", { sports });
   }
 
   /**

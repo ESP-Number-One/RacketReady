@@ -14,6 +14,7 @@ describe("SelectSport", () => {
 
     const component = render(
       <SelectSport
+        value={undefined}
         sports={[Sport.Tennis, Sport.Badminton]}
         onChange={changeSelection}
       />,

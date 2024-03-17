@@ -25,12 +25,15 @@ export async function useAPIClient(
 }
 
 export async function isNewUser(client: APIClient): Promise<boolean> {
-  return client
-    .user()
-    .me()
-    .then(() => false)
-    .catch((e) => {
-      console.warn(`Had error: ${e}`);
-      return true;
-    });
+  return (
+    client
+      .user()
+      .me()
+      // If the user has partially signed up, still count it as a new user
+      .then((u) => u.sports.length === 0)
+      .catch((e) => {
+        console.warn(`Had error: ${e}`);
+        return true;
+      })
+  );
 }

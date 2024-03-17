@@ -7,12 +7,14 @@ interface ProfilePicturePickerProps {
   backgroundColor?: string;
   className?: string;
   onChange: (img: string) => void; // Define the onChange prop
+  required?: boolean;
 }
 
 export function ProfilePicturePicker({
   backgroundColor = "bg-p-grey-100",
   className = "",
   onChange, // Include the onChange prop in the props interface
+  required,
 }: ProfilePicturePickerProps) {
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
     undefined,
@@ -26,7 +28,7 @@ export function ProfilePicturePicker({
         reader.onloadend = () => {
           const imageDataURL = reader.result as string; // Convert the result to a string
           setSelectedImage(imageDataURL);
-          onChange(imageDataURL); // Call the onChange function with the image data URL
+          onChange(imageDataURL.split(",")[1]); // Call the onChange function with the image data URL
         };
         reader.readAsDataURL(file);
       }
@@ -67,6 +69,7 @@ export function ProfilePicturePicker({
               accept="image/png,image/jpeg,image/webp"
               className="hidden"
               onChange={handleImageChange}
+              required={required}
             />
           </label>
         )}
