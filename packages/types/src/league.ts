@@ -1,5 +1,4 @@
 import type { PageOptions, Query, SortQuery } from "./db_client.js";
-import type { AbilityLevel } from "./user.js";
 import type { MongoDBItem, ObjectId, Sport } from "./utils.js";
 
 interface BaseLeague extends MongoDBItem {
