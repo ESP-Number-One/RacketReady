@@ -1,4 +1,4 @@
-import type { UserCreation } from "@esp-group-one/types";
+import type { SportInfo, UserCreation } from "@esp-group-one/types";
 import type { ReactNode } from "react";
 import { useCallback, useContext, useState } from "react";
 import { useAsync } from "../../lib/async";
@@ -8,6 +8,8 @@ import { Header } from "../../components/page/header";
 import { ProfilePicturePicker } from "../../components/form/profile_picture";
 import { Input } from "../../components/form/input";
 import { useViewNav } from "../../state/nav";
+import { SportsAddMenu } from "../../components/sports_add_menu";
+import { Link } from "../../components/link";
 
 export function EditUser() {
   const api = useContext(API);
@@ -68,6 +70,7 @@ export function EditUser() {
           placeholder="Enter your name"
           type="text"
         />
+
         <Input
           className="mt-2"
           value={email}
@@ -75,6 +78,7 @@ export function EditUser() {
           placeholder="Enter your email"
           type="text"
         />
+
         <Input
           className="mt-2"
           value={description}
@@ -82,6 +86,48 @@ export function EditUser() {
           placeholder="Give a description of yourself"
           type="textarea"
         />
+
+        <Link className="mt-2" href="/me/sports/edit">
+          <div className="rounded-lg w-full text-xl bg-p-grey-200 pl-3 text-white font-bold">
+            Edit sports
+          </div>
+        </Link>
+      </Form.Body>
+    </Form>
+  );
+}
+
+export function EditSports() {
+  const api = useContext(API);
+  const [sports, setSports] = useState<SportInfo[]>([]);
+
+  const onSubmit = useCallback(async () => {
+    if (sports.length === 0)
+      throw new Error("You must have picked at least one sport!");
+
+    await api.user().addSports(...sports);
+  }, [sports]);
+
+  const { loading, error, ok } = useAsync(async () => {
+    const user = await api.user().me();
+
+    setSports(user.sports);
+
+    return { user };
+  })
+    .catch((err) => <>{err.message}</>)
+    .await();
+
+  if (!ok) return (loading ?? error) as ReactNode;
+
+  return (
+    <Form onSubmit={onSubmit}>
+      <Form.Header>
+        <Header.Back />
+        Edit sports
+      </Form.Header>
+      <Form.Body>
+        <SportsAddMenu sports={sports} setSports={setSports} />
       </Form.Body>
     </Form>
   );

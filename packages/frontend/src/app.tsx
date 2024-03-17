@@ -14,7 +14,7 @@ import { SingleMatchPage } from "./pages/match/index.js";
 import { CompleteMatchForm } from "./pages/match/complete.js";
 import { YourProfile } from "./pages/me/index.js";
 import { MatchProposal } from "./pages/match/proposal.js";
-import { EditUser } from "./pages/me/edit.js";
+import { EditSports, EditUser } from "./pages/me/edit.js";
 import { YourLeagues } from "./pages/league/your.js";
 import { DiscoverLeagues } from "./pages/league/discover.js";
 import { SuggestedPeople } from "./pages/suggested_people.js";
@@ -59,6 +59,7 @@ export function App() {
         <Route path="/me" element={<YourProfile />} />
         <Route path="/me/availability" element={<SetAvailability />} />
         <Route path="/me/edit" element={<EditUser />} />
+        <Route path="/me/sports/edit" element={<EditSports />} />
         <Route path="/match/new" element={<NewMatchPage />} />
         <Route path="/match" element={<SingleMatchPage />} />
         <Route path="/match/complete" element={<CompleteMatchForm />} />
