@@ -9,8 +9,6 @@ interface ProgressBarProps {
 }
 
 export function ProgressBar({ currentIndex, pageNames }: ProgressBarProps) {
-  console.log(currentIndex);
-
   const progress = useMemo(() => {
     return Math.min(Math.max(1, currentIndex + 1), pageNames.length);
   }, [currentIndex]);

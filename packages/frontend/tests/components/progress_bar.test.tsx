@@ -14,10 +14,10 @@ it("renders the correct page name", () => {
     const progressBar = render(
       <ProgressBar currentIndex={count} pageNames={pageNames} />,
     );
-    const barText = `Page ${count}`;
+    const barText = `Page ${count + 1}`;
     expect(progressBar.getByText(barText)).toBeDefined();
     count++;
-    pageNames = pageNames.concat(`Page ${count}`);
+    pageNames = pageNames.concat(`Page ${count + 1}`);
   }
 });
 

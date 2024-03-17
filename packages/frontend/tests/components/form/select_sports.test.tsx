@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { Sport } from "@esp-group-one/types";
 import { userEvent } from "@testing-library/user-event";
+import { useState } from "react";
 import { SelectSport } from "../../../src/components/form/select_sports";
 
 describe("SelectSport", () => {
@@ -8,17 +9,7 @@ describe("SelectSport", () => {
     const user = userEvent.setup();
 
     const expected = [Sport.Tennis, Sport.Badminton];
-    const changeSelection = (val: Sport) => {
-      expect(val).toBe(expected.shift());
-    };
-
-    const component = render(
-      <SelectSport
-        value={undefined}
-        sports={[Sport.Tennis, Sport.Badminton]}
-        onChange={changeSelection}
-      />,
-    );
+    const component = render(<Wrapper expectedSelection={expected} />);
 
     expect(component.container).toBeInTheDocument();
 
@@ -51,3 +42,20 @@ describe("SelectSport", () => {
     expect(intComp.classList).not.toContain("bg-tennis");
   });
 });
+
+function Wrapper({ expectedSelection }: { expectedSelection: Sport[] }) {
+  const [sport, setSport] = useState<Sport>();
+
+  const changeSelection = (val: Sport) => {
+    expect(val).toBe(expectedSelection.shift());
+    setSport(val);
+  };
+
+  return (
+    <SelectSport
+      value={sport}
+      sports={[Sport.Tennis, Sport.Badminton]}
+      onChange={changeSelection}
+    />
+  );
+}
