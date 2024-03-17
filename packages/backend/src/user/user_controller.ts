@@ -229,6 +229,11 @@ export class UsersController extends ControllerWrap<User> {
       if (typeof res !== "string") return res;
       userCreation.profilePicture = res;
 
+      console.log({
+        email: userCreation.email,
+        isValid: EmailValidator.validate(userCreation.email),
+      });
+
       if (!EmailValidator.validate(userCreation.email)) {
         this.setStatus(400);
         return newAPIError("Email is invalid");
@@ -296,6 +301,10 @@ export class UsersController extends ControllerWrap<User> {
           return newAPIError("User already exists");
         }
 
+        console.log({
+          email: updateQuery.email,
+          isValid: EmailValidator.validate(updateQuery.email),
+        });
         if (!EmailValidator.validate(updateQuery.email)) {
           this.setStatus(400);
           return newAPIError("Email is invalid");

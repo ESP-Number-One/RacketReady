@@ -14,7 +14,7 @@ export function useViewNav() {
 
   return (newRoute: To, goingBack?: boolean) => {
     const options = {
-      state: { from: location?.state?.from ?? [] },
+      state: { from: location.state?.from ?? [] },
     };
 
     if (goingBack) {

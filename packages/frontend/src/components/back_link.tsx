@@ -2,8 +2,8 @@ import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import type { FontAwesomeIconProps } from "@fortawesome/react-fontawesome";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLocation } from "react-router-dom";
+import type { LocationState } from "../state/nav";
 import { Link } from "./link";
-import { LocationState } from "../state/nav";
 
 export function BackLink({
   className,

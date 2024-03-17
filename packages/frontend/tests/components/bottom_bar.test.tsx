@@ -1,12 +1,11 @@
-import { asFuncMock } from "@esp-group-one/test-helpers-base";
 import { render } from "@testing-library/react";
 import type { To } from "react-router-dom";
 import { BottomBar } from "../../src/components/bottom_bar.tsx";
-import { useViewNav } from "../../src/state/nav.ts";
+import { mockLinks } from "../helpers/mock.ts";
 
 jest.mock("../../src/state/nav");
-
-const mockedUseNav = asFuncMock(useViewNav);
+jest.mock("react-router-dom");
+const mockedUseNav = mockLinks();
 
 describe("BottomBar", () => {
   test("highlight current page", () => {
