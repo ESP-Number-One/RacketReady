@@ -198,31 +198,18 @@ function FeedImpl<Item extends ReactNode>({
   startPage = 0,
   pageSize = 20,
   children,
+  shouldSnap = false,
 }: {
   nextPage: FeedFunc<Item>;
   startPage?: number;
   pageSize?: number;
   children?: ReactNode[] | ReactNode;
+  shouldSnap?: boolean;
 }) {
   const [page, setPage] = useState(startPage);
   const [init, setInit] = useState(true);
   const [items, setItems] = useState<Record<string, Item[]>>({});
   const [state, setState] = useState(FeedState.Loading);
-
-  useEffect(() => {
-    const func = (e: KeyboardEvent) => {
-      console.log(e.code);
-      if (e.code === "KeyL" && state === FeedState.Waiting)
-        setState(FeedState.Loading);
-
-      if (e.code === "KeyR" && state !== FeedState.Loading)
-        setState(FeedState.Refresh);
-    };
-    document.addEventListener("keyup", func);
-    return () => {
-      document.removeEventListener("keyup", func);
-    };
-  }, [state]);
 
   useEffect(() => {
     setPage(0);
@@ -338,7 +325,7 @@ function FeedImpl<Item extends ReactNode>({
 
     const touchState = { startY: 0, set: false, delta: 0 };
     function start(this: HTMLDivElement, _: TouchEvent) {
-      // TODO: More stuff.
+      // This is in intentionally left blank.
     }
 
     function move(this: HTMLDivElement, e: TouchEvent) {
@@ -387,12 +374,37 @@ function FeedImpl<Item extends ReactNode>({
     };
   }, [scroller]);
 
+  // Scroll to load.
+  useEffect(() => {
+    if (!scroller.current) return;
+    const container = scroller.current;
+
+    function scrollHandler(this: HTMLDivElement, _: unknown) {
+      if ((this.scrollTop + this.clientHeight) / this.scrollHeight < 0.9)
+        return;
+
+      if (state !== FeedState.Waiting) return;
+
+      setState(FeedState.Loading);
+    }
+    container.addEventListener("scroll", scrollHandler);
+
+    return () => {
+      container.removeEventListener("scroll", scrollHandler);
+    };
+  }, [scroller, state]);
+
   return (
     <div
       className={`h-full overflow-y-scroll grid grid-flow-row ${
         isEmpty(items) || state ? "" : "auto-rows-max"
       } relative`}
       ref={scroller}
+      style={
+        shouldSnap
+          ? { scrollSnapType: "y mandatory", scrollSnapStop: "always" }
+          : {}
+      }
     >
       <div
         className={`justify-self-center overflow-hidden absolute`}

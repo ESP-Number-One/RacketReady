@@ -12,8 +12,6 @@ export function LeagueMatch({
   match: Match;
   players: Record<string, CensoredUser>;
 }) {
-  console.log({ match });
-
   const player1 = players[match.players[0].toString()];
   const player2 = players[match.players[1].toString()];
   const date = moment(match.date);

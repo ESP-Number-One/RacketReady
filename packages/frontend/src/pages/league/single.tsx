@@ -17,6 +17,7 @@ import moment from "moment";
 import {
   faBan,
   faCalendar,
+  faHandshake,
   faShareSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { API } from "../../state/auth";
@@ -109,6 +110,7 @@ export function SingleLeaguePage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [selectedRound, setSelectedRound] = useState(1);
+  const [isMember, setIsMember] = useState(false);
 
   if (id === undefined) {
     redirect("/me/leagues");
@@ -122,20 +124,36 @@ export function SingleLeaguePage() {
     return <>Error: not valid league id!</>;
   }
 
-  const { loading, error, ok } = useAsync(async () => ({
-    league: await api.league().getId(leagueId),
-    firstMatch: await api.match().find({
-      query: { league: leagueId },
-      sort: { date: Sort.ASC },
-      pageSize: 1,
-    }),
-    lastMatch: await api.match().find({
-      query: { league: leagueId },
-      sort: { date: Sort.DESC },
-      pageSize: 1,
-    }),
-    rounds: await api.league().rounds(leagueId),
-  })).await();
+  const { loading, error, ok } = useAsync(async () => {
+    await api
+      .user()
+      .me()
+      .then((me) => {
+        console.log({ me });
+        setIsMember(me.leagues.some((l) => l.equals(leagueId)));
+      });
+
+    return {
+      league: await api
+        .league()
+        .getId(leagueId)
+        .then((l) => {
+          setSelectedRound(l.round);
+          return l;
+        }),
+      firstMatch: await api.match().find({
+        query: { league: leagueId },
+        sort: { date: Sort.ASC },
+        pageSize: 1,
+      }),
+      lastMatch: await api.match().find({
+        query: { league: leagueId },
+        sort: { date: Sort.DESC },
+        pageSize: 1,
+      }),
+      rounds: await api.league().rounds(leagueId),
+    };
+  }).await();
 
   if (!ok) return (loading ?? error) as JSX.Element;
   const {
@@ -144,6 +162,7 @@ export function SingleLeaguePage() {
     lastMatch,
     rounds: { rounds },
   } = ok;
+
   let [firstDate, lastDate] = ["TBD", "TBD"];
 
   if (firstMatch.length && lastMatch.length) {
@@ -193,9 +212,32 @@ export function SingleLeaguePage() {
             >
               Share
             </Button>
-            <Button backgroundColor="bg-p-red-100" icon={<Icon icon={faBan} />}>
-              Leave
-            </Button>
+            {isMember ? (
+              <Button
+                backgroundColor="bg-p-red-100"
+                icon={<Icon icon={faBan} />}
+                onClick={() => {
+                  console.warn("Unimplemented!");
+                }}
+              >
+                Leave
+              </Button>
+            ) : (
+              <Button
+                backgroundColor="bg-p-blue"
+                icon={<Icon icon={faHandshake} />}
+                onClick={() => {
+                  void api
+                    .league()
+                    .join(leagueId)
+                    .then(() => {
+                      setIsMember(true);
+                    });
+                }}
+              >
+                Join
+              </Button>
+            )}
           </div>
           <div className="rounds grid grid-flow-col auto-cols-max gap-x-2 overflow-x-scroll pt-2 flex-shrink-0">
             {rounds.map((number, i) => (
