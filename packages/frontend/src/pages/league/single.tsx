@@ -7,7 +7,12 @@ import {
   useEffect,
 } from "react";
 import { redirect, useNavigate, useParams } from "react-router-dom";
-import { type CensoredUser, ObjectId, Sort } from "@esp-group-one/types";
+import {
+  type CensoredUser,
+  ObjectId,
+  Sort,
+  type Match,
+} from "@esp-group-one/types";
 import moment from "moment";
 import {
   faBan,
@@ -38,7 +43,7 @@ function RoundMatches({ round, league }: { round: number; league: ObjectId }) {
     async (pageStart: number) => {
       const matches = await api.match().find({
         query: { league, round },
-        sort: { date: Sort.ASC },
+        sort: { date: Sort.DESC },
         pageStart,
       });
 
@@ -59,14 +64,44 @@ function RoundMatches({ round, league }: { round: number; league: ObjectId }) {
         });
       }
 
-      return matches.map((match, i) => {
+      const cardify = (match: Match, i: number) => {
         return <LeagueMatch key={i} match={match} players={playerCache} />;
-      });
+      };
+
+      const now = moment();
+
+      const future = matches.filter((m) =>
+        moment(m.date).add(1, "hour").isAfter(now),
+      );
+
+      const past = matches.filter((m) =>
+        moment(m.date).add(1, "hour").isBefore(now),
+      );
+
+      future.sort((a, b) => moment(a.date).diff(moment(b.date)));
+      past.sort((a, b) => moment(b.date).diff(moment(a.date)));
+      return {
+        past: past.map(cardify),
+        future: future.map(cardify),
+      };
     },
     [round],
   );
 
-  return <Feed next={nextPage} />;
+  return (
+    <Feed nextPage={nextPage}>
+      <Feed.Section section="future">
+        <div className=" tracking-widest uppercase font-bold p-2 text-p-grey-900">
+          future matches
+        </div>
+      </Feed.Section>
+      <Feed.Section section="past">
+        <div className=" tracking-widest uppercase font-bold p-2 text-p-grey-900">
+          past matches
+        </div>
+      </Feed.Section>
+    </Feed>
+  );
 }
 
 export function SingleLeaguePage() {
@@ -134,11 +169,11 @@ export function SingleLeaguePage() {
             {lastDate}
           </div>
         </div>
-        <div className="p-4 flex flex-col grow">
+        <div className="p-4 pb-0 flex flex-col grow min-h-0">
           <Button
             backgroundColor="bg-p-grey-200"
             onClick={() => {
-              navigate("/me/matches", { state: { filter: { match: id } } });
+              navigate("/", { state: { filter: { match: id } } });
             }}
             icon={<Icon icon={faCalendar} />}
           >
@@ -162,7 +197,7 @@ export function SingleLeaguePage() {
               Leave
             </Button>
           </div>
-          <div className="rounds grid grid-flow-col auto-cols-max gap-x-2 overflow-x-scroll py-2">
+          <div className="rounds grid grid-flow-col auto-cols-max gap-x-2 overflow-x-scroll pt-2 flex-shrink-0">
             {rounds.map((number, i) => (
               <div
                 key={i}
@@ -182,7 +217,7 @@ export function SingleLeaguePage() {
           <div className="divider w-full flex my-1">
             <div className="spacer h-[4px] flex-grow bg-p-grey-900" />
           </div>
-          <div className="flex-grow p-2">
+          <div className="flex-grow p-2 overflow-hidden">
             <RoundMatches round={selectedRound} league={leagueId} />
           </div>
         </div>
