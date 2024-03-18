@@ -1,6 +1,7 @@
 import { type APIClient } from "@esp-group-one/api-client";
 import * as React from "react";
 import * as Auth0 from "@auth0/auth0-react";
+import { getUser } from "@esp-group-one/types/build/tests/helpers/utils";
 import { partiallyImpl } from "../helpers/utils";
 import { isNewUser, useAPIClient } from "../../src/lib/auth";
 
@@ -12,7 +13,17 @@ describe("client-side auth tests", () => {
     Object.freeze({
       user() {
         return {
-          me: () => Promise.resolve({ _id: "1", name: "Bot1" }),
+          me: () => Promise.resolve(getUser({})),
+        };
+      },
+    }),
+  );
+
+  const NO_SPORTS_USER_EXISTS = partiallyImpl<APIClient>(
+    Object.freeze({
+      user() {
+        return {
+          me: () => Promise.resolve(getUser({ sports: [] })),
         };
       },
     }),
@@ -54,6 +65,7 @@ describe("client-side auth tests", () => {
 
   test("isNewUser", async () => {
     expect(await isNewUser(USER_EXISTS)).toBe(false);
+    expect(await isNewUser(NO_SPORTS_USER_EXISTS)).toBe(true);
     expect(await isNewUser(USER_NOT_EXISTS)).toBe(true);
   });
 });

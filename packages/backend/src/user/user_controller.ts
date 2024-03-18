@@ -14,6 +14,7 @@ import type {
   CensoredUser,
   DateTimeString,
   Error,
+  SportInfo,
   User,
   UserMatchReturn,
   WithError,
@@ -309,6 +310,26 @@ export class UsersController extends ControllerWrap<User> {
         .then(() => newAPISuccess(undefined));
 
       return res;
+    });
+  }
+
+  @Post("me/sports/add")
+  public async addSport(
+    @Body() { sports }: { sports: SportInfo[] },
+    @Request() req: express.Request,
+  ): Promise<WithError<undefined>> {
+    return this.withUser(req, async (currUser) => {
+      const sportsAdded = sports.map((s) => s.sport);
+      const unchangedSports = currUser.sports.filter(
+        (s) => !sportsAdded.includes(s.sport),
+      );
+      const users = await this.getCollection();
+
+      const infoToSet = [...unchangedSports, ...sports];
+
+      await users.edit(currUser._id, { $set: { sports: infoToSet } });
+
+      return newAPISuccess(undefined);
     });
   }
 

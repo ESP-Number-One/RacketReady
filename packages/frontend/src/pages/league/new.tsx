@@ -15,6 +15,7 @@ export function NewLeaguePage() {
   const viewNav = useViewNav();
 
   const [name, setName] = useState("");
+  const [sport, setSport] = useState<Sport | undefined>();
   const [visibility, setVisibility] = useState(true);
   const [profilePic, setProfilePic] = useState("");
 
@@ -44,13 +45,16 @@ export function NewLeaguePage() {
       <Form.Body>
         <SelectSport
           className="mt-2"
-          sports={[Sport.Tennis, Sport.Badminton, Sport.Squash]}
-          onChange={(sport: Sport) => {
-            console.log(sport);
-          }}
+          sports={Object.keys(Sport) as Sport[]}
+          onChange={setSport}
+          value={sport}
         />
 
-        <ProfilePicturePicker onChange={setProfilePic} className="mt-2" />
+        <ProfilePicturePicker
+          onChange={setProfilePic}
+          className="mt-2"
+          required
+        />
 
         <Input
           className="mt-2"

@@ -96,6 +96,7 @@ export function NewMatchPage() {
           className="mt-2"
           sports={ok.user.sports.map((info) => info.sport)}
           onChange={setSport}
+          value={sport}
         />
         {sport && (
           <>

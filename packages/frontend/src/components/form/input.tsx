@@ -11,7 +11,7 @@ interface InputProps {
   placeholder?: string;
   required?: boolean;
   textColor?: string;
-  type: "text" | "textarea" | "time" | "date";
+  type: "text" | "email" | "textarea" | "time" | "date";
   value: string;
 }
 
@@ -36,7 +36,7 @@ export function Input({
 
   // Common styles for all input types
   const commonStyles = `${
-    icon ? "pl-3" : "pl-3"
+    icon ? "pl-8" : "pl-3"
   } font-body text-lg font-bold text-white w-full bg-transparent focus:outline-none
   inline-flex items-center w-full m-0 focus:placeholder-white`;
 
@@ -44,6 +44,7 @@ export function Input({
 
   switch (type) {
     case "text":
+    case "email":
       inp = (
         <input
           className={commonStyles}
@@ -52,7 +53,7 @@ export function Input({
           onChange={handleInputChange}
           placeholder={placeholder}
           required={required}
-          type="text"
+          type={type}
           value={value}
         />
       );
@@ -100,10 +101,10 @@ export function Input({
 
   return (
     <div
-      className={`${className} ${backgroundColor} ${textColor} relative rounded-lg p-2`}
+      className={`${className} ${backgroundColor} ${textColor} relative rounded-lg`}
     >
       {icon && (
-        <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
+        <div className="absolute left-2 top-1/2 transform -translate-y-1/2 mr-2">
           {icon}
         </div>
       )}
