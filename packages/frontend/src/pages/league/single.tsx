@@ -1,11 +1,4 @@
-import {
-  useContext,
-  type JSX,
-  useState,
-  useMemo,
-  useCallback,
-  useEffect,
-} from "react";
+import { useContext, type JSX, useState, useMemo, useCallback } from "react";
 import { redirect, useNavigate, useParams } from "react-router-dom";
 import {
   type CensoredUser,
@@ -35,10 +28,6 @@ function RoundMatches({ round, league }: { round: number; league: ObjectId }) {
     () => ({}) as Record<string, CensoredUser>,
     [round],
   );
-
-  useEffect(() => {
-    console.log("ROUND ", round);
-  }, [round]);
 
   const nextPage = useCallback(
     async (pageStart: number) => {
@@ -203,7 +192,9 @@ export function SingleLeaguePage() {
               icon={<Icon icon={faShareSquare} />}
               onClick={() => {
                 // Only works on phones.
-                void navigator.share({
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- NOT ALWAYS FALSE, ESLINT!
+                if (!window.navigator) return;
+                void window.navigator.share({
                   url: location.href,
                   title: league.name,
                   text: `Checkout "${league.name}" on RacketReady!`,

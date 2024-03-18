@@ -332,7 +332,7 @@ function FeedImpl<Item extends ReactNode>({
       if (this.scrollTop !== 0) return;
       if (e.targetTouches.length === 0) return;
 
-      const touch = e.targetTouches.item(0) as unknown as Touch;
+      const touch = e.targetTouches[0] as unknown as Touch;
 
       if (!touchState.set) {
         touchState.set = true;
@@ -346,7 +346,6 @@ function FeedImpl<Item extends ReactNode>({
         touchState.startY = 0;
         return;
       }
-
       setRefreshY(-touchState.delta);
     }
 
