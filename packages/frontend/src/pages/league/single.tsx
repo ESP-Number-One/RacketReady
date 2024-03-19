@@ -118,7 +118,6 @@ export function SingleLeaguePage() {
       .user()
       .me()
       .then((me) => {
-        console.log({ me });
         setIsMember(me.leagues.some((l) => l.equals(leagueId)));
       });
 
