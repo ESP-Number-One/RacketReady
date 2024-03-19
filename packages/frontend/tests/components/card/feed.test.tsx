@@ -117,7 +117,9 @@ describe("Slotting", () => {
       const container = await act(() => {
         const feed = render(
           <Feed nextPage={emptyFn}>
-            <Feed.Empty>Empty!</Feed.Empty>
+            <Feed.Empty>
+              <span className="red">Empty!</span>
+            </Feed.Empty>
           </Feed>,
         );
 
@@ -130,7 +132,49 @@ describe("Slotting", () => {
       expect(container).toHaveTextContent("Empty!");
     });
 
+    test("Empty (TEXT)", async () => {
+      const container = await act(() => {
+        const feed = render(
+          <Feed nextPage={emptyFn}>
+            <Feed.Empty>Empty!</Feed.Empty>
+          </Feed>,
+        );
+
+        return feed.container;
+      });
+
+      await act(() => wait(100));
+
+      expect(emptyFn).toHaveBeenCalled();
+
+      const defaultBox = container.querySelector(
+        ".flex.flex-row.justify-center.h-full > .p-2.font-title.self-center.text-p-grey-100",
+      );
+      expect(defaultBox).toBeInTheDocument();
+      expect(defaultBox).toHaveTextContent("Empty!");
+    });
+
     test("End", async () => {
+      const container = await act(() => {
+        const feed = render(
+          <Feed nextPage={singleFn}>
+            <Feed.End>
+              {" "}
+              <span className="red">End of the line.</span>
+            </Feed.End>
+          </Feed>,
+        );
+
+        return feed.container;
+      });
+
+      await act(() => wait(100));
+
+      expect(singleFn).toHaveBeenCalled();
+      expect(container).toHaveTextContent("End of the line.");
+    });
+
+    test("End (TEXT)", async () => {
       const container = await act(() => {
         const feed = render(
           <Feed nextPage={singleFn}>
@@ -143,8 +187,13 @@ describe("Slotting", () => {
 
       await act(() => wait(100));
 
-      expect(singleFn).toHaveBeenCalled();
-      expect(container).toHaveTextContent("End of the line.");
+      expect(emptyFn).toHaveBeenCalled();
+
+      const defaultBox = container.querySelector(
+        ".flex.flex-row.justify-center.h-full > .p-2.font-title.h-full.text-p-grey-100",
+      );
+      expect(defaultBox).toBeInTheDocument();
+      expect(defaultBox).toHaveTextContent("End of the line.");
     });
 
     test("Section (Rendering)", () => {

@@ -147,6 +147,14 @@ function Section({
  * ```
  */
 function Empty({ children }: { children: ReactNode | ReactNode[] }) {
+  if (typeof children === "string") {
+    return (
+      <div className="flex flex-row justify-center h-full">
+        <p className="p-2 font-title self-center text-p-grey-100">{children}</p>
+      </div>
+    );
+  }
+
   return children;
 }
 
@@ -166,6 +174,12 @@ function Empty({ children }: { children: ReactNode | ReactNode[] }) {
  * ```
  */
 function EndF({ children }: { children: ReactNode | ReactNode[] }) {
+  if (typeof children === "string")
+    return (
+      <div className="flex flex-row justify-center h-full">
+        <p className="p-2 font-title h-full text-p-grey-100">{children}</p>
+      </div>
+    );
   return children;
 }
 
@@ -265,24 +279,12 @@ function FeedImpl<Item extends ReactNode>({
 
   const empty = Slot.findOrDefault(
     children,
-    <Empty key={`empty-${Math.random()}`}>
-      <div className="flex flex-row justify-center h-full">
-        <p className="p-2 font-title self-center text-p-grey-100">
-          Couldn&apos;t find anything.
-        </p>
-      </div>
-    </Empty>,
+    <Empty key={`empty-${Math.random()}`}>Couldn&apos;t find anything.</Empty>,
   );
 
   const end = Slot.findOrDefault(
     children,
-    <EndF key={`end-${Math.random()}`}>
-      <div className="flex flex-row justify-center h-full">
-        <p className="p-2 font-title h-full text-p-grey-100">
-          You&apos;ve reached the end.
-        </p>
-      </div>
-    </EndF>,
+    <EndF key={`end-${Math.random()}`}>You&apos;ve reached the end.</EndF>,
   );
 
   const slots = useMemo(() => {
