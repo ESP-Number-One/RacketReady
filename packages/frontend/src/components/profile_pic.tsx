@@ -1,7 +1,7 @@
 import { AbilityLevel, type Sport, type SportInfo } from "@esp-group-one/types";
 import { useMemo, useState } from "react";
-import { Tag } from "./tags";
 import { twMerge } from "tailwind-merge";
+import { Tag } from "./tags";
 
 interface Info {
   displayAbility?: boolean;

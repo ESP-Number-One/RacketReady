@@ -1,9 +1,9 @@
 import type { SportInfo } from "@esp-group-one/types";
 import { AbilityLevel, Sport } from "@esp-group-one/types";
 import { useCallback } from "react";
+import { twMerge } from "tailwind-merge";
 import { abilityToColour } from "../../util/sport";
 import { SelectSport } from "./form/select_sports";
-import { twMerge } from "tailwind-merge";
 
 interface SportsAddMenuProps {
   sports: SportInfo[];
