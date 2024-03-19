@@ -72,3 +72,17 @@ describe("getInviteCode", () => {
 
   runErrorTests(endpoint, () => api.getInviteCode(id));
 });
+
+describe("nextRound", () => {
+  const id = OIDS[0];
+  const endpoint = `league/${IDS[0]}/round/next`;
+
+  test("normal", async () => {
+    fetchMockEndpointOnce(endpoint, newAPISuccess(undefined), { query: {} });
+
+    await expect(api.nextRound(id)).resolves.toBe(undefined);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  runErrorTests(endpoint, () => api.nextRound(id));
+});

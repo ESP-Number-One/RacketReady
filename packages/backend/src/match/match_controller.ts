@@ -377,7 +377,7 @@ export class MatchsController extends ControllerWrap<Match> {
           );
         }
 
-        let match: OptionalId<Match> = {
+        const match: OptionalId<Match> = {
           status: MatchStatus.Request,
           messages: [],
           owner: user._id,
@@ -385,20 +385,6 @@ export class MatchsController extends ControllerWrap<Match> {
           date: proposal.date,
           sport: proposal.sport,
         };
-
-        // TODO: Consider removing when we replace with the auto league assignment
-        if ("league" in proposal) {
-          if (!hasId(user.leagues, proposal.league)) {
-            this.setStatus(400);
-            return newAPIError("You must be in the league to create a match");
-          }
-
-          match = {
-            ...match,
-            league: proposal.league,
-            round: proposal.round,
-          };
-        }
 
         return this.create(match);
       });

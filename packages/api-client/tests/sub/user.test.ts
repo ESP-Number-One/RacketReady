@@ -1,6 +1,10 @@
 import { beforeAll, beforeEach, describe, expect, test } from "@jest/globals";
-import type { QueryOptions } from "@esp-group-one/types";
-import { newAPISuccess } from "@esp-group-one/types";
+import type {
+  QueryOptions,
+  SportInfo,
+  UserMatchReturn,
+} from "@esp-group-one/types";
+import { AbilityLevel, Sport, newAPISuccess } from "@esp-group-one/types";
 import { getUser, OIDS } from "@esp-group-one/test-helpers";
 import { getAvailability } from "@esp-group-one/types/build/tests/helpers/utils.js";
 import { fetchMockEndpointOnce, runErrorTests } from "../helpers/utils.js";
@@ -33,6 +37,25 @@ describe("addAvailability", () => {
   });
 
   runErrorTests(endpoint, () => api.addAvailability(availability));
+});
+
+describe("addSports", () => {
+  const sports: SportInfo[] = [
+    { sport: Sport.Squash, ability: AbilityLevel.Advanced },
+    { sport: Sport.Badminton, ability: AbilityLevel.Beginner },
+  ];
+  const endpoint = "user/me/sports/add";
+
+  test("Normal", async () => {
+    fetchMockEndpointOnce(endpoint, newAPISuccess(undefined), {
+      body: { sports },
+    });
+
+    await expect(api.addSports(...sports)).resolves.toStrictEqual(undefined);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  runErrorTests(endpoint, () => api.addSports(sports[0]));
 });
 
 describe("edit", () => {
@@ -68,6 +91,23 @@ describe("findAvailabilityWith", () => {
   });
 
   runErrorTests(endpoint, () => api.findAvailabilityWith(id, query));
+});
+
+describe("recommendations", () => {
+  const endpoint = `user/recommendations`;
+  const result: UserMatchReturn = [
+    { u: getUser({}), sport: Sport.Tennis },
+    { u: getUser({}), sport: Sport.Badminton },
+  ];
+
+  test("Normal", async () => {
+    fetchMockEndpointOnce(endpoint, newAPISuccess(result));
+
+    await expect(api.recommendations()).resolves.toStrictEqual(result);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  runErrorTests(endpoint, () => api.recommendations());
 });
 
 describe("me", () => {

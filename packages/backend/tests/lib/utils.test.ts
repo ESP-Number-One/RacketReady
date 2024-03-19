@@ -2,12 +2,13 @@ import { describe, expect, test } from "@jest/globals";
 import { ObjectId } from "@esp-group-one/types";
 import type { Request } from "express";
 import type { VerifyJwtResult } from "access-token-jwt";
-import { IDS, addUser } from "@esp-group-one/test-helpers";
+import { IDS, addUser, compareBag } from "@esp-group-one/test-helpers";
 import {
   getUserId,
   mapUser,
   safeEqual,
   setUserId,
+  shuffle,
 } from "../../src/lib/utils.js";
 import { setup } from "../helpers/controller.js";
 
@@ -94,4 +95,14 @@ describe("safeEqual", () => {
       expect(safeEqual(a, b)).toBe(res);
     });
   });
+});
+
+test("shuffle", () => {
+  const unshuffled = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+
+  const shuffled = [...unshuffled];
+  shuffle(shuffled);
+
+  expect(shuffled).not.toStrictEqual(unshuffled);
+  compareBag(shuffled, unshuffled, (a, b) => a - b);
 });

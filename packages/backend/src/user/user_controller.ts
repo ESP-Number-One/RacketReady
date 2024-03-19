@@ -11,9 +11,11 @@ import {
   UserPageOptions,
 } from "@esp-group-one/types";
 import type {
+  AbilityLevel,
   CensoredUser,
   DateTimeString,
   Error,
+  Sport,
   SportInfo,
   User,
   UserMatchReturn,
@@ -335,13 +337,22 @@ export class UsersController extends ControllerWrap<User> {
     @Request() req: express.Request,
   ): Promise<WithError<undefined>> {
     return this.withUser(req, async (currUser) => {
-      const sportsAdded = sports.map((s) => s.sport);
+      // De-duplicate on sports
+      const sportsObj = Object.fromEntries(
+        sports.map((s) => [s.sport, s.ability]),
+      ) as Record<Sport, AbilityLevel>;
+      const sportsAdded = Object.keys(sportsObj) as Sport[];
       const unchangedSports = currUser.sports.filter(
         (s) => !sportsAdded.includes(s.sport),
       );
       const users = await this.getCollection();
 
-      const infoToSet = [...unchangedSports, ...sports];
+      const infoToSet = [
+        ...unchangedSports,
+        ...Object.entries(sportsObj).map(
+          ([sport, ability]) => ({ sport, ability }) as SportInfo,
+        ),
+      ];
 
       await users.edit(currUser._id, { $set: { sports: infoToSet } });
 

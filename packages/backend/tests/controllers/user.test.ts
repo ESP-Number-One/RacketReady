@@ -2,6 +2,7 @@ import type {
   Success,
   User,
   UserCreation,
+  UserMatchReturn,
   UserPageOptions,
 } from "@esp-group-one/types";
 import {
@@ -14,6 +15,8 @@ import { describe, expect, test } from "@jest/globals";
 import { generateRandomString } from "ts-randomstring/lib/index.js";
 import {
   addUser,
+  compareBag,
+  idCmp,
   IDS,
   OIDS,
   setupAvailability,
@@ -23,6 +26,7 @@ import {
   getAvailability,
 } from "@esp-group-one/types/build/tests/helpers/utils.js";
 import moment from "moment";
+import { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
 import { app } from "../../src/app.js";
 import {
   expectAPIRes,
@@ -79,12 +83,28 @@ describe("new", () => {
         email,
       } as UserCreation);
 
-    console.log(res.body);
-
     expect(res.statusCode).toBe(409);
     expect(res.body).toStrictEqual({
       success: false,
       error: "User already exists",
+    });
+  });
+
+  test("invalid email", async () => {
+    const email =
+      "test.....askfhaslkjfhpiwuh ipjbpjsnfdjanflkjb lfksjh fdlaksj";
+    await addUser(db.get(), auth0Id, { email });
+    const res = await requestWithAuth(app, "github|111111")
+      .post("/user/new")
+      .send({
+        ...creation,
+        email,
+      } as UserCreation);
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toStrictEqual({
+      success: false,
+      error: "Email is invalid",
     });
   });
 
@@ -174,6 +194,86 @@ describe("availability with others", () => {
   });
 });
 
+describe("sports/add", () => {
+  const user = new TestUser(db, undefined, { sports: [] });
+
+  test("duplicate sports", async () => {
+    const sports = [
+      { sport: Sport.Squash, ability: AbilityLevel.Beginner },
+      { sport: Sport.Squash, ability: AbilityLevel.Advanced },
+    ];
+
+    const res = await user.request(app).post("/user/me/sports/add").send({
+      sports,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const u = await user.update();
+    expect(u.sports).toStrictEqual([sports[1]]);
+  });
+
+  test("update previous sport", async () => {
+    await user.edit({
+      $set: {
+        sports: [{ sport: Sport.Squash, ability: AbilityLevel.Beginner }],
+      },
+    });
+
+    const sports = [
+      { sport: Sport.Squash, ability: AbilityLevel.Advanced },
+      { sport: Sport.Tennis, ability: AbilityLevel.Advanced },
+    ];
+
+    const res = await user.request(app).post("/user/me/sports/add").send({
+      sports,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const u = await user.update();
+    expect(u.sports).toStrictEqual(sports);
+  });
+
+  test("has sports", async () => {
+    const origSports = [
+      { sport: Sport.Squash, ability: AbilityLevel.Beginner },
+    ];
+
+    await user.edit({
+      $set: {
+        sports: origSports,
+      },
+    });
+
+    const sports = [
+      { sport: Sport.Tennis, ability: AbilityLevel.Beginner },
+      { sport: Sport.Badminton, ability: AbilityLevel.Advanced },
+    ];
+
+    const res = await user.request(app).post("/user/me/sports/add").send({
+      sports,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const u = await user.update();
+    expect(u.sports).toStrictEqual([...origSports, ...sports]);
+  });
+
+  test("Success", async () => {
+    const sports = [
+      { sport: Sport.Squash, ability: AbilityLevel.Advanced },
+      { sport: Sport.Tennis, ability: AbilityLevel.Advanced },
+    ];
+
+    const res = await user.request(app).post("/user/me/sports/add").send({
+      sports,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const u = await user.update();
+    expect(u.sports).toStrictEqual(sports);
+  });
+});
+
 describe("edit", () => {
   const user = new TestUser(db);
 
@@ -193,6 +293,25 @@ describe("edit", () => {
     expect(res.body).toStrictEqual({
       success: false,
       error: "User already exists",
+    });
+  });
+
+  test("duplicate email", async () => {
+    const email = "test@bot.com";
+    await addUser(db.get(), "github|111111", { email });
+    const res = await user
+      .request(app)
+      .post("/user/me/edit")
+      .send({
+        description: "Hi I'm 100% a real person",
+        email: "testkjashl kjhfl kjashfl kjhelk jhaslkjd f",
+        name: "Alex Dasher",
+      } as UserCreation);
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toStrictEqual({
+      success: false,
+      error: "Email is invalid",
     });
   });
 
@@ -226,9 +345,9 @@ describe("edit", () => {
 });
 
 describe("find", () => {
-  test("with query", async () => {
-    await addUser(db.get(), auth0Id);
+  const user = new TestUser(db, auth0Id);
 
+  test("with query", async () => {
     const names = ["Test bot 1", "Test Bot 2", "Test bot 3"];
     const promises = [];
     for (const n of names) {
@@ -237,7 +356,8 @@ describe("find", () => {
 
     const users = await Promise.all(promises);
 
-    const res = await requestWithAuth(app, auth0Id)
+    const res = await user
+      .request(app)
       .post("/user/find")
       .send({ query: { profileText: "bot 1$" } } as UserPageOptions);
 
@@ -250,7 +370,7 @@ describe("find", () => {
 
   test("with sports", async () => {
     await db.reset();
-    await addUser(db.get(), auth0Id);
+    await user.setup();
 
     const sports = [Sport.Tennis, Sport.Squash, Sport.Badminton];
     const promises = [];
@@ -264,9 +384,8 @@ describe("find", () => {
 
     const users = await Promise.all(promises);
 
-    console.log(await (await db.get().users()).find({}));
-
-    const res = await requestWithAuth(app, auth0Id)
+    const res = await user
+      .request(app)
       .post("/user/find")
       .send({ query: { sports: Sport.Tennis } } as UserPageOptions);
 
@@ -278,8 +397,6 @@ describe("find", () => {
   });
 
   test("with multi", async () => {
-    await addUser(db.get(), auth0Id);
-
     const names = [
       {
         name: "Test bot 1",
@@ -301,7 +418,8 @@ describe("find", () => {
 
     const users = await Promise.all(promises);
 
-    const res = await requestWithAuth(app, auth0Id)
+    const res = await user
+      .request(app)
       .post("/user/find")
       .send({
         query: { profileText: "bot 1$", sports: Sport.Tennis },
@@ -312,6 +430,95 @@ describe("find", () => {
       success: true,
       data: [censorUser(users[0])],
     });
+  });
+
+  test("with crash", async () => {
+    const spy = jest
+      .spyOn(CollectionWrap.prototype, "page")
+      .mockImplementation(() => {
+        return Promise.reject(new Error("Panic"));
+      });
+
+    const res = await user
+      .request(app)
+      .post("/user/find")
+      .send({
+        query: { profileText: "bot 1$", sports: Sport.Tennis },
+      } as UserPageOptions);
+
+    // Restore the mock before we start checking (as it will break other tests)
+    expect(spy).toHaveBeenCalled();
+    spy.mockRestore();
+
+    expect(res.status).toBe(500);
+    expect(res.body).toStrictEqual({
+      success: false,
+      error: "Failed to get obj",
+    });
+  });
+});
+
+describe("Recommendations", () => {
+  const user = new TestUser(db, undefined, {
+    sports: [
+      { sport: Sport.Tennis, ability: AbilityLevel.Beginner },
+      { sport: Sport.Badminton, ability: AbilityLevel.Advanced },
+    ],
+  });
+
+  test("No matches", async () => {
+    await setupAvailability(db.get(), [[user.id()]]);
+
+    const res = await user.request(app).post("/user/recommendations");
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toStrictEqual({ data: [], success: true });
+  });
+
+  test("Has matches", async () => {
+    const data = [
+      await addUser(db.get(), undefined, {
+        sports: [{ sport: Sport.Tennis, ability: AbilityLevel.Beginner }],
+      }),
+      await addUser(db.get(), undefined, {
+        sports: [
+          { sport: Sport.Tennis, ability: AbilityLevel.Beginner },
+          { sport: Sport.Badminton, ability: AbilityLevel.Advanced },
+        ],
+      }),
+      await addUser(db.get(), undefined, {
+        sports: [{ sport: Sport.Tennis, ability: AbilityLevel.Advanced }],
+      }),
+      await addUser(db.get(), undefined, {
+        sports: [{ sport: Sport.Squash, ability: AbilityLevel.Beginner }],
+      }),
+      await addUser(db.get(), undefined, {
+        sports: [{ sport: Sport.Tennis, ability: AbilityLevel.Beginner }],
+      }),
+    ];
+
+    await setupAvailability(db.get(), [
+      [user.id(), ...data.slice(0, -1).map((u) => u._id)],
+      [data[4]._id],
+    ]);
+
+    const res = await user.request(app).post("/user/recommendations");
+
+    expect(res.statusCode).toBe(200);
+    const body = ObjectId.fromObj(res.body) as Success<UserMatchReturn>;
+    expect(body.success).toBe(true);
+    compareBag(
+      body.data,
+      [
+        { u: censorUser(data[0]), sport: Sport.Tennis },
+        { u: censorUser(data[1]), sport: Sport.Tennis },
+        { u: censorUser(data[1]), sport: Sport.Badminton },
+      ],
+      (a, b) =>
+        a.u._id.equals(b.u._id)
+          ? a.sport.localeCompare(b.sport)
+          : idCmp(a.u, b.u),
+    );
   });
 });
 

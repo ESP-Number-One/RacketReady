@@ -190,7 +190,27 @@ describe("create", () => {
     });
   });
 
-  // test("errored", async () => {});
+  test("with crash", async () => {
+    const spy = jest
+      .spyOn(CollectionWrap.prototype, "insert")
+      .mockImplementation(() => {
+        return Promise.reject(new Error("Panic"));
+      });
+
+    const obj = {
+      name: "Hi there",
+      num: 23,
+    };
+
+    await expect(controller.create(obj)).resolves.toStrictEqual({
+      success: false,
+      error: "Failed to create new obj",
+    });
+    expect(controller.getStatus()).toBe(500);
+
+    expect(spy).toHaveBeenCalled();
+    spy.mockRestore();
+  });
 });
 
 describe("withUserId", () => {
