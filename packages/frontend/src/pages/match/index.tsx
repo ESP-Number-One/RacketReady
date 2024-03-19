@@ -18,6 +18,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSearchParams } from "react-router-dom";
 import moment from "moment";
+import { twMerge } from "tailwind-merge";
 import { useViewNav } from "../../state/nav";
 import { Button } from "../../components/button";
 import { Tag } from "../../components/tags";
@@ -195,7 +196,7 @@ export function SingleMatchPage(): ReactNode {
       <Page.Body flexCol>
         <div className="flex-none">
           <ErrorDiv className="mt-2" error={myError} />
-          <div className={`pt-2`}>
+          <div className="pt-2">
             <Button
               backgroundColor="bg-p-grey-100 mt-2"
               icon={<FontAwesomeIcon icon={faUser} />}
@@ -234,9 +235,10 @@ export function SingleMatchPage(): ReactNode {
             return (
               <div
                 key={m.date}
-                className={`flex w-full pt-1 ${
-                  isIncoming ? "justify-start" : "justify-end"
-                }`}
+                className={twMerge(
+                  "flex w-full pt-1",
+                  isIncoming ? "justify-start" : "justify-end",
+                )}
               >
                 <Message isIncoming={isIncoming} message={m.text} />
               </div>

@@ -1,3 +1,5 @@
+import { twMerge } from "tailwind-merge";
+
 /**
  * Once given a score in the form:
  *
@@ -15,9 +17,10 @@ export function VersusMatchCard(props: { score: Record<string, number> }) {
   return (
     <div className="bg-gray-400 text-center w-min rounded-lg text-white overflow-hidden">
       <div
-        className={`${
-          secondValue <= firstValue ? "bg-p-green-200" : ""
-        } flex justify-between whitespace-nowrap text-xl font-bold items-center`}
+        className={twMerge(
+          "flex justify-between whitespace-nowrap text-xl font-bold items-center",
+          secondValue <= firstValue ? "bg-p-green-200" : "",
+        )}
       >
         <p className="m-2">{firstKey}</p>
         <p className="ml-2 p-2">{firstValue}</p>
@@ -28,9 +31,10 @@ export function VersusMatchCard(props: { score: Record<string, number> }) {
         <div className="bg-white h-1" />
       </div>
       <div
-        className={`${
-          firstValue <= secondValue ? "bg-p-green-200" : ""
-        } flex justify-between whitespace-nowrap text-xl font-bold items-center`}
+        className={twMerge(
+          `flex justify-between whitespace-nowrap text-xl font-bold items-center`,
+          firstValue <= secondValue ? "bg-p-green-200" : "",
+        )}
       >
         <p className="m-2">{secondKey}</p>
         <p className="ml-2 p-2">{secondValue}</p>

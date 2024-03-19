@@ -1,3 +1,5 @@
+import { twMerge } from "tailwind-merge";
+
 export function ErrorDiv({
   className = "",
   error,
@@ -9,7 +11,10 @@ export function ErrorDiv({
 
   return (
     <div
-      className={`${className} flex items-center p-4 text-sm text-red-800 rounded-lg bg-red-50 w-full`}
+      className={twMerge(
+        `flex items-center p-4 text-sm text-red-800 rounded-lg bg-red-50 w-full`,
+        className,
+      )}
       role="alert"
     >
       <span className="font-medium">{error}</span>

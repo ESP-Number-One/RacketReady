@@ -135,7 +135,7 @@ export function SetAvailabilityBody({
               />
             </div>
             <select
-              className={`flex-auto text-white font-body text-2xl font-bold bg-p-grey-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg px-5 py-2.5 text-center inline-flex items-center w-full`}
+              className="flex-auto text-white font-body text-2xl font-bold bg-p-grey-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg px-5 py-2.5 text-center inline-flex items-center w-full"
               onChange={(e) => {
                 setInfo({ ...info, recurringUnit: e.target.value });
               }}

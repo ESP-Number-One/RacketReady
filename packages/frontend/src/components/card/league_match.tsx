@@ -4,6 +4,7 @@ import {
   MatchStatus,
 } from "@esp-group-one/types";
 import moment from "moment";
+import { twMerge } from "tailwind-merge";
 
 export function LeagueMatch({
   match,
@@ -38,22 +39,24 @@ export function LeagueMatch({
       {match.status === MatchStatus.Complete ? (
         <>
           <div
-            className={`col-start-3 col-end-4 row-start-1 row-end-2 p-2 px-4 text-3xl font-bold font-title flex justify-center items-end ${
+            className={twMerge(
+              "col-start-3 col-end-4 row-start-1 row-end-2 p-2 px-4 text-3xl font-bold font-title flex justify-center items-end",
               match.score[player1._id.toString()] >
-              match.score[player2._id.toString()]
+                match.score[player2._id.toString()]
                 ? "bg-p-green-100"
-                : ""
-            }`}
+                : "",
+            )}
           >
             {match.score[player1._id.toString()]}
           </div>
           <div
-            className={`col-start-3 col-end-4 row-start-3 row-end-4 p-2 px-4 text-3xl font-bold font-title flex justify-center items-end ${
+            className={twMerge(
+              "col-start-3 col-end-4 row-start-3 row-end-4 p-2 px-4 text-3xl font-bold font-title flex justify-center items-end",
               match.score[player2._id.toString()] >
-              match.score[player1._id.toString()]
+                match.score[player1._id.toString()]
                 ? "bg-p-green-100"
-                : ""
-            }`}
+                : "",
+            )}
           >
             {match.score[player2._id.toString()]}
           </div>

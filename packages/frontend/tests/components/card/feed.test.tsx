@@ -242,7 +242,6 @@ describe("General", () => {
     await act(() => wait(100));
 
     expect(twice).toHaveBeenCalledTimes(2);
-    // console.log(prettyDOM(scroller));
   });
 
   const partialTouch = (p: Partial<Touch>) => {

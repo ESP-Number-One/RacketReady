@@ -1,4 +1,4 @@
-import { getByText, prettyDOM, render } from "@testing-library/react"; //should pass all tests
+import { getByText, render } from "@testing-library/react"; //should pass all tests
 import "@testing-library/jest-dom";
 import { MatchStatus, ObjectId } from "@esp-group-one/types";
 import {
@@ -28,8 +28,6 @@ test("Without scores", () => {
 
   expect(base).toHaveTextContent("User A");
   expect(base).toHaveTextContent("User B");
-
-  console.log(prettyDOM(base));
 });
 
 describe("With scores", () => {
@@ -63,8 +61,6 @@ describe("With scores", () => {
 
     const base = comp.container.children.item(0) as HTMLDivElement;
 
-    console.log(prettyDOM(base));
-
     expect(getByText(base, "79927")).toHaveClass("bg-p-green-100");
     expect(getByText(base, "5")).not.toHaveClass("bg-p-green-100");
   });
@@ -90,7 +86,7 @@ describe("With scores", () => {
   });
 
   test("Draw", () => {
-    const comp = render(
+    render(
       <LeagueMatch
         match={getMatch({
           ...BASE,
@@ -102,9 +98,5 @@ describe("With scores", () => {
         players={PLAYERS}
       />,
     );
-
-    const base = comp.container.children.item(0) as HTMLDivElement;
-
-    console.log([...base.querySelectorAll(".col-start-3.col-end-4")]);
   });
 });
