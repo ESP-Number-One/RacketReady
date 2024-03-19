@@ -14,6 +14,8 @@ import { SingleLeaguePage } from "../../../src/pages/league/single";
 import { PageTester } from "../helpers";
 import { mockRouting } from "../../__meta__";
 
+declare const global: Window;
+
 describe("Routing failures", () => {
   test("Redirect", async () => {
     const Routing = await mockRouting();
@@ -151,7 +153,7 @@ describe("General", () => {
   });
 
   const date1 = moment().subtract(1, "month");
-  const date2 = moment().add(1, "day");
+  const date2 = moment().subtract(1, "day");
   const date3 = moment().add(1, "month");
   const date4 = moment().add(2, "month");
 
@@ -185,7 +187,7 @@ describe("General", () => {
       join: joinFn,
     }),
     match: () => ({
-      find: ({ sort }) => {
+      find: ({ sort, pageSize }) => {
         const first = getMatch({
           date: date1.toISOString(),
           league: new ObjectId(IDS[1]),
@@ -200,10 +202,10 @@ describe("General", () => {
           round: 2,
         });
 
-        if (sort?.date === Sort.ASC) {
+        if (sort?.date === Sort.ASC && pageSize === 1) {
           return Promise.resolve([first]);
         }
-        if (sort?.date === Sort.DESC) {
+        if (sort?.date === Sort.DESC && pageSize === 1) {
           return Promise.resolve([last]);
         }
 
@@ -282,13 +284,39 @@ describe("General", () => {
     await userEvent.click(getByText(page, "RND. 2"));
     await act(() => Promise.resolve());
     expect(getByText(page, "RND. 2")).toHaveClass("bg-p-blue");
+  });
 
-    // expect(page).toHaveTextContent(/loading/i);
+  test("Share button", async () => {
+    const { useNavigate } = await mockRouting();
+    const nav = jest.fn();
+    useNavigate.mockImplementation(() => {
+      return nav;
+    });
 
-    // await act(() => wait(10));
+    const pageOuter = await act(async () => {
+      const outer = render(
+        <PageTester route="/league/:id" path={`/league/${IDS[0]}`}>
+          <MultiRound>
+            <SingleLeaguePage />
+          </MultiRound>
+        </PageTester>,
+      );
 
-    // await act(() => wait(100));
-    // console.log(prettyDOM(page));
+      await wait(100); // Wait for loading to finish.
+      return outer.container;
+    });
+
+    const page = pageOuter.children[0] as HTMLDivElement;
+    const fn = jest.fn();
+
+    global.navigator.share = fn;
+
+    // Click the share button.
+    await userEvent.click(getByText(page, "Share"));
+    expect(fn).toHaveBeenCalled();
+
+    global.navigator.share = undefined as unknown as Navigator["share"];
+    await userEvent.click(getByText(page, "Share"));
   });
 
   const Failing = MockAPI({

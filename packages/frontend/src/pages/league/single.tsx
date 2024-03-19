@@ -13,6 +13,7 @@ import {
   faHandshake,
   faShareSquare,
 } from "@fortawesome/free-solid-svg-icons";
+import { twMerge } from "tailwind-merge";
 import { API } from "../../state/auth";
 import { useAsync } from "../../lib/async";
 import { Page } from "../../components/page";
@@ -192,7 +193,7 @@ export function SingleLeaguePage() {
               onClick={() => {
                 // Only works on phones.
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- NOT ALWAYS FALSE, ESLINT!
-                if (!window.navigator) return;
+                if (!window.navigator?.share) return;
                 void window.navigator.share({
                   url: location.href,
                   title: league.name,
@@ -233,11 +234,12 @@ export function SingleLeaguePage() {
             {rounds.map((number, i) => (
               <div
                 key={i}
-                className={`rounded-full text-white font-bold text-xl px-4 py-[2px] tracking-widest transition-all ${
+                className={twMerge(
+                  "rounded-full text-white font-bold text-xl px-4 py-[2px] tracking-widest transition-all",
                   Number(number) === selectedRound
                     ? "bg-p-blue"
-                    : "bg-p-grey-200"
-                }`}
+                    : "bg-p-grey-200",
+                )}
                 onClick={() => {
                   setSelectedRound(number);
                 }}
