@@ -2,7 +2,6 @@ import type { FormEventHandler, ReactNode } from "react";
 import { createRef, useCallback, useContext, useEffect, useState } from "react";
 import type {
   CensoredUser,
-  ID,
   Match,
   StarCount,
   User,
@@ -16,7 +15,7 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import moment from "moment";
 import { twMerge } from "tailwind-merge";
 import { useViewNav } from "../../state/nav";
@@ -33,8 +32,7 @@ import { useAsync } from "../../lib/async";
 
 export function SingleMatchPage(): ReactNode {
   const api = useContext(API);
-  const [searchParams] = useSearchParams();
-  const id: ID | null = searchParams.get("id");
+  const { id } = useParams();
 
   const [message, setMessage] = useState("");
   const [myError, setError] = useState("");

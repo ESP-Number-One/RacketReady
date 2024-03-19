@@ -59,7 +59,7 @@ export function CompleteMatchForm() {
   return (
     <Form onSubmit={onSubmit}>
       <Form.Header>
-        <Header.Back defaultLink={`/match?id=${ok.match._id.toString()}`} />
+        <Header.Back defaultLink={`/match/${ok.match._id.toString()}`} />
         Complete your match!
       </Form.Header>
       <Form.Body>

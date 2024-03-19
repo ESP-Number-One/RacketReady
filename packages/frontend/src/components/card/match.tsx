@@ -28,7 +28,7 @@ export function MatchCard({
 
   return (
     <Link
-      href={`/match?id=${matchId.toString()}`}
+      href={`/match/${matchId.toString()}`}
       className={twMerge(
         "rounded-lg border w-full border-gray-300 p-2 flex items-center bg-p-grey-200",
         className,

@@ -61,7 +61,7 @@ export function App() {
         <Route path="/me/sports/edit" element={<EditSports />} />
         <Route path="/match/new" element={<NewMatchPage />} />
         <Route path="/league/:id" element={<SingleLeaguePage />} />
-        <Route path="/match" element={<SingleMatchPage />} />
+        <Route path="/match/:id" element={<SingleMatchPage />} />
         <Route path="/match/complete" element={<CompleteMatchForm />} />
         <Route path="/match/proposals" element={<MatchProposal />} />
         <Route path="/league/new" element={<NewLeaguePage />} />

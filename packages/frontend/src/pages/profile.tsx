@@ -47,7 +47,7 @@ export function ProfilePage() {
         return (
           <Link
             className="w-full"
-            href={`/match?id=${m._id.toString()}`}
+            href={`/match/${m._id.toString()}`}
             key={m._id.toString()}
           >
             <div className="w-full mt-2 rounded-lg bg-p-grey-200 flex p-3 place-items-center">
