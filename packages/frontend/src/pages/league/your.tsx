@@ -4,11 +4,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Icon } from "../../components/icon";
 import { Page } from "../../components/page";
 import { Header } from "../../components/page/header";
-import { CardList } from "../../components/card_list";
 import { API } from "../../state/auth";
 import { Cards } from "../../utils/types_to_cards";
 import { useViewNav } from "../../state/nav";
 import { Link } from "../../components/link";
+import { Feed } from "../../components/card/feed";
 
 export function YourLeagues() {
   const api = useContext(API);
@@ -26,7 +26,7 @@ export function YourLeagues() {
       </Page.Header>
       <Page.Body scrollable spacing>
         <div className="h-fit items-end">
-          <CardList
+          <Feed
             nextPage={(pageNum: number) => {
               return api
                 .league()
@@ -35,8 +35,9 @@ export function YourLeagues() {
                   return Cards.fromLeagues(leagues);
                 });
             }}
-            emptyListPlaceholder="You aren't a member of any leagues."
-          />
+          >
+            <Feed.Empty>You aren&apos;t a member of any leagues.</Feed.Empty>
+          </Feed>
           <hr className="h-1 w-full bg-p-grey-900 my-2" />
           <div className=" flex flex-row place-content-end pr-2">
             <button

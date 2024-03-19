@@ -15,12 +15,12 @@ import { Page } from "../components/page";
 import { ProfilePic } from "../components/profile_pic.tsx";
 import { API } from "../state/auth.ts";
 import { useAsync } from "../lib/async.tsx";
-import { CardList } from "../components/card_list.tsx";
 import { Tag } from "../components/tags.tsx";
 import { Button } from "../components/button.tsx";
 import { Link } from "../components/link.tsx";
 import { useViewNav } from "../state/nav.ts";
 import { BackLink } from "../components/back_link.tsx";
+import { Feed } from "../components/card/feed.tsx";
 
 export function ProfilePage() {
   const api = useContext(API);
@@ -107,7 +107,7 @@ export function ProfilePage() {
           Propose
         </Button>
         <div className="mb-2">
-          <CardList nextPage={nextPage} />
+          <Feed nextPage={nextPage} />
         </div>
       </Page.Body>
     </Page>

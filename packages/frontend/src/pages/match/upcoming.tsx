@@ -7,9 +7,9 @@ import { Page } from "../../components/page";
 import { Header } from "../../components/page/header";
 import { useAsync } from "../../lib/async";
 import { API } from "../../state/auth";
-import { CardList } from "../../components/card_list";
 import { MatchCard } from "../../components/card/match";
 import { Link } from "../../components/link";
+import { Feed } from "../../components/card/feed";
 
 export function UpcomingMatch() {
   const api = useContext(API);
@@ -84,7 +84,7 @@ export function UpcomingMatch() {
         )}
 
         <div className="rounded-t-lg flex-1 overflow-y-scroll">
-          <CardList nextPage={nextPage} />
+          <Feed nextPage={nextPage} />
         </div>
       </Page.Body>
     </Page>

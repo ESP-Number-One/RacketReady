@@ -1,13 +1,13 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext, useMemo, useState, type JSX } from "react";
 import { makeImgSrc, type CensoredUser } from "@esp-group-one/types";
 import { Page } from "../components/page";
 import { Search } from "../components/search";
 import { API } from "../state/auth";
-import { CardList } from "../components/card_list";
 import { Cards } from "../utils/types_to_cards";
 import { ErrorDiv } from "../components/error";
 import { Profile } from "../components/profile";
 import { Link } from "../components/link";
+import { Feed } from "../components/card/feed";
 
 export function SuggestedPeople() {
   const api = useContext(API);
@@ -41,7 +41,7 @@ export function SuggestedPeople() {
       <Page.Body className="overflow-y-scroll">
         <ErrorDiv error={myError} />
         {isSuggested ? (
-          <CardList
+          <Feed
             shouldSnap
             nextPage={(pageNum: number) => {
               if (pageNum === 0) {
@@ -53,7 +53,7 @@ export function SuggestedPeople() {
                   })
                   .catch((e) => {
                     console.warn(e);
-                    return [];
+                    return [] as JSX.Element[];
                   });
               }
 
