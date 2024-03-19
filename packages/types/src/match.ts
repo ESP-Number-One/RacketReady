@@ -56,7 +56,7 @@ interface BaseMatchProposal {
   sport: Sport;
 }
 
-export type MatchProposal = LeagueMatch<BaseMatchProposal> | BaseMatchProposal;
+export type MatchProposal = BaseMatchProposal;
 
 export type MatchQuery = Query<{
   league: ObjectId;

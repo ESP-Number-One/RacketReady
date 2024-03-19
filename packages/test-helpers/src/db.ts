@@ -7,6 +7,7 @@ import type {
   User,
 } from "@esp-group-one/types";
 import { helpers as types } from "@esp-group-one/types";
+import type { Moment } from "moment";
 import moment from "moment";
 import type { OptionalId } from "mongodb";
 
@@ -65,6 +66,7 @@ export async function resetCollections(db: DbClient): Promise<void> {
 export async function setupAvailability(
   db: DbClient,
   origin: ObjectId[][] = [],
+  start?: Moment,
 ) {
   const coll = await db.availabilityCaches();
   const twoWeeksFromNow = moment().add(2, "weeks");
@@ -72,9 +74,11 @@ export async function setupAvailability(
   const currTime = moment().startOf("hour");
 
   while (currTime.isBefore(twoWeeksFromNow)) {
+    const availablePeople =
+      !start || currTime.isAfter(start) ? origin.shift() ?? [] : [];
     times.push({
       start: currTime.toISOString(),
-      availablePeople: origin.shift() ?? [],
+      availablePeople,
     });
     currTime.add(1, "hour");
   }

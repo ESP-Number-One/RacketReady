@@ -30,7 +30,7 @@ export function getLeague(obj: Partial<League>): League {
     name: obj.name ?? "My custom League",
     sport: obj.sport ?? Sport.Squash,
     ownerIds: obj.ownerIds ?? [new ObjectId(IDS[1])],
-    round: 0,
+    round: obj.round ?? 0,
     picture: null,
   };
 
@@ -61,9 +61,14 @@ export function getMatch(obj: Partial<Match>): Match {
   let match: Match;
 
   if (obj.status === MatchStatus.Complete) {
-    const score: Scores = {};
-    score[players[0].toString()] = 10;
-    score[players[1].toString()] = 5;
+    const score: Scores = obj.score ?? {};
+    if (!obj.score) {
+      score[players[0].toString()] = 10;
+      if (players.length > 1) {
+        score[players[1].toString()] = 5;
+      }
+    }
+
     match = {
       ...base,
       status: MatchStatus.Complete,

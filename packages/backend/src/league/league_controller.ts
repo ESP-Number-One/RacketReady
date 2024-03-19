@@ -20,6 +20,7 @@ import type {
   League,
   WithError,
   Match,
+  Scores,
 } from "@esp-group-one/types";
 import { type Filter, type OptionalId } from "mongodb";
 import {
@@ -72,36 +73,6 @@ export class LeaguesController extends ControllerWrap<League> {
         return newAPISuccess(censorLeague(res.data));
       }
       return res;
-    });
-  }
-
-  /**
-   * @returns a string which can be put into an img element's src to display
-   *   the image
-   */
-  @Response<Error>(500, "Internal Server Error")
-  @Get("{leagueId}/picture")
-  public async getProfilePicture(
-    @Path() leagueId: ID,
-    @Request() req: express.Request,
-  ): Promise<WithError<string | null>> {
-    const id = new ObjectId(leagueId);
-
-    return this.withUser(req, async (currUser) => {
-      const res = await this.get(id);
-      if (!res.success) return res;
-
-      if (res.data.private && !currUser.leagues.includes(id)) {
-        // Don't want to give away the league exists if user does not have
-        // access
-        return this.notFound();
-      }
-
-      // MongoDB serializes `undefined` as null,
-      // so there's a general "falsey" check here instead of === undefined.
-      return newAPISuccess(
-        !res.data.picture ? null : `data:image/webp;base64,${res.data.picture}`,
-      );
     });
   }
 
@@ -215,6 +186,7 @@ export class LeaguesController extends ControllerWrap<League> {
         const league = await (await this.getCollection()).get(id);
         if (
           league &&
+          league.round === 0 &&
           (!league.private ||
             (body?.inviteCode && safeEqual(league.inviteCode, body.inviteCode)))
         ) {
@@ -317,8 +289,9 @@ export class LeaguesController extends ControllerWrap<League> {
         const res: Promise<WithError<undefined>> = coll
           .edit(id, { $set: updateQuery })
           .then(() => newAPISuccess(undefined))
-          .catch((e) => {
-            console.log(e);
+          .catch((e: Error) => {
+            console.log(`Could not update league: ${e.toString()}`);
+            this.setStatus(500);
             return newAPIError("Could not update league");
           });
 
@@ -330,9 +303,14 @@ export class LeaguesController extends ControllerWrap<League> {
   /**
    * Generates match proposal
    */
+  @Response<Error>(
+    409,
+    "Force needs to be present if starting round before previous finished",
+  )
   @Post("{leagueId}/round/next")
   public async generateMatchProposals(
     @Path() leagueId: ID,
+    @Body() params: { force: boolean },
     @Request() req: express.Request,
   ): Promise<WithError<undefined>> {
     const id = new ObjectId(leagueId);
@@ -348,24 +326,60 @@ export class LeaguesController extends ControllerWrap<League> {
         return this.notFound();
       }
 
+      // Fetch users associated with the league from the database
+      // On the first round, assign everyone, otherwise don't
+      let users;
+      const usersColl = await this.getDb().users();
+      if (league.round === 0) {
+        users = await usersColl.find({ leagues: league._id });
+      } else {
+        const matchesColl = await this.getDb().matches();
+        const matches = await matchesColl.find({ league: league._id });
+        if (
+          !params.force &&
+          matches.some((m) => m.status !== MatchStatus.Complete)
+        ) {
+          this.setStatus(409);
+          return newAPIError(
+            "All matches must be complete to go to the next round",
+          );
+        }
+
+        const winners = matches.flatMap((m) => {
+          if (m.status === MatchStatus.Complete) {
+            // Gets ID with the maximum score
+            return [
+              new ObjectId(
+                Object.entries(m.score).reduce((a, b) =>
+                  a[1] > b[1] ? a : b,
+                )[0],
+              ),
+            ];
+          }
+          return [];
+        });
+
+        users = await usersColl.find({ _id: { $in: winners } });
+      }
+
+      if (users.length <= 1) {
+        this.setStatus(409);
+        return newAPIError(
+          "Not enough users are able to play in the next round",
+        );
+      }
+
       // Increments the round of the league
       const coll = await this.getCollection();
       await coll.edit(id, { $inc: { round: 1 } });
       league.round += 1;
 
-      const matchProposals: Promise<OptionalId<Match>>[] = [];
-
-      // Fetch users associated with the league from the database
-      const users = await (
-        await this.getDb().users()
-      ).find({ leagues: league._id });
-
       // Group users by sport and ability level
       const peopleBySportAndAbilityLevel = Object.fromEntries(
-        Object.keys(Sport).map((sport) => [
+        Object.values(Sport).map((sport) => [
           sport,
           Object.fromEntries(
-            Object.keys(AbilityLevel).map((ability) => [
+            Object.values(AbilityLevel).map((ability) => [
               ability,
               [] as ObjectId[],
             ]),
@@ -382,71 +396,114 @@ export class LeaguesController extends ControllerWrap<League> {
       }
 
       // Generate match proposals for each sport and ability level
-      const availColl = await this.getDb().availabilityCaches();
+      const matchProposals: Promise<OptionalId<Match>[]>[] = [];
       for (const sport of [league.sport]) {
-        for (const abilityLevel in AbilityLevel) {
+        const excess: ObjectId[] = [];
+
+        for (const abilityLevel of Object.values(AbilityLevel)) {
           const people =
             peopleBySportAndAbilityLevel[sport as Sport][
               abilityLevel as AbilityLevel
             ];
 
-          // Randomly pair people
-          for (let i = 0; i < people.length; i += 2) {
-            if (i + 1 < people.length) {
-              const proposal: Promise<OptionalId<Match>> = availColl
-                .page({
-                  query: {
-                    $and: [
-                      {
-                        start: { $gt: moment().toISOString() },
-                      },
-                      {
-                        availablePeople: people[i],
-                      },
-                      {
-                        availablePeople: people[i + 1],
-                      },
-                    ],
-                  },
-                  pageSize: 1,
-                  pageStart: 1,
-                })
-                .then((availability) => {
-                  let date: Moment;
-                  if (availability.length > 0) {
-                    date = moment(availability[0].start);
-                  } else {
-                    // Generate a random time in the working hours
-                    // if there are no available times
-                    date = moment().startOf("day").set("hour", 9);
-                    date = date.add(randomInt(7) + 1, "day");
-                    date = date.add(randomInt(8), "hour");
-                  }
+          matchProposals.push(this.createMatchesFor(league, sport, people));
+          // Catch anyone who hasn't been assigned
+          if (people.length % 2 !== 0) {
+            excess.push(people[people.length - 1]);
+          }
+        }
 
-                  return {
-                    date: date.toISOString(),
-                    messages: [],
-                    owner: league._id,
-                    players: [people[i], people[i + 1]],
-                    sport: sport as Sport,
-                    status: MatchStatus.Request,
-                    league: league._id,
-                    round: league.round,
-                  };
-                });
-
-              matchProposals.push(proposal);
-            }
+        if (excess.length > 0) {
+          matchProposals.push(this.createMatchesFor(league, sport, excess));
+          if (excess.length % 2 !== 0) {
+            // Special case when there are an odd number of players
+            const person = excess[excess.length - 1];
+            const score: Scores = {};
+            score[person.toString()] = 1;
+            matchProposals.push(
+              Promise.resolve([
+                {
+                  sport,
+                  date: moment().toISOString(),
+                  messages: [],
+                  owner: league._id,
+                  players: [person],
+                  status: MatchStatus.Complete,
+                  score,
+                  league: league._id,
+                  round: league.round,
+                  usersRated: [person],
+                } as OptionalId<Match>,
+              ]),
+            );
           }
         }
       }
 
       const proposals = await Promise.all(matchProposals);
-      await (await this.getDb().matches()).insert(...proposals);
+      await (await this.getDb().matches()).insert(...proposals.flat());
 
       return newAPISuccess(undefined);
     });
   }
+
+  private async createMatchesFor(
+    league: League,
+    sport: Sport,
+    people: ObjectId[],
+  ): Promise<OptionalId<Match>[]> {
+    const availColl = await this.getDb().availabilityCaches();
+    const matchProposals: Promise<OptionalId<Match>>[] = [];
+
+    for (let i = 0; i + 1 < people.length; i += 2) {
+      const proposal: Promise<OptionalId<Match>> = availColl
+        .page({
+          query: {
+            $and: [
+              {
+                start: { $gt: moment().add(1, "day").toISOString() },
+              },
+              {
+                availablePeople: people[i],
+              },
+              {
+                availablePeople: people[i + 1],
+              },
+            ],
+          },
+          pageSize: 1,
+          pageStart: 1,
+        })
+        .then((availability) => {
+          let date: Moment;
+          if (availability.length > 0) {
+            date = moment(availability[0].start);
+          } else {
+            // Generate a random time in the working hours
+            // if there are no available times
+            date = moment().startOf("day").set("hour", 9);
+            date = date.add(randomInt(7) + 1, "day");
+            date = date.add(randomInt(8), "hour");
+          }
+
+          return {
+            sport,
+            date: date.toISOString(),
+            messages: [],
+            owner: league._id,
+            players: [people[i], people[i + 1]],
+            status: MatchStatus.Request,
+            league: league._id,
+            round: league.round,
+          };
+        });
+
+      matchProposals.push(proposal);
+    }
+
+    return Promise.all(matchProposals);
+  }
+
   private async checkAndCompressImage<T>(
     image: string,
   ): Promise<string | WithError<T>> {

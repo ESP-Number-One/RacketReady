@@ -32,6 +32,18 @@ afterAll(async () => {
   await mongoClient.close();
 });
 
+test("delete", async () => {
+  const data = await insertMany<TestObj>(mongoColl, [
+    { name: "Test Bot", num: 9000 },
+    { name: "Test Bot", num: 8000 },
+    { name: "Botter", num: 2000 },
+  ]);
+
+  await expect(coll.find({})).resolves.toStrictEqual(data);
+  await expect(coll.delete(data[0]._id)).resolves.toBeUndefined();
+  await expect(coll.find({})).resolves.toStrictEqual(data.splice(1));
+});
+
 test("edit", async () => {
   const data = await insertMany<TestObj>(mongoColl, [
     { name: "Test Bot", num: 9000 },
@@ -150,6 +162,12 @@ describe("page", () => {
   let data: TestObj[];
   beforeEach(async () => {
     data = await insertMany<TestObj>(mongoColl, noIdData);
+  });
+
+  test("with defaults", async () => {
+    await coll.page({}).then((r) => {
+      expect(r).toStrictEqual(data.splice(0, 20));
+    });
   });
 
   [0, 1, -1].forEach((sortDir) => {

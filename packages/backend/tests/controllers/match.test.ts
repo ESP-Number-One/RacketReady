@@ -513,48 +513,6 @@ describe("new", () => {
   });
 });
 
-describe("with league", () => {
-  test("user in league", async () => {
-    await user.edit({
-      $set: { leagues: [OIDS[1]] },
-    });
-
-    const res = await user
-      .request(app)
-      .post("/match/new")
-      .send(getMatchProposal({ league: OIDS[1], round: 0 }));
-
-    expect(res.status).toBe(201);
-    expectAPIRes(res.body).toEqual({
-      success: true,
-      data: {
-        _id: expect.any(ObjectId),
-        date: creationStartDate,
-        messages: [],
-        owner: user.id(),
-        players: [user.id(), opponent.id()],
-        sport: Sport.Tennis,
-        status: MatchStatus.Request,
-        league: OIDS[1],
-        round: 0,
-      },
-    });
-  });
-
-  test("user not in league", async () => {
-    const res = await user
-      .request(app)
-      .post("/match/new")
-      .send(getMatchProposal({ league: OIDS[0], round: 0 }));
-
-    expect(res.status).toBe(400);
-    expectAPIRes(res.body).toEqual({
-      success: false,
-      error: "You must be in the league to create a match",
-    });
-  });
-});
-
 describe("get", () => {
   test("not your match", async () => {
     const match = await addMatch(db.get());
@@ -786,14 +744,6 @@ function getMatchProposal(inp: Partial<MatchProposal>): MatchProposal {
     to: inp.to ?? opponent.id(),
     sport: inp.sport ?? Sport.Tennis,
   };
-
-  if ("league" in inp || "round" in inp) {
-    return {
-      ...base,
-      league: inp.league ?? OIDS[0],
-      round: inp.round ?? 0,
-    };
-  }
 
   return base;
 }

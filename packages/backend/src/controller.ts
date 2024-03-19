@@ -183,7 +183,9 @@ export abstract class ControllerWrap<T extends MongoDBItem> extends Controller {
   ): Promise<WithError<R>> {
     return promise.catch((e: Error) => {
       console.error(
-        `An error occurred when evaluated an endpoint: ${e.toString()}`,
+        `An error occurred when evaluated an endpoint: ${e.toString()}\n${
+          e.stack
+        }`,
       );
       this.setStatus(500);
       return newAPIError("Internal Server Error");

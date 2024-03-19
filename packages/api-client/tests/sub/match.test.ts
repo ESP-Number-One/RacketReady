@@ -102,3 +102,20 @@ describe("message", () => {
 
   runErrorTests(endpoint, () => api.message(id, ""));
 });
+
+describe("rate", () => {
+  const id = new ObjectId(IDS[0]);
+  const resObj = undefined;
+  const endpoint = `match/${IDS[0]}/rate`;
+
+  test("Normal", async () => {
+    fetchMockEndpointOnce(endpoint, newAPISuccess(resObj), {
+      body: { stars: 5 },
+    });
+
+    await expect(api.rate(id, 5)).resolves.toStrictEqual(resObj);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  runErrorTests(endpoint, () => api.rate(id, 2));
+});
