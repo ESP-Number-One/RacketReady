@@ -8,19 +8,6 @@ import {
 import * as React from "react";
 import { Feed } from "../../../src/components/card/feed";
 import { wait } from "../../helpers/utils";
-// import { setupMain } from "@testing-library/user-event/dist/cjs/setup/setup.js";
-
-jest.mock(
-  "react",
-  () =>
-    ({
-      ...jest.requireActual("react"),
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access -- a
-      useRef: jest.fn(jest.requireActual("react").useRef),
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access -- a
-      useState: jest.fn(jest.requireActual("react").useState),
-    }) as unknown,
-);
 
 const specialRef = Object.defineProperty({ current: null }, "current", {
   get() {

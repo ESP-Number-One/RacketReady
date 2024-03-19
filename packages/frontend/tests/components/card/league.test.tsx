@@ -13,7 +13,6 @@ import { PICTURES } from "@esp-group-one/types/build/tests/helpers/utils";
 import { IDS } from "@esp-group-one/test-helpers-base";
 import { MockAPI } from "../../helpers/utils";
 import { LeagueCard } from "../../../src/components/card/league";
-import { mockLinks } from "../../helpers/mock";
 
 const WITHOUT_PICTURE = {
   _id: new ObjectId(IDS[0]),
@@ -44,8 +43,6 @@ const SucessfulAPI = MockAPI({
 });
 
 jest.mock("../../../src/state/nav");
-jest.mock("react-router-dom");
-mockLinks();
 
 describe("Date Handling", () => {
   test("TBD", async () => {

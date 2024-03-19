@@ -24,4 +24,5 @@ fakeLibrary("react-router-dom", {} as typeof import("react-router-dom"), [
   "useParams",
   "useNavigate",
   "redirect",
+  "useLocation",
 ]);

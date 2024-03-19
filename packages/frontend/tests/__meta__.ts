@@ -30,6 +30,7 @@ export function fakeLibrary<Lib, Keys extends (keyof FunctionsOf<Lib>)[]>(
   keys: Keys,
 ) {
   const lib = jest.requireActual(module) as Lib;
+
   const ret = Object.fromEntries(
     keys.map((key) => [key, jest.fn()]),
   ) as MockSelection<Lib, Keys>;
@@ -62,7 +63,12 @@ export type FunctionsOf<Lib> = {
     : never]: Lib[K];
 };
 
-const ROUTING_FUNCTIONS = ["useParams", "redirect", "useNavigate"] as const;
+const ROUTING_FUNCTIONS = [
+  "useParams",
+  "redirect",
+  "useNavigate",
+  "useLocation",
+] as const;
 
 export const mockRouting = async () => {
   const mocked = await import("react-router-dom");

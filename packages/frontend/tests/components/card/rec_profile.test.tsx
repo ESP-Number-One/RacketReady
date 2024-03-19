@@ -3,11 +3,8 @@ import { PICTURES } from "@esp-group-one/types/build/tests/helpers/utils";
 import { cleanup, render } from "@testing-library/react";
 import moment from "moment";
 import { RecProfile } from "../../../src/components/rec_profile";
-import { mockLinks } from "../../helpers/mock";
 
 jest.mock("../../../src/state/nav");
-jest.mock("react-router-dom");
-mockLinks();
 
 afterAll(cleanup);
 

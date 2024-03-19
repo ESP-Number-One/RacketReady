@@ -1,11 +1,9 @@
 import { render } from "@testing-library/react";
 import { Page } from "../src/components/page";
 import { Header } from "../src/components/page/header";
-import { mockLinks } from "./helpers/mock";
+import { mockRouting } from "./__meta__";
 
 jest.mock("../src/state/nav");
-jest.mock("react-router-dom");
-mockLinks();
 
 describe("Page", () => {
   test("Slotting Structure", () => {
@@ -54,7 +52,23 @@ describe("Page", () => {
 });
 
 describe("Header", () => {
-  test("Everything", () => {
+  test("Everything", async () => {
+    const Routing = await mockRouting();
+
+    Routing.useLocation.mockReturnValue({
+      state: 0,
+      key: "0",
+      pathname: "",
+      search: "",
+      hash: "",
+    });
+
+    Routing.useNavigate.mockImplementation(() => {
+      return () => {
+        void 0;
+      };
+    });
+
     const header = render(
       <Page.Header>
         <Header.Back defaultLink="/" />
