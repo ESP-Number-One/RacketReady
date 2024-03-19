@@ -1,4 +1,6 @@
 import type {
+  Match,
+  Scores,
   Success,
   User,
   UserCreation,
@@ -7,6 +9,7 @@ import type {
 } from "@esp-group-one/types";
 import {
   AbilityLevel,
+  MatchStatus,
   ObjectId,
   Sport,
   censorUser,
@@ -14,6 +17,7 @@ import {
 import { describe, expect, test } from "@jest/globals";
 import { generateRandomString } from "ts-randomstring/lib/index.js";
 import {
+  addMatch,
   addUser,
   compareBag,
   idCmp,
@@ -519,6 +523,127 @@ describe("Recommendations", () => {
           ? a.sport.localeCompare(b.sport)
           : idCmp(a.u, b.u),
     );
+  });
+});
+
+describe("ability/check", () => {
+  const user = new TestUser(db, auth0Id, {
+    sports: [
+      { sport: Sport.Badminton, ability: AbilityLevel.Advanced },
+      { sport: Sport.Tennis, ability: AbilityLevel.Beginner },
+      { sport: Sport.Squash, ability: AbilityLevel.Intermediate },
+    ],
+  });
+
+  const assignMatches = (
+    userId: ObjectId,
+    sport: Sport,
+    won?: boolean,
+    status = MatchStatus.Complete,
+  ) => {
+    const wonArr: boolean[] = [];
+    for (let i = 0; i < 5; i++) {
+      if (won === undefined) {
+        wonArr.push(i % 2 === 0);
+      } else {
+        wonArr.push(won);
+      }
+    }
+
+    const matches: Promise<Match>[] = [];
+    for (const wonMatch of wonArr) {
+      const score: Scores = {};
+      score[userId.toString()] = 10 + (wonMatch ? 10 : 0);
+      score[IDS[0]] = 15;
+
+      matches.push(
+        addMatch(db.get(), {
+          status,
+          players: [userId, OIDS[0]],
+          sport,
+          score,
+        }),
+      );
+    }
+
+    return Promise.all(matches);
+  };
+
+  test("Lost all matches", async () => {
+    await assignMatches(user.id(), Sport.Badminton, false);
+
+    const res = await user.request(app).get("/user/me/ability/check");
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toStrictEqual({
+      success: true,
+      data: [{ sport: Sport.Badminton, ability: AbilityLevel.Intermediate }],
+    });
+  });
+
+  test("Mixture", async () => {
+    await assignMatches(user.id(), Sport.Squash);
+
+    const res = await user.request(app).get("/user/me/ability/check");
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toStrictEqual({
+      success: true,
+      data: [],
+    });
+  });
+
+  test("Won all matches", async () => {
+    await assignMatches(user.id(), Sport.Tennis, true);
+
+    const res = await user.request(app).get("/user/me/ability/check");
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toStrictEqual({
+      success: true,
+      data: [{ sport: Sport.Tennis, ability: AbilityLevel.Intermediate }],
+    });
+  });
+
+  test("Both", async () => {
+    await assignMatches(user.id(), Sport.Badminton, false);
+    await assignMatches(user.id(), Sport.Tennis, true);
+
+    const res = await user.request(app).get("/user/me/ability/check");
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toStrictEqual({
+      success: true,
+      data: [
+        { sport: Sport.Badminton, ability: AbilityLevel.Intermediate },
+        { sport: Sport.Tennis, ability: AbilityLevel.Intermediate },
+      ],
+    });
+  });
+
+  test("No ability to move to", async () => {
+    await assignMatches(user.id(), Sport.Badminton, true);
+    await assignMatches(user.id(), Sport.Tennis, false);
+
+    const res = await user.request(app).get("/user/me/ability/check");
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toStrictEqual({
+      success: true,
+      data: [],
+    });
+  });
+
+  test("Not complete", async () => {
+    await assignMatches(user.id(), Sport.Tennis, true, MatchStatus.Accepted);
+
+    const res = await user.request(app).get("/user/me/ability/check");
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toStrictEqual({
+      success: true,
+      data: [],
+    });
   });
 });
 

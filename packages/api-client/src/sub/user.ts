@@ -33,6 +33,13 @@ export class UserAPIClient extends SubAPIClient<
   }
 
   /**
+   * @returns the sports the ability should come
+   */
+  public checkAbility(): Promise<SportInfo[]> {
+    return this.get("me/ability/check", {});
+  }
+
+  /**
    * @param details - An object containing the information you want to edit
    *   about the user
    * @returns void

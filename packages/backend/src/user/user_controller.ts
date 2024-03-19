@@ -3,18 +3,20 @@ import {
   censorUser,
   newAPIError,
   newAPISuccess,
+  AbilityLevel,
   ObjectId,
   UserCreation,
   ID,
   Availability,
   QueryOptions,
   UserPageOptions,
+  MatchStatus,
 } from "@esp-group-one/types";
 import type {
-  AbilityLevel,
   CensoredUser,
   DateTimeString,
   Error,
+  MatchWithScore,
   Sport,
   SportInfo,
   User,
@@ -231,11 +233,6 @@ export class UsersController extends ControllerWrap<User> {
       if (typeof res !== "string") return res;
       userCreation.profilePicture = res;
 
-      console.log({
-        email: userCreation.email,
-        isValid: EmailValidator.validate(userCreation.email),
-      });
-
       if (!EmailValidator.validate(userCreation.email)) {
         this.setStatus(400);
         return newAPIError("Email is invalid");
@@ -285,6 +282,67 @@ export class UsersController extends ControllerWrap<User> {
   }
 
   /**
+   * Returns a list of sports that we think the user should change their
+   * ability level on, with the new ability level recommended
+   */
+  @Get("me/ability/check")
+  public async abilityCheck(
+    @Request() req: express.Request,
+  ): Promise<WithError<SportInfo[]>> {
+    return this.withUser(req, async (user) => {
+      const matches = await this.getDb().matches();
+      const res: Promise<SportInfo | undefined>[] = [];
+      const abilities = Object.values(AbilityLevel);
+      const pageSize = 5;
+
+      const iWon = (m: MatchWithScore) => {
+        const winner = new ObjectId(
+          Object.entries(m.score).reduce((a, b) => (a[1] > b[1] ? a : b))[0],
+        );
+
+        return winner.equals(user._id);
+      };
+
+      for (const info of user.sports) {
+        const currI = abilities.indexOf(info.ability);
+
+        res.push(
+          matches
+            .page({
+              query: {
+                sport: info.sport,
+                players: user._id,
+                status: MatchStatus.Complete,
+              },
+              pageSize,
+            })
+            .then((myMatches) => {
+              if (myMatches.length !== pageSize) return;
+
+              // We know this as we are filtering it
+              const mWithScores = myMatches as MatchWithScore[];
+
+              if (currI + 1 < abilities.length && mWithScores.every(iWon)) {
+                return {
+                  sport: info.sport,
+                  ability: abilities[currI + 1],
+                };
+              } else if (currI - 1 >= 0 && !mWithScores.some(iWon)) {
+                return {
+                  sport: info.sport,
+                  ability: abilities[currI - 1],
+                };
+              }
+            }),
+        );
+      }
+
+      const all = await Promise.all(res);
+      return newAPISuccess(all.filter((i) => Boolean(i)) as SportInfo[]);
+    });
+  }
+
+  /**
    * The edits the current user's information with the given info
    */
   @Response<Error>(400, "Unknown image format")
@@ -303,10 +361,6 @@ export class UsersController extends ControllerWrap<User> {
           return newAPIError("User already exists");
         }
 
-        console.log({
-          email: updateQuery.email,
-          isValid: EmailValidator.validate(updateQuery.email),
-        });
         if (!EmailValidator.validate(updateQuery.email)) {
           this.setStatus(400);
           return newAPIError("Email is invalid");
