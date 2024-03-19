@@ -58,6 +58,22 @@ describe("addSports", () => {
   runErrorTests(endpoint, () => api.addSports(sports[0]));
 });
 
+describe("checkAbility", () => {
+  const endpoint = "user/me/ability/check";
+  const output: SportInfo[] = [
+    { sport: Sport.Tennis, ability: AbilityLevel.Intermediate },
+  ];
+
+  test("Normal", async () => {
+    fetchMockEndpointOnce(endpoint, newAPISuccess(output));
+
+    await expect(api.checkAbility()).resolves.toStrictEqual(output);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  runErrorTests(endpoint, () => api.checkAbility());
+});
+
 describe("edit", () => {
   const endpoint = "user/me/edit";
 

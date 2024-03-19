@@ -32,7 +32,7 @@ interface MatchWithoutScore extends BaseMatch {
 }
 
 export type Scores = Record<ID, number>;
-interface MatchWithScore extends BaseMatch {
+export interface MatchWithScore extends BaseMatch {
   // Maps player id to score
   score: Scores;
   status: MatchStatus.Complete;
