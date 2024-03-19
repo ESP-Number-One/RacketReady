@@ -32,7 +32,7 @@ app.use(
     next: NextFunction,
   ): ExResponse | undefined => {
     if (err instanceof ValidateError) {
-      console.warn(`Caught Validation Error for ${req.path}:`, err.fields);
+      console.warn(`Caught Validation Error for ${req.path.toString()}`);
       return res.status(422).json({
         message: "Validation Failed",
         details: err.fields,
@@ -41,7 +41,9 @@ app.use(
 
     if (err instanceof Error) {
       console.error(
-        `Caught Error for ${req.path}: ${err.name} - ${err.message}\n${err.stack}`,
+        `Caught Error for ${req.path.toString()}: ${err.name} - ${
+          err.message
+        }\n${err.stack}`,
       );
       return res.status(500).json({ message: "Internal Server Error" });
     }
