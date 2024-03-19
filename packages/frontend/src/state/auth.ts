@@ -4,6 +4,7 @@ import { isNewUser } from "../lib/auth";
 
 /* Global-ish state for React.  */
 export const API = createContext(undefined as unknown as APIClient);
+export const SKIPPED_ABILITY_LEVELUP = "skipped_ability_levelup";
 
 export type AuthResult =
   | { type: "loading" }
@@ -30,6 +31,24 @@ export function handleApi(
 
     if (await isNewUser(client)) {
       signup();
+    } else if (!localStorage.getItem(SKIPPED_ABILITY_LEVELUP)) {
+      const sportsInfo = await client.user().checkAbility();
+
+      const sportsToAdd = [];
+      for (const info of sportsInfo) {
+        // eslint-disable-next-line no-alert -- but we want to
+        const res = confirm(
+          `We think you should update ${info.sport} to ${info.ability}. Do you want us to change your ability level?`,
+        );
+
+        if (res) {
+          sportsToAdd.push(info);
+        } else {
+          localStorage.setItem(SKIPPED_ABILITY_LEVELUP, "yup");
+          break;
+        }
+      }
+      await client.user().addSports(...sportsToAdd);
     }
 
     setResult({ type: "ok", ok: { authenticated: true, client } });
