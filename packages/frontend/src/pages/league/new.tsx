@@ -38,26 +38,20 @@ export function NewLeaguePage() {
   return (
     <Form onSubmit={handleCreateLeague}>
       <Form.Header>
-        <Header.Back />
+        <Header.Back defaultLink="/leagues" />
         New League
       </Form.Header>
 
-      <Form.Body>
+      <Form.Body spacing>
         <SelectSport
-          className="mt-2"
           sports={Object.keys(Sport) as Sport[]}
           onChange={setSport}
           value={sport}
         />
 
-        <ProfilePicturePicker
-          onChange={setProfilePic}
-          className="mt-2"
-          required
-        />
+        <ProfilePicturePicker onChange={setProfilePic} required />
 
         <Input
-          className="mt-2"
           type="text"
           placeholder="Name"
           value={name}
@@ -65,7 +59,7 @@ export function NewLeaguePage() {
           required
         />
 
-        <div className="flex mt-2">
+        <div className="flex">
           <RadioButton
             name="visibility"
             value="public"

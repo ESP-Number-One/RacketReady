@@ -18,7 +18,10 @@ import {
   OIDS,
   setupAvailability,
 } from "@esp-group-one/test-helpers";
-import { getAvailability } from "@esp-group-one/types/build/tests/helpers/utils.js";
+import {
+  PICTURES,
+  getAvailability,
+} from "@esp-group-one/types/build/tests/helpers/utils.js";
 import moment from "moment";
 import { app } from "../../src/app.js";
 import {
@@ -63,7 +66,7 @@ describe("new", () => {
     name: "Test bot",
     description: "bla",
     email: "newtest@bot.com",
-    profilePicture: "",
+    profilePicture: PICTURES[0],
   };
 
   test("duplicate email", async () => {
@@ -75,6 +78,8 @@ describe("new", () => {
         ...creation,
         email,
       } as UserCreation);
+
+    console.log(res.body);
 
     expect(res.statusCode).toBe(409);
     expect(res.body).toStrictEqual({
@@ -316,7 +321,7 @@ addCommonTests({
     return {
       name: "New Test Bot",
       description: "bla bla bla",
-      profilePicture: "",
+      profilePicture: PICTURES[0],
       email: "new@test.com",
     } as UserCreation;
   },
@@ -337,7 +342,7 @@ addCommonTests({
         _id: expect.any(ObjectId),
         name: "New Test Bot",
         description: "bla bla bla",
-        profilePicture: "",
+        profilePicture: expect.any(String),
         email: "new@test.com",
         rating: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
         sports: [],

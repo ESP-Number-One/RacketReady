@@ -1,4 +1,5 @@
 import { Sport } from "@esp-group-one/types";
+import { twMerge } from "tailwind-merge";
 
 interface Tagging {
   active?: boolean;
@@ -9,9 +10,11 @@ interface Tagging {
 export function Tag({ active, sportName, textSize }: Tagging) {
   return (
     <div
-      className={`inline-block rounded-full py-1 px-5 font-bold font-title text-white ${
-        textSize ?? "text-md"
-      } ${getSportColorClass(sportName, active)}`}
+      className={twMerge(
+        "inline-block rounded-full py-1 px-5 font-bold font-title text-white",
+        textSize ?? "text-md",
+        getSportColorClass(sportName, active),
+      )}
     >
       {sportName.charAt(0).toUpperCase() + sportName.slice(1)}
     </div>

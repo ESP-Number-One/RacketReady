@@ -5,13 +5,12 @@ import {
   getMatch,
   getUser,
 } from "@esp-group-one/types/build/tests/helpers/utils";
-import { asFuncMock } from "@esp-group-one/test-helpers-base";
 import { MatchCard } from "../../../src/components/card/match";
-import { useViewNav } from "../../../src/state/nav";
+import { mockLinks } from "../../helpers/mock";
 
 jest.mock("../../../src/state/nav");
-const mockedUseNav = asFuncMock(useViewNav);
-mockedUseNav.mockReturnValue(() => undefined);
+jest.mock("react-router-dom");
+mockLinks();
 
 describe("Tags", () => {
   const DUMMY_DATA = getMatch({

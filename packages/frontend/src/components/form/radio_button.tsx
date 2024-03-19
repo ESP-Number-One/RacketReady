@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { twMerge } from "tailwind-merge";
 
 interface RadioButtonProps {
   checked?: boolean;
@@ -21,7 +22,7 @@ export function RadioButton({
   onChange,
   value,
 }: RadioButtonProps) {
-  const backgroundColor = checked ? "bg-p-green-100" : "bg-p-grey-100";
+  const backgroundColour = checked ? "bg-p-green-100" : "bg-p-grey-100";
   let borderRadius = "rounded"; // default border radius on all sides
   if (isFirst) {
     borderRadius = "rounded-l-lg"; // default border radius on the left side
@@ -31,9 +32,13 @@ export function RadioButton({
 
   return (
     <label
-      className={`font-body text-xl font-bold text-white ${backgroundColor} active:scale-95 focus:outline-none ${
-        icon ? "justify-start" : "justify-center"
-      } inline-flex items-center w-full transform transition duration-150 ease-in-out border border-gray-300 ${borderRadius}`}
+      className={twMerge(
+        "font-body text-xl font-bold text-white active:scale-95 focus:outline-none",
+        "inline-flex items-center w-full transform transition duration-150 ease-in-out border border-gray-300",
+        icon ? "justify-start" : "justify-center",
+        backgroundColour,
+        borderRadius,
+      )}
     >
       <input
         type="radio"

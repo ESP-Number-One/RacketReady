@@ -5,6 +5,7 @@ import {
 } from "@esp-group-one/types";
 import type { Moment } from "moment";
 import moment from "moment";
+import { twMerge } from "tailwind-merge";
 import { Profile } from "../profile";
 import { Tag } from "../tags";
 import { Link } from "../link";
@@ -28,7 +29,10 @@ export function MatchCard({
   return (
     <Link
       href={`/match?id=${matchId.toString()}`}
-      className={`${className} rounded-lg border w-full border-gray-300 p-2 flex items-center bg-p-grey-200`}
+      className={twMerge(
+        "rounded-lg border w-full border-gray-300 p-2 flex items-center bg-p-grey-200",
+        className,
+      )}
     >
       <div className="mr-4">
         <div className="image-container">

@@ -42,7 +42,7 @@ export namespace Cards {
 
   export function fromLeagues(leagues: CensoredLeague[]) {
     return leagues.map((league) => {
-      return (<LeagueCard className="mt-2" data={league} />) as ReactNode;
+      return (<LeagueCard data={league} />) as ReactNode;
     });
   }
 }

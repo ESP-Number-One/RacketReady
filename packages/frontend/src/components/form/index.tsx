@@ -1,6 +1,7 @@
-import type { ReactNode, JSX, FormEventHandler } from "react";
-import { useCallback, useState } from "react";
+import type { ReactNode, JSX, FormEventHandler, ReactElement } from "react";
+import { Component, useCallback, useState } from "react";
 import { Slot } from "../../lib/slotting";
+import type { BodySlotT } from "../page";
 import { Page } from "../page";
 import { Button } from "../button";
 import { ErrorDiv } from "../error";
@@ -19,80 +20,81 @@ function FormImpl({
   submitText = "Submit",
 }: FormProps) {
   const [error, setError] = useState("");
-  const [disabled, setDisabled] = useState(false);
 
-  let children: ReactNode[];
-  if (!(_children instanceof Array)) {
-    children = [_children];
-  } else {
-    children = _children;
-  }
+  const children = Slot.children(_children);
 
   const header = Slot.find(children, FormImpl.Header);
-  const body = Slot.find(children, FormImpl.Body);
+  const body = Slot.find(children, FormImpl.Body) as ReactElement<BodySlotT>;
   const footer = Slot.find(children, FormImpl.Footer);
 
   const onSubmitWrapper: FormEventHandler<HTMLFormElement> = useCallback(
     (e) => {
       e.preventDefault();
-      setDisabled(true);
+
+      // Get buttons which aren't currently disabled so we can disable them
+      // during the request
+      const buttons = Array.from(document.querySelectorAll("button")).filter(
+        (b) => !b.disabled,
+      );
+      buttons.forEach((b) => {
+        b.disabled = true;
+      });
+
       onSubmit()
         .catch((err: string) => {
           setError(err.toString());
         })
         .finally(() => {
-          setDisabled(false);
+          buttons.forEach((b) => {
+            b.disabled = false;
+          });
         });
     },
     [onSubmit],
   );
 
+  const bodyProps = { ...body.props };
+  delete bodyProps.children;
+
   return (
     <form onSubmit={onSubmitWrapper}>
       <Page>
-        <Page.Header>{header}</Page.Header>
-        <Page.Body className="flex flex-col overflow-y-scroll">
+        {header}
+        <Page.Body {...bodyProps}>
           {body}
-          <ErrorDiv
-            className="flex-none mt-2"
-            error={parentError ? parentError : error}
-          />
+          <ErrorDiv className="flex-none" error={parentError ?? error} />
         </Page.Body>
-        <Page.Footer>
-          {footer ? (
-            footer
-          ) : (
-            <Button type="submit" disabled={disabled}>
-              {submitText}
-            </Button>
-          )}
-        </Page.Footer>
+        {footer || (
+          <Page.Footer padding>
+            <Button type="submit">{submitText}</Button>
+          </Page.Footer>
+        )}
       </Page>
     </form>
   );
 }
 
-interface WithChildrenProps {
-  children: ReactNode;
-}
+FormImpl.Header = Page.Header;
 
-FormImpl.Header = function Header({ children }: WithChildrenProps) {
-  return children;
+FormImpl.Body = class FormBody extends Component<BodySlotT> {
+  public static defaultProps = {
+    spacing: true,
+    flexCol: true,
+    scrollable: true,
+  };
+
+  render(): ReactNode {
+    return <>{this.props.children}</>;
+  }
 };
 
-FormImpl.Body = function Body({ children }: WithChildrenProps) {
-  return children;
-};
-
-FormImpl.Footer = function Body({ children }: WithChildrenProps) {
-  return children;
-};
+FormImpl.Footer = Page.Footer;
 
 interface FormT {
   (_: FormProps): JSX.Element;
-  Header: (_: WithChildrenProps) => JSX.Element;
-  Body: (_: WithChildrenProps) => JSX.Element;
-  Footer: (_: WithChildrenProps) => JSX.Element;
+  Header: (_: Slot.PageParams) => JSX.Element;
+  Body: typeof FormImpl.Body;
+  Footer: (_: Slot.PageParams) => JSX.Element;
 }
 
 export const Form = FormImpl as FormT;

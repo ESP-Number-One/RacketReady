@@ -54,7 +54,7 @@ export function SingleMatchPage(): ReactNode {
       const match = await api.match().getId(objId);
       const opponent = api
         .user()
-        .getId(match.players.filter((i) => i.equals(user._id))[0]);
+        .getId(match.players.filter((i) => !i.equals(user._id))[0]);
 
       setDisableMessage(match.status !== MatchStatus.Accepted);
 
@@ -182,7 +182,7 @@ export function SingleMatchPage(): ReactNode {
   return (
     <Page>
       <Page.Header>
-        <Header.Back />
+        <Header.Back defaultLink="/" />
         <div className="flex flex-col place-items-centre">
           <div className="leading-none">
             {moment(ok.match.date).format("dddd")}
@@ -192,7 +192,7 @@ export function SingleMatchPage(): ReactNode {
           </div>
         </div>
       </Page.Header>
-      <Page.Body className="flex flex-col">
+      <Page.Body flexCol>
         <div className="flex-none">
           <ErrorDiv className="mt-2" error={myError} />
           <div className={`pt-2`}>
@@ -244,9 +244,9 @@ export function SingleMatchPage(): ReactNode {
           })}
         </div>
       </Page.Body>
-      <Page.Footer>
+      <Page.Footer padding>
         {ok.match.status === MatchStatus.Accepted && (
-          <form className="flex text-base p-2 gap-2" onSubmit={sendMessage}>
+          <form className="flex text-base gap-2" onSubmit={sendMessage}>
             <Input
               className="text-sm flex-1"
               disabled={disableMessage}

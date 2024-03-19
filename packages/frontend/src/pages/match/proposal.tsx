@@ -3,12 +3,10 @@ import { Page } from "../../components/page";
 import { Header } from "../../components/page/header";
 import { CardList } from "../../components/card_list";
 import { API } from "../../state/auth";
-import { useViewNav } from "../../state/nav";
 import { Proposal } from "../../components/card/proposal";
 
 export function MatchProposal() {
   const api = useContext(API);
-  const viewNavigate = useViewNav();
 
   const nextPage = async (pageNum: number) => {
     const matches = await api.match().findProposed({ pageStart: pageNum });
@@ -43,14 +41,10 @@ export function MatchProposal() {
   return (
     <Page page="home">
       <Page.Header>
-        <Header.Back
-          onClick={() => {
-            viewNavigate("/");
-          }}
-        />
+        <Header.Back defaultLink="/" />
         Proposed Matches
       </Page.Header>
-      <Page.Body className="overflow-y-scroll">
+      <Page.Body scrollable>
         <div className="pb-2">
           <CardList
             nextPage={nextPage}

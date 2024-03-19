@@ -13,7 +13,6 @@ import { SportsAddMenu } from "../components/sports_add_menu";
 import { ProfilePicturePicker } from "../components/form/profile_picture";
 import { Input } from "../components/form/input";
 import { Form } from "../components/form";
-import { Header } from "../components/page/header";
 import { Button } from "../components/button";
 import { useViewNav } from "../state/nav";
 import { ProgressBar } from "../components/progress_bar";
@@ -48,15 +47,11 @@ function PhaseOne({ nextPhase, progress, submitText }: PhaseProps) {
 
   return (
     <Form onSubmit={onSubmit} submitText={submitText}>
-      <Form.Header>
-        <Header.Back />
-        Create an account
-      </Form.Header>
+      <Form.Header>Create an account</Form.Header>
       <Form.Body>
         {progress}
 
         <ProfilePicturePicker
-          className="mt-2"
           onChange={(profilePicture) => {
             setUser({ ...user, profilePicture });
           }}
@@ -64,7 +59,6 @@ function PhaseOne({ nextPhase, progress, submitText }: PhaseProps) {
         />
 
         <Input
-          className="mt-2"
           type="text"
           icon={<FontAwesomeIcon icon={faUser} />}
           placeholder="Name"
@@ -76,7 +70,6 @@ function PhaseOne({ nextPhase, progress, submitText }: PhaseProps) {
         />
 
         <Input
-          className="mt-2"
           type="email"
           icon={<FontAwesomeIcon icon={faEnvelope} />}
           placeholder="Email"
@@ -88,7 +81,6 @@ function PhaseOne({ nextPhase, progress, submitText }: PhaseProps) {
         />
 
         <Input
-          className="mt-2"
           type="textarea"
           placeholder="Description"
           value={user.description}
@@ -116,10 +108,7 @@ function PhaseTwo({ nextPhase, progress, submitText }: PhaseProps) {
 
   return (
     <Form onSubmit={onSubmit} submitText={submitText}>
-      <Form.Header>
-        <Header.Back />
-        Create an account
-      </Form.Header>
+      <Form.Header>Create an account</Form.Header>
       <Form.Body>
         {progress}
         <SportsAddMenu sports={sports} setSports={setSports} />
@@ -175,10 +164,7 @@ function PhaseThree({ nextPhase, progress, submitText }: PhaseProps) {
 
   return (
     <Form onSubmit={onSubmit}>
-      <Form.Header>
-        <Header.Back />
-        Create an account
-      </Form.Header>
+      <Form.Header>Create an account</Form.Header>
       <Form.Body>
         {progress}
         <div className="mt-2">

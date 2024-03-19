@@ -1,12 +1,11 @@
-import { asFuncMock } from "@esp-group-one/test-helpers-base";
 import { render } from "@testing-library/react";
 import { Page } from "../src/components/page";
 import { Header } from "../src/components/page/header";
-import { useViewNav } from "../src/state/nav.ts";
+import { mockLinks } from "./helpers/mock";
 
 jest.mock("../src/state/nav");
-
-const mockedUseNav = asFuncMock(useViewNav);
+jest.mock("react-router-dom");
+mockLinks();
 
 describe("Page", () => {
   test("Slotting Structure", () => {
@@ -22,8 +21,6 @@ describe("Page", () => {
     expect(thing.container.childNodes.item(0).childNodes.length).toBe(3);
   });
   test("Minimal", () => {
-    mockedUseNav.mockReturnValue(() => void 0);
-
     const thing = render(
       <Page>
         <Page.Body>Body</Page.Body>
@@ -35,8 +32,6 @@ describe("Page", () => {
   });
 
   test("Empty", () => {
-    mockedUseNav.mockReturnValue(() => void 0);
-
     const thing = render(<Page>A</Page>);
 
     expect(thing.container.childNodes.length).toBe(1);
@@ -62,24 +57,34 @@ describe("Header", () => {
   test("Everything", () => {
     const header = render(
       <Page.Header>
-        <Header.Back />
+        <Header.Back defaultLink="/" />
         <Header.Title>Hello!</Header.Title>
         <Header.Right>Right-side!</Header.Right>
       </Page.Header>,
     );
 
-    expect(header.container.childNodes.length).toBe(3);
+    const sub = header.container.children[0];
 
-    expect([
-      ...(header.container.childNodes.item(0) as HTMLElement).classList,
-    ]).toEqual(["absolute", "left-0", "h-full"]); // First element -> Icon.
+    expect(sub.childNodes.length).toBe(3);
 
-    expect([
-      ...(header.container.childNodes.item(1) as HTMLElement).classList,
-    ]).toEqual(["flex", "flex-grow", "w-full", "justify-center"]); // Second element -> Body.
+    expect([...(sub.childNodes.item(0) as HTMLElement).classList]).toContain(
+      "absolute",
+    ); // First element -> Icon.
+    expect([...(sub.childNodes.item(0) as HTMLElement).classList]).toContain(
+      "left-0",
+    ); // First element -> Icon.
 
-    expect([
-      ...(header.container.childNodes.item(2) as HTMLElement).classList,
-    ]).toEqual(["absolute", "right-0", "h-full"]);
+    expect([...(sub.childNodes.item(1) as HTMLElement).classList]).toEqual([
+      "flex",
+      "flex-grow",
+      "w-full",
+      "justify-center",
+    ]); // Second element -> Body.
+
+    expect([...(sub.childNodes.item(2) as HTMLElement).classList]).toEqual([
+      "absolute",
+      "right-0",
+      "h-full",
+    ]);
   }); // Third element -> Icon.
 });

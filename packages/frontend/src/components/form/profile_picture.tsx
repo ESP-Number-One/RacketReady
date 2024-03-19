@@ -2,6 +2,7 @@ import type { ChangeEvent } from "react";
 import { useCallback, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { twMerge } from "tailwind-merge";
 
 interface ProfilePicturePickerProps {
   backgroundColor?: string;
@@ -11,7 +12,7 @@ interface ProfilePicturePickerProps {
 }
 
 export function ProfilePicturePicker({
-  backgroundColor = "bg-p-grey-100",
+  backgroundColor: backgroundColour = "bg-p-grey-100",
   className = "",
   onChange, // Include the onChange prop in the props interface
   required,
@@ -43,7 +44,11 @@ export function ProfilePicturePicker({
 
   return (
     <div
-      className={`${className} relative flex items-center justify-center rounded-lg overflow-hidden ${backgroundColor} w-full aspect-square`}
+      className={twMerge(
+        "relative flex items-center justify-center rounded-lg overflow-hidden w-full aspect-square",
+        backgroundColour,
+        className,
+      )}
     >
       <div className="absolute inset-0">
         {selectedImage ? (

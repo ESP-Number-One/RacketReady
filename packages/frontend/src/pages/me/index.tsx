@@ -36,16 +36,17 @@ export function YourProfile() {
 
   return (
     <Page page="profile">
-      <Page.Header>
+      <Page.Header padding={false}>
         <ProfilePic
           image={makeImgSrc(ok.user.profilePicture)}
           sports={ok.user.sports}
         />
       </Page.Header>
-      <Page.Body className="overflow-y-scroll">
+      <Page.Body scrollable>
         <p className="text-right font-title pt-2 px-3 text-3xl font-bold text-p-grey-900">
           {ok.user.name}
         </p>
+
         <div className="flex justify-end text-p-grey-900">
           <Stars
             rating={calculateAverageRating(ok.user.rating)}
@@ -53,9 +54,11 @@ export function YourProfile() {
             size="lg"
           />
         </div>
+
         <p className="py-2 px-3 text-center text-p-grey-900">
           {ok.user.description}
         </p>
+
         <div className="flex flex-col space-y-2 mb-2">
           <Button
             backgroundColor="bg-p-grey-100"
@@ -66,6 +69,7 @@ export function YourProfile() {
           >
             Calendar
           </Button>
+
           <Button
             backgroundColor="bg-p-grey-100"
             icon={<FontAwesomeIcon className={"mr-2"} icon={faPenToSquare} />}
@@ -75,6 +79,7 @@ export function YourProfile() {
           >
             Edit Profile
           </Button>
+
           <Button
             backgroundColor="bg-p-grey-100"
             icon={<FontAwesomeIcon className={"mr-2"} icon={faGear} />}

@@ -58,13 +58,12 @@ export function EditUser() {
   return (
     <Form onSubmit={onSubmit}>
       <Form.Header>
-        <Header.Back />
+        <Header.Back defaultLink="/me" />
         Edit Me
       </Form.Header>
       <Form.Body>
-        <ProfilePicturePicker className="mt-2" onChange={setPic} />
+        <ProfilePicturePicker onChange={setPic} />
         <Input
-          className="mt-2"
           value={name}
           onChange={setName}
           placeholder="Enter your name"
@@ -72,7 +71,6 @@ export function EditUser() {
         />
 
         <Input
-          className="mt-2"
           value={email}
           onChange={setEmail}
           placeholder="Enter your email"
@@ -80,14 +78,13 @@ export function EditUser() {
         />
 
         <Input
-          className="mt-2"
           value={description}
           onChange={setDescription}
           placeholder="Give a description of yourself"
           type="textarea"
         />
 
-        <Link className="mt-2" href="/me/sports/edit">
+        <Link href="/me/sports/edit">
           <div className="rounded-lg w-full text-xl bg-p-grey-200 pl-3 text-white font-bold">
             Edit sports
           </div>
@@ -123,7 +120,7 @@ export function EditSports() {
   return (
     <Form onSubmit={onSubmit}>
       <Form.Header>
-        <Header.Back />
+        <Header.Back defaultLink="/me/edit" />
         Edit sports
       </Form.Header>
       <Form.Body>

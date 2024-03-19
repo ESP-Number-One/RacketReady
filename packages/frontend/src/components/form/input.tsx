@@ -1,4 +1,5 @@
 import type { ChangeEvent, ReactElement, ReactNode } from "react";
+import { twMerge } from "tailwind-merge";
 import type { IconProps } from "../icon";
 
 interface InputProps {
@@ -16,7 +17,7 @@ interface InputProps {
 }
 
 export function Input({
-  backgroundColor = "bg-p-grey-100",
+  backgroundColor: backgroundColour = "bg-p-grey-100",
   className = "",
   disabled,
   id,
@@ -24,7 +25,7 @@ export function Input({
   onChange = () => void 0,
   placeholder = "",
   required,
-  textColor = "text-white",
+  textColor: textColour = "text-white",
   type,
   value,
 }: InputProps) {
@@ -35,10 +36,12 @@ export function Input({
   };
 
   // Common styles for all input types
-  const commonStyles = `${
-    icon ? "pl-8" : "pl-3"
-  } font-body text-lg font-bold text-white w-full bg-transparent focus:outline-none
-  inline-flex items-center w-full m-0 focus:placeholder-white`;
+  const commonStyles = twMerge(
+    icon ? "pl-8" : "pl-3",
+    "font-body text-lg font-bold text-white w-full bg-transparent",
+    "focus:outline-none inline-flex items-center w-full m-0",
+    "focus:placeholder-white",
+  );
 
   let inp: ReactNode;
 
@@ -61,7 +64,7 @@ export function Input({
     case "textarea":
       inp = (
         <textarea
-          className={`${commonStyles} resize-y`}
+          className={twMerge("resize-y", commonStyles)}
           disabled={disabled}
           id={id}
           onChange={handleInputChange}
@@ -101,7 +104,12 @@ export function Input({
 
   return (
     <div
-      className={`${className} ${backgroundColor} ${textColor} relative rounded-lg`}
+      className={twMerge(
+        backgroundColour,
+        textColour,
+        "relative rounded-lg",
+        className,
+      )}
     >
       {icon && (
         <div className="absolute left-2 top-1/2 transform -translate-y-1/2 mr-2">

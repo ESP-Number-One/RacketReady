@@ -70,20 +70,20 @@ export function UpcomingMatch() {
           </Link>
         </Header.Right>
       </Page.Header>
-      <Page.Body className="flex flex-col">
+      <Page.Body flexCol spacing>
         {ok.count > 0 && (
           <Link
             className="text-2xl font-title text-white w-full"
             href="/match/proposals"
           >
-            <div className="bg-p-grey-900 flex-none mt-2 rounded-lg p-2 w-full flex place-content-center font-bold">
+            <div className="bg-p-grey-900 flex-none rounded-lg p-2 w-full flex place-content-center font-bold">
               <h2>{ok.count > 10 ? "10+" : ok.count} Proposed Matches</h2>
               <FontAwesomeIcon className="pl-3 pt-1" icon={faChevronRight} />
             </div>
           </Link>
         )}
 
-        <div className="rounded-t-lg mt-2 flex-1 overflow-y-scroll">
+        <div className="rounded-t-lg flex-1 overflow-y-scroll">
           <CardList nextPage={nextPage} />
         </div>
       </Page.Body>

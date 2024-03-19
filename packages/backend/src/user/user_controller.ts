@@ -33,6 +33,7 @@ import {
   SuccessResponse,
 } from "tsoa";
 import type { CollectionWrap } from "@esp-group-one/db-client/build/src/collection.js";
+import * as EmailValidator from "email-validator";
 import * as express from "express";
 import { ControllerWrap } from "../controller.js";
 import { getUserId, mapUser, shuffle } from "../lib/utils.js";
@@ -221,15 +222,21 @@ export class UsersController extends ControllerWrap<User> {
     @Request() req: express.Request,
   ): Promise<WithError<User>> {
     return this.withVerifiedParam(requestBody, async (userCreation) => {
-      // TODO: Remove this check
-      // Used for testing purposes
-      if (userCreation.profilePicture !== "") {
-        const res = await this.checkAndCompressImage<User>(
-          userCreation.profilePicture,
-        );
+      const res = await this.checkAndCompressImage<User>(
+        userCreation.profilePicture,
+      );
 
-        if (typeof res !== "string") return res;
-        userCreation.profilePicture = res;
+      if (typeof res !== "string") return res;
+      userCreation.profilePicture = res;
+
+      console.log({
+        email: userCreation.email,
+        isValid: EmailValidator.validate(userCreation.email),
+      });
+
+      if (!EmailValidator.validate(userCreation.email)) {
+        this.setStatus(400);
+        return newAPIError("Email is invalid");
       }
 
       return getUserId(this.getDb(), req).then(
@@ -292,6 +299,15 @@ export class UsersController extends ControllerWrap<User> {
         if (await this.isUserUnique(updateQuery.email)) {
           this.setStatus(409);
           return newAPIError("User already exists");
+        }
+
+        console.log({
+          email: updateQuery.email,
+          isValid: EmailValidator.validate(updateQuery.email),
+        });
+        if (!EmailValidator.validate(updateQuery.email)) {
+          this.setStatus(400);
+          return newAPIError("Email is invalid");
         }
       }
 

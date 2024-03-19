@@ -4,6 +4,7 @@ import {
   isValidElement,
   type JSXElementConstructor,
 } from "react";
+
 /**
  * ## The Slotting Pattern
  *
@@ -56,5 +57,40 @@ export namespace Slot {
     }
 
     return [childOrChildren];
+  }
+
+  export interface PageParams {
+    children: ReactNode | ReactNode[];
+    className?: string;
+    padding?: boolean;
+    spacing?: boolean;
+  }
+
+  export function genClassNames({
+    className,
+    padding,
+    paddingDir,
+    spacing,
+  }: Omit<PageParams, "children"> & { paddingDir?: "x" | "y" | "" }): string {
+    let output = "";
+
+    if (className) output += className;
+
+    if (padding) {
+      switch (paddingDir) {
+        case "x":
+          output += " px-2";
+          break;
+        case "y":
+          output += " py-2";
+          break;
+        default:
+          output += "p-2";
+      }
+    }
+
+    if (spacing) output += " space-y-2";
+
+    return output;
   }
 }

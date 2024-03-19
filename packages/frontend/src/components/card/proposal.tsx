@@ -7,6 +7,7 @@ import {
 } from "@esp-group-one/types";
 import type { Moment } from "moment";
 import moment from "moment";
+import { twMerge } from "tailwind-merge";
 import { Tag } from "../tags";
 import { Stars } from "../stars";
 import { Button } from "../button";
@@ -29,7 +30,7 @@ export function Proposal({
   const info = formatDate(startTime);
   const endinfo = formatDate(startTime.clone().add(1, "hour"));
   return (
-    <div className={`${className} rounded-lg w-full`}>
+    <div className={twMerge("rounded-lg w-full", className)}>
       <div className="flex p-2 relative border border-gray-300 bg-p-grey-200 rounded-t-lg">
         <div>
           <div className="image-container">
