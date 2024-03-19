@@ -38,13 +38,9 @@ const DUMMY_MATCH = {
   league: new ObjectId(IDS[0]),
 } as Match;
 const SucessfulAPI = MockAPI({
-  match() {
-    return {
-      find() {
-        return [DUMMY_MATCH] as Match[];
-      },
-    };
-  },
+  match: () => ({
+    find: () => Promise.resolve([DUMMY_MATCH]),
+  }),
 });
 
 jest.mock("../../../src/state/nav");
@@ -54,13 +50,9 @@ mockLinks();
 describe("Date Handling", () => {
   test("TBD", async () => {
     const MockedAPI = MockAPI({
-      match() {
-        return {
-          find() {
-            return [] as Match[];
-          },
-        };
-      },
+      match: () => ({
+        find: () => Promise.resolve([]),
+      }),
     });
 
     const leagueCard = render(

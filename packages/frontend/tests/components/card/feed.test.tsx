@@ -7,6 +7,7 @@ import {
 } from "@testing-library/react";
 import * as React from "react";
 import { Feed } from "../../../src/components/card/feed";
+import { wait } from "../../helpers/utils";
 // import { setupMain } from "@testing-library/user-event/dist/cjs/setup/setup.js";
 
 jest.mock(
@@ -30,12 +31,6 @@ const specialRef = Object.defineProperty({ current: null }, "current", {
   },
 });
 // const useRef = jest.fn().mockReturnValue(specialRef);
-
-function wait(ms: number) {
-  return new Promise((res) => {
-    setTimeout(res, ms);
-  });
-}
 
 // const user = setupMain();
 
