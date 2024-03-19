@@ -1,5 +1,6 @@
 import { type ReactElement, type JSXElementConstructor, useState } from "react";
 import { type APIClient } from "@esp-group-one/api-client";
+import type { SubAPIClient } from "@esp-group-one/api-client/build/src/sub/base";
 import { API } from "../../src/state/auth";
 import { ErrorHandler } from "../../src/lib/async";
 
@@ -71,6 +72,14 @@ export function partiallyImpl<T>(a: DeepPartial<T>): T {
   return a as unknown as T;
 }
 
+type Partialize<T> = T extends SubAPIClient<unknown, unknown, unknown, unknown>
+  ? { [K in keyof T]?: T[K] }
+  : T extends (...args: infer P) => infer R
+    ? (...args: P) => Partialize<R>
+    : T extends object
+      ? { [K in keyof T]?: Partialize<T[K]> }
+      : T;
+
 /**
  * ## Client API Mocking
  *
@@ -104,7 +113,7 @@ export function partiallyImpl<T>(a: DeepPartial<T>): T {
  * });
  * ```
  */
-export function MockAPI(api: DeepPartial<APIClient>) {
+export function MockAPI(api: Partialize<APIClient>) {
   return function __({ children }: { children: ReactElement }) {
     return (
       <API.Provider value={api as unknown as APIClient}>
@@ -118,4 +127,10 @@ export function MockErrorHandler(fn: (e: Error) => void) {
   return function __({ children }: { children: ReactElement }) {
     return <ErrorHandler.Provider value={fn}>{children}</ErrorHandler.Provider>;
   };
+}
+
+export function wait(ms: number) {
+  return new Promise((res) => {
+    setTimeout(res, ms);
+  });
 }

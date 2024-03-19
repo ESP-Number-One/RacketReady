@@ -1,12 +1,11 @@
 import { type APIClient } from "@esp-group-one/api-client";
-import * as React from "react";
 import * as Auth0 from "@auth0/auth0-react";
 import { getUser } from "@esp-group-one/types/build/tests/helpers/utils";
 import { partiallyImpl } from "../helpers/utils";
 import { isNewUser, useAPIClient } from "../../src/lib/auth";
+import { mockReact } from "../__meta__";
 
 jest.mock("@auth0/auth0-react");
-jest.mock("react");
 
 describe("client-side auth tests", () => {
   const USER_EXISTS = partiallyImpl<APIClient>(
@@ -40,7 +39,8 @@ describe("client-side auth tests", () => {
   );
 
   test("useAPIClient", async () => {
-    const useRef = jest.spyOn(React, "useRef");
+    const { useRef } = await mockReact();
+    useRef.mockReturnValue({ current: 1 });
     const useAuth0 = jest.spyOn(Auth0, "useAuth0");
     const impl = partiallyImpl<Auth0.Auth0ContextInterface<{ name: string }>>({
       getAccessTokenSilently: jest.fn(() => Promise.resolve("TEST-TOKEN")),

@@ -1,6 +1,7 @@
 import type { SportInfo } from "@esp-group-one/types";
 import { AbilityLevel, Sport } from "@esp-group-one/types";
 import { useCallback } from "react";
+import { twMerge } from "tailwind-merge";
 import { abilityToColour } from "../../util/sport";
 import { SelectSport } from "./form/select_sports";
 
@@ -39,11 +40,13 @@ export function SportsAddMenu({ sports, setSports }: SportsAddMenuProps) {
             />
           </div>
           <select
-            className={`text-white font-body mt-2 text-2xl font-bold ${
+            className={twMerge(
+              `text-white font-body mt-2 text-2xl font-bold`,
               (info.ability as unknown)
                 ? abilityToColour(info.ability)
-                : "bg-p-grey-200"
-            } hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg px-5 py-2.5 text-center inline-flex items-center w-full`}
+                : "bg-p-grey-200",
+              `hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg px-5 py-2.5 text-center inline-flex items-center w-full`,
+            )}
             onChange={(e) => {
               updateSports(i, {
                 ...info,

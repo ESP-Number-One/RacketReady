@@ -44,9 +44,10 @@ export function SelectSport({
       </option>
       {sportsOptions.map((option, index) => (
         <option
-          className={`text-white ${sportToColour(
-            option,
-          )} hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-body rounded-lg text-xl px-5 py-2.5 text-center inline-flex items-center`}
+          className={twMerge(
+            `text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-body rounded-lg text-xl px-5 py-2.5 text-center inline-flex items-center`,
+            sportToColour(option),
+          )}
           key={index}
           value={option.toString()}
         >

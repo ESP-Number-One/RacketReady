@@ -1,5 +1,6 @@
 import { AbilityLevel, type Sport, type SportInfo } from "@esp-group-one/types";
 import { useMemo, useState } from "react";
+import { twMerge } from "tailwind-merge";
 import { Tag } from "./tags";
 
 interface Info {
@@ -66,7 +67,10 @@ export function ProfilePic({
       </div>
       {displayAbility && (
         <div
-          className={`${colour} font-title text-white py-3 px-5 text-center text-xl font-bold`}
+          className={twMerge(
+            `font-title text-white py-3 px-5 text-center text-xl font-bold`,
+            colour,
+          )}
         >
           {ability.charAt(0).toUpperCase() + ability.slice(1)}
         </div>

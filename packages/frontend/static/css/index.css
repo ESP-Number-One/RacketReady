@@ -4,39 +4,34 @@
 
 :root {
   --page-transition: 500ms;
+  --loading-animation-duration: 750ms;
+  --loading-ball-width: 10vw;
 }
 
-@keyframes slide-from-right {
-  from {
-    transform: translateX(100%);
+@-webkit-keyframes roll-in-left {
+  0% {
+    left: 0;
+    rotate: -270deg;
   }
-  to {
-    transform: translateX(0%);
-  }
-}
-
-@keyframes slide-to-left {
-  from {
-    transform: translateX(0%);
-  }
-  to {
-    transform: translateX(-100%);
+  100% {
+    left: calc(100% - var(--loading-ball-width));
+    rotate: 270deg;
   }
 }
-
-::view-transition-old(root) {
-  animation: none;
+@keyframes roll-in-left {
+  0% {
+    left: 0;
+    rotate: -270deg;
+  }
+  100% {
+    left: calc(100% - var(--loading-ball-width));
+    rotate: 270deg;
+  }
 }
 
-::view-transition-old(body-content) {
-  animation: var(--page-transition) cubic-bezier(0.4, 0, 0.2, 1) both
-    slide-to-left;
-}
-
-::view-transition-new(root) {
-  animation: none;
-}
-::view-transition-new(body-content) {
-  animation: var(--page-transition) cubic-bezier(0.4, 0, 0.2, 1) both
-    slide-from-right;
+.loading-rolling-animation {
+  -webkit-animation: roll-in-left var(--loading-animation-duration) linear
+    infinite alternate both;
+  animation: roll-in-left var(--loading-animation-duration) linear infinite
+    alternate both;
 }

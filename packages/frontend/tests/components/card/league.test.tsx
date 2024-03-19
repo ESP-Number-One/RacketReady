@@ -13,7 +13,6 @@ import { PICTURES } from "@esp-group-one/types/build/tests/helpers/utils";
 import { IDS } from "@esp-group-one/test-helpers-base";
 import { MockAPI } from "../../helpers/utils";
 import { LeagueCard } from "../../../src/components/card/league";
-import { mockLinks } from "../../helpers/mock";
 
 const WITHOUT_PICTURE = {
   _id: new ObjectId(IDS[0]),
@@ -38,29 +37,19 @@ const DUMMY_MATCH = {
   league: new ObjectId(IDS[0]),
 } as Match;
 const SucessfulAPI = MockAPI({
-  match() {
-    return {
-      find() {
-        return [DUMMY_MATCH] as Match[];
-      },
-    };
-  },
+  match: () => ({
+    find: () => Promise.resolve([DUMMY_MATCH]),
+  }),
 });
 
 jest.mock("../../../src/state/nav");
-jest.mock("react-router-dom");
-mockLinks();
 
 describe("Date Handling", () => {
   test("TBD", async () => {
     const MockedAPI = MockAPI({
-      match() {
-        return {
-          find() {
-            return [] as Match[];
-          },
-        };
-      },
+      match: () => ({
+        find: () => Promise.resolve([]),
+      }),
     });
 
     const leagueCard = render(

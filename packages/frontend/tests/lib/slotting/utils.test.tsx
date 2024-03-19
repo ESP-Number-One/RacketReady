@@ -26,4 +26,33 @@ describe("Slotting Utilities", () => {
     expect(Slot.find(multiple, TestA)).not.toBeNull();
     expect(Slot.find(multiple, TestC)).toBeUndefined();
   });
+
+  test("Find slot or default", () => {
+    const noA = [<TestB type="apple" key="B" />];
+
+    const def = <TestA class="apple" key="A" />;
+
+    expect(Slot.findOrDefault(undefined, def)).toBe(def);
+    expect(Slot.findOrDefault(def, def)).toBe(def);
+    expect(Slot.findOrDefault(noA, def)).toBe(def);
+    expect(Slot.findOrDefault(noA[0], def)).toBe(def);
+    expect(Slot.findOrDefault([], def)).toBe(def);
+
+    expect(Slot.findOrDefault(multiple, def)).not.toBe(def);
+  });
+
+  test("Find slots or default", () => {
+    const noA = [<TestB type="apple" key="B" />];
+    const def = <TestA class="apple" key="A" />;
+    const otherA = <TestA class="mango" key="C" />;
+
+    expect(Slot.filterOrDefault(undefined, def)).toEqual([def]);
+    expect(Slot.filterOrDefault([], def)).toEqual([def]);
+    expect(Slot.filterOrDefault(noA, def)).toEqual([def]);
+    expect(Slot.filterOrDefault(noA[0], def)).toEqual([def]);
+    expect(Slot.filterOrDefault([def], def)).toEqual([def]);
+
+    expect(Slot.filterOrDefault([...noA, otherA], def)).toEqual([otherA]);
+    expect(Slot.filterOrDefault(otherA, def)).toEqual([otherA]);
+  });
 });

@@ -22,7 +22,7 @@ import type {
   Match,
   Scores,
 } from "@esp-group-one/types";
-import { type Filter, type OptionalId } from "mongodb";
+import { type Filter, type OptionalId, ObjectId as MongoId } from "mongodb";
 import {
   Body,
   Get,
@@ -71,6 +71,35 @@ export class LeaguesController extends ControllerWrap<League> {
           return this.notFound();
         }
         return newAPISuccess(censorLeague(res.data));
+      }
+      return res;
+    });
+  }
+
+  /**
+   * * Finds all of the rounds in a league.
+   */
+  @Response<Error>(404, "Failed to get obj")
+  @Get("{leagueId}/rounds")
+  public async getLeagueRounds(
+    @Path() leagueId: ID,
+    @Request() req: express.Request,
+  ): Promise<WithError<{ rounds: string[] }>> {
+    const id = new ObjectId(leagueId);
+
+    return this.withUser(req, async (currUser) => {
+      const res = await this.get(id);
+      if (res.success) {
+        if (res.data.private && !currUser.leagues.includes(id)) {
+          // Don't want to give away the league exists if user does not have
+          // access
+          return this.notFound();
+        }
+        const matches = (await this.getDb().matches()).raw();
+        const rounds = (await matches.distinct("round", {
+          league: new MongoId(id.mongoDbId),
+        })) as string[];
+        return newAPISuccess({ rounds });
       }
       return res;
     });

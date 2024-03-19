@@ -46,4 +46,8 @@ export class LeagueAPIClient extends SubAPIClient<
   public nextRound(id: ObjectId): Promise<void> {
     return this.post(`${id.toString()}/round/next`, {});
   }
+
+  public rounds(id: ObjectId): Promise<{ rounds: number[] }> {
+    return this.get(`${id.toString()}/rounds`, {});
+  }
 }

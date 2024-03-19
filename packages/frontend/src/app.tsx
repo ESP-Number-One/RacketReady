@@ -9,6 +9,7 @@ import { UpcomingMatch } from "./pages/match/upcoming.js";
 import { ProfilePage } from "./pages/profile.js";
 import { SetAvailability } from "./pages/me/availability.js";
 import { NewMatchPage } from "./pages/match/new.js";
+import { SingleLeaguePage } from "./pages/league/single.js";
 import { SingleMatchPage } from "./pages/match/index.js";
 import { CompleteMatchForm } from "./pages/match/complete.js";
 import { YourProfile } from "./pages/me/index.js";
@@ -59,6 +60,7 @@ export function App() {
         <Route path="/me/edit" element={<EditUser />} />
         <Route path="/me/sports/edit" element={<EditSports />} />
         <Route path="/match/new" element={<NewMatchPage />} />
+        <Route path="/league/:id" element={<SingleLeaguePage />} />
         <Route path="/match" element={<SingleMatchPage />} />
         <Route path="/match/complete" element={<CompleteMatchForm />} />
         <Route path="/match/proposals" element={<MatchProposal />} />

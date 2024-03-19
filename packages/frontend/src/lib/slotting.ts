@@ -46,6 +46,46 @@ export namespace Slot {
     ) as ReactElement<P, Slot>;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- No `any` allowed -- bruh.
+  export function findOrDefault<P, Slot extends JSXElementConstructor<any>>(
+    fromChildren: ReactNode[] | ReactNode | undefined,
+    def: ReactElement<P, Slot>,
+  ): ReactElement<P, Slot> {
+    if (fromChildren === undefined) return def;
+
+    if (Array.isArray(fromChildren))
+      return (fromChildren.find(
+        (child) => isValidElement(child) && child.type === def.type,
+      ) ?? def) as ReactElement<P, Slot>;
+
+    if (isValidElement(fromChildren) && fromChildren.type === def.type)
+      return fromChildren as ReactElement<P, Slot>;
+
+    return def;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- No `any` allowed -- bruh.
+  export function filterOrDefault<P, Slot extends JSXElementConstructor<any>>(
+    fromChildren: ReactNode[] | ReactNode | undefined,
+    def: ReactElement<P, Slot>,
+  ): ReactElement<P, Slot>[] {
+    if (fromChildren === undefined) return [def];
+
+    if (Array.isArray(fromChildren)) {
+      const filtered = fromChildren.filter(
+        (child) => isValidElement(child) && child.type === def.type,
+      ) as ReactElement<P, Slot>[];
+
+      if (filtered.length === 0) return [def];
+      return filtered;
+    }
+
+    if (isValidElement(fromChildren) && fromChildren.type === def.type)
+      return [fromChildren] as ReactElement<P, Slot>[];
+
+    return [def];
+  }
+
   /**
    * Ensures an array of children.
    * @param childOrChildren - singular child or multiple children.

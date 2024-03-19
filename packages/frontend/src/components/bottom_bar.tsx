@@ -5,25 +5,28 @@ import {
   faTrophy,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
+import { twMerge } from "tailwind-merge";
 import { Link } from "./link.tsx";
 
 export function BottomBar(props: {
   activePage?: "home" | "search" | "leagues" | "profile";
 }) {
   return (
-    <div className="grid grid-cols-4 bg-white grid-cols-4 pb-3 pt-3 bottom-0 left-0 w-full border-t-p-grey-900 border-t-4">
+    <div className="grid bg-white grid-cols-4 pb-3 pt-3 bottom-0 left-0 w-full border-t-p-grey-900 border-t-4">
       <Link
-        className={`${
-          props.activePage === "home" ? "text-p-blue font-bold" : ""
-        } flex justify-center w-full`}
+        className={twMerge(
+          props.activePage === "home" ? "text-p-blue font-bold" : "",
+          "flex justify-center w-full",
+        )}
         href="/"
       >
         <FontAwesomeIcon icon={faHouse} className="text-center" size="2x" />
       </Link>
       <Link
-        className={`${
-          props.activePage === "search" ? "text-p-blue font-bold" : ""
-        } flex justify-center w-full`}
+        className={twMerge(
+          props.activePage === "search" ? "text-p-blue font-bold" : "",
+          "flex justify-center w-full",
+        )}
         href="/search"
       >
         <FontAwesomeIcon
@@ -33,17 +36,19 @@ export function BottomBar(props: {
         />
       </Link>
       <Link
-        className={`${
-          props.activePage === "leagues" ? "text-p-blue font-bold" : ""
-        } flex justify-center w-full`}
+        className={twMerge(
+          props.activePage === "leagues" ? "text-p-blue font-bold" : "",
+          "flex justify-center w-full",
+        )}
         href="/leagues"
       >
         <FontAwesomeIcon icon={faTrophy} className="text-center" size="2x" />
       </Link>
       <Link
-        className={`${
-          props.activePage === "profile" ? "text-p-blue font-bold" : ""
-        } flex justify-center w-full`}
+        className={twMerge(
+          props.activePage === "profile" ? "text-p-blue font-bold" : "",
+          "flex justify-center w-full",
+        )}
         href="/me"
       >
         <FontAwesomeIcon icon={faUser} className="text-center" size="2x" />

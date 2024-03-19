@@ -8,6 +8,8 @@
     "build": "tsoa spec-and-routes && tsc",
     "dev": "(run mongo:stop || true) && run mongo:start && cross-env DB_NAME=esp DB_CONN_STRING=mongodb://localhost:27017 run dev:tsoa",
     "dev:tsoa": "tsoa spec-and-routes && concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
+    "dev:tsoa-debug": "tsoa spec-and-routes && concurrently \"nodemon  --inspect-brk=5858 --exec\" \"nodemon -x tsoa spec-and-routes\"",
+    "dev:debug": "(run mongo:stop || true) && run mongo:start && cross-env DB_NAME=esp DB_CONN_STRING=mongodb://localhost:27017 run dev:tsoa-debug",
     "coverage": "jest --coverage",
     "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts' '*.json'",
     "gen": "tsoa routes",
