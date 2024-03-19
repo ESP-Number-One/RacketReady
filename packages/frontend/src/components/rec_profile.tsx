@@ -27,7 +27,7 @@ export function RecProfile({ user, availability, sport, proposeMatch }: Info) {
 
   return (
     <div className="h-fit max-h-fit mt-2 mb-2 snap-start">
-      <Link href={`/profile?id=${user._id.toString()}`}>
+      <Link href={`/profile/${user._id.toString()}`}>
         <div className="overflow-clip max-h-fit rounded-t-lg">
           <ProfilePic
             image={makeImgSrc(user.profilePicture)}

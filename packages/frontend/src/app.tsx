@@ -54,7 +54,7 @@ export function App() {
     <API.Provider value={ok.client}>
       <Routes>
         <Route index element={<UpcomingMatch />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile/:id" element={<ProfilePage />} />
         <Route path="/me" element={<YourProfile />} />
         <Route path="/me/availability" element={<SetAvailability />} />
         <Route path="/me/edit" element={<EditUser />} />
