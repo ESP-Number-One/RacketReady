@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 import { useContext } from "react";
-import { CardList } from "../../components/card_list";
 import { Page } from "../../components/page";
 import { Header } from "../../components/page/header";
 import { API } from "../../state/auth";
 import { Cards } from "../../utils/types_to_cards";
+import { Feed } from "../../components/card/feed";
 
 export function DiscoverLeagues() {
   const api = useContext(API);
@@ -33,10 +33,9 @@ export function DiscoverLeagues() {
         Discover Leagues
       </Page.Header>
       <Page.Body scrollable spacing>
-        <CardList
-          nextPage={nextPage}
-          emptyListPlaceholder="No more leagues found."
-        />
+        <Feed nextPage={nextPage}>
+          <Feed.Empty>No more leagues found.</Feed.Empty>
+        </Feed>
       </Page.Body>
     </Page>
   );

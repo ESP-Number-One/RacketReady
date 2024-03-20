@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import { Page } from "../../components/page";
 import { Header } from "../../components/page/header";
-import { CardList } from "../../components/card_list";
 import { API } from "../../state/auth";
 import { Proposal } from "../../components/card/proposal";
+import { Feed } from "../../components/card/feed";
 
 export function MatchProposal() {
   const api = useContext(API);
@@ -46,10 +46,9 @@ export function MatchProposal() {
       </Page.Header>
       <Page.Body scrollable>
         <div className="pb-2">
-          <CardList
-            nextPage={nextPage}
-            emptyListPlaceholder="You have no more match proposals."
-          />
+          <Feed nextPage={nextPage}>
+            <Feed.Empty>You have no more match proposals.</Feed.Empty>
+          </Feed>
         </div>
       </Page.Body>
     </Page>
