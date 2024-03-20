@@ -64,7 +64,7 @@ export function SuggestedPeople() {
           searchRes.map((u) => (
             <Link
               key={u._id.toString()}
-              href={`/profile?id=${u._id.toString()}`}
+              href={`/profile/${u._id.toString()}`}
               className="rounded-lg border w-full border-gray-300 p-2 flex items-center bg-p-grey-200 mt-2"
             >
               <div className="mr-4">

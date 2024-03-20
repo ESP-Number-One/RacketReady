@@ -1,10 +1,9 @@
-import type { ID } from "@esp-group-one/types";
 import {
   ObjectId,
   calculateAverageRating,
   makeImgSrc,
 } from "@esp-group-one/types";
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import type { ReactNode } from "react";
 import { useCallback, useContext } from "react";
 import moment from "moment";
@@ -26,11 +25,10 @@ export function ProfilePage() {
   const api = useContext(API);
   const viewNav = useViewNav();
 
-  const [searchParams] = useSearchParams();
-  const id: ID | null = searchParams.get("id");
+  const { id } = useParams();
 
   const { loading, error, ok } = useAsync(async () => {
-    if (!id) throw new Error("not even close");
+    if (!id) throw new Error("No user id provided.");
     const objId = new ObjectId(id);
 
     const user = api.user().getId(objId);
@@ -49,7 +47,7 @@ export function ProfilePage() {
         return (
           <Link
             className="w-full"
-            href={`match?id=${m._id.toString()}`}
+            href={`/match/${m._id.toString()}`}
             key={m._id.toString()}
           >
             <div className="w-full mt-2 rounded-lg bg-p-grey-200 flex p-3 place-items-center">

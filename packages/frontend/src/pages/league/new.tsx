@@ -32,7 +32,7 @@ export function NewLeaguePage() {
     };
 
     const res = await api.league().create(formData);
-    viewNav(`/league?id=${res._id.toString()}`);
+    viewNav(`/league/${res._id.toString()}`);
   };
 
   return (

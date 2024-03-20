@@ -103,7 +103,7 @@ export function SingleLeaguePage() {
   const [isMember, setIsMember] = useState(false);
 
   if (id === undefined) {
-    redirect("/me/leagues");
+    redirect("/leagues");
     return <></>;
   }
 

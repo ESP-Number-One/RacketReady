@@ -36,7 +36,7 @@ describe("Routing failures", () => {
     await act(() => Promise.resolve());
 
     expect(comp.container).toBeEmptyDOMElement();
-    expect(Routing.redirect).toHaveBeenCalledWith("/me/leagues");
+    expect(Routing.redirect).toHaveBeenCalledWith("/leagues");
   });
 
   test("Invalid id", () => {
