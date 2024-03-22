@@ -21,7 +21,7 @@ const specialRef = Object.defineProperty({ current: null }, "current", {
 
 // const user = setupMain();
 
-const emptyFn = jest.fn(() => wait(50).then(() => []));
+const emptyFn = jest.fn(() => wait(100).then(() => []));
 const singleFn = jest.fn(() =>
   wait(50).then(() => [<div key="singleton">Apples</div>]),
 );

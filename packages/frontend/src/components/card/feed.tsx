@@ -304,7 +304,7 @@ function FeedImpl<Item extends ReactNode>({
       return items[s]?.length > 0 ? (
         <div className="contents" key={`${key}-${Math.random()}`}>
           {props.children}
-          {items[s]}
+          {items[s].filter(Boolean)}
         </div>
       ) : null;
     });
