@@ -4,7 +4,6 @@ import {
   act,
   getByPlaceholderText,
   getByText,
-  prettyDOM,
   render,
   waitFor,
 } from "@testing-library/react";
@@ -264,8 +263,6 @@ test("Step 3", async () => {
   await userEvent.click(comp.getByLabelText("Reoccurring"));
 
   act(() => void 0);
-
-  console.log(prettyDOM(comp.container));
 
   // Choose recurring.
   (comp.container.querySelector("form") as unknown as HTMLFormElement).submit();
