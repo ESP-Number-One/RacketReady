@@ -86,3 +86,17 @@ describe("nextRound", () => {
 
   runErrorTests(endpoint, () => api.nextRound(id));
 });
+
+describe("rounds", () => {
+  const id = OIDS[0];
+  const endpoint = `league/${IDS[0]}/rounds`;
+
+  test("normal", async () => {
+    fetchMockEndpointOnce(endpoint, newAPISuccess([10, 5]), { query: {} });
+
+    await expect(api.rounds(id)).resolves.toStrictEqual([10, 5]);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  runErrorTests(endpoint, () => api.rounds(id));
+});

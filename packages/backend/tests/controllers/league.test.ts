@@ -179,6 +179,68 @@ describe("find", () => {
   });
 });
 
+describe("rounds", () => {
+  test("public league", async () => {
+    const league = await addLeague(db.get(), {});
+
+    await addMatch(db.get(), { league: league._id, round: 1 });
+    await addMatch(db.get(), { league: league._id, round: 1 });
+    await addMatch(db.get(), { league: league._id, round: 2 });
+
+    const res = await user
+      .request(app)
+      .get(`/league/${league._id.toString()}/rounds`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toStrictEqual({ success: true, data: { rounds: [1, 2] } });
+  });
+
+  describe("private league", () => {
+    test("part of the league", async () => {
+      const league = await addLeague(db.get(), { private: true });
+      await user.edit({ $set: { leagues: [league._id] } });
+
+      await addMatch(db.get(), { league: league._id, round: 1 });
+      await addMatch(db.get(), { league: league._id, round: 1 });
+      await addMatch(db.get(), { league: league._id, round: 2 });
+
+      const res = await user
+        .request(app)
+        .get(`/league/${league._id.toString()}/rounds`);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toStrictEqual({
+        success: true,
+        data: { rounds: [1, 2] },
+      });
+    });
+
+    test("not part of the league", async () => {
+      const league = await addLeague(db.get(), { private: true });
+
+      const res = await user
+        .request(app)
+        .get(`/league/${league._id.toString()}/rounds`);
+
+      expect(res.status).toBe(404);
+      expect(res.body).toStrictEqual({
+        success: false,
+        error: "Failed to get obj",
+      });
+    });
+  });
+
+  test("doesn't exist", async () => {
+    const res = await user.request(app).get(`/league/${IDS[0]}/rounds`);
+
+    expect(res.status).toBe(404);
+    expect(res.body).toStrictEqual({
+      success: false,
+      error: "Failed to get obj",
+    });
+  });
+});
+
 describe("new", () => {
   test("private", async () => {
     const res = await user.request(app).post("/league/new").send({
