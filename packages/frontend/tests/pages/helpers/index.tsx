@@ -1,3 +1,4 @@
+import { ObjectId } from "@esp-group-one/types";
 import { type ReactNode } from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
@@ -65,4 +66,9 @@ export function base64ToWebP(base64: string): File {
 
 const makeLetter = () => "0123456789abcdef"[Math.floor(Math.random() * 16)];
 
-export const fakeId = () => Array(24).fill("0").map(makeLetter).join("");
+/**
+ * Generates a random valid {@link ObjectId}.
+ * @returns random id.
+ */
+export const randomOId = () =>
+  new ObjectId(Array(24).fill("0").map(makeLetter).join(""));
