@@ -65,8 +65,10 @@ describe("Slotting", () => {
         return feed.container;
       });
 
-      expect(container.querySelector(".loader")).not.toBeNull();
-      expect(container.querySelector(".loader")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(container.querySelector(".loader")).not.toBeNull();
+        expect(container.querySelector(".loader")).toBeInTheDocument();
+      });
 
       cleanup();
     });

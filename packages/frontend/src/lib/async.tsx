@@ -195,7 +195,7 @@ export function useAsync<S>(
         setState(
           Result.ok(
             data,
-            options?.refresh === true
+            options?.refresh
               ? () => {
                   setRefresh(refresh + 1);
                 }

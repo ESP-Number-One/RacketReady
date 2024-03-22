@@ -66,6 +66,14 @@ describe("client-side auth tests", () => {
   test("isNewUser", async () => {
     expect(await isNewUser(USER_EXISTS)).toBe(false);
     expect(await isNewUser(NO_SPORTS_USER_EXISTS)).toBe(true);
+
+    // Mainly to suppress the warning in the test logs.
+    const consoleWarn = jest
+      .spyOn(console, "warn")
+      .mockImplementation(() => void 0);
+
     expect(await isNewUser(USER_NOT_EXISTS)).toBe(true);
+
+    expect(consoleWarn).toHaveBeenCalled();
   });
 });

@@ -30,7 +30,7 @@ describe("Failing Externals", () => {
       return comp.container as HTMLDivElement;
     });
 
-    const el = outer.children.item(0) as HTMLDivElement;
+    const el = outer.children.item(0)! as HTMLDivElement;
     expect(el).toHaveTextContent("No user id provided.");
   });
 
