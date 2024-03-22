@@ -27,4 +27,13 @@ module.exports = {
       },
     ],
   },
+  overrides: [
+    {
+      files: ["*.test.tsx"],
+      rules: {
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "import/no-named-as-default": "off",
+      },
+    },
+  ],
 };

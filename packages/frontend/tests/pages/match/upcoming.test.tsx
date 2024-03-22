@@ -15,7 +15,7 @@ import { IDS } from "@esp-group-one/test-helpers-base";
 import { MatchStatus, ObjectId } from "@esp-group-one/types";
 import { mockRouting } from "../../__meta__";
 import { MockAPI } from "../../helpers/utils";
-import { PageTester, fakeId } from "../helpers";
+import { PageTester, randomOId } from "../helpers";
 import { UpcomingMatch } from "../../../src/pages/match/upcoming";
 
 const navFn = jest.fn();
@@ -121,7 +121,7 @@ test("Proposed Match > 10", async () => {
             .fill(0)
             .map(() =>
               getMatch({
-                _id: new ObjectId(fakeId()),
+                _id: randomOId(),
                 status: MatchStatus.Request,
                 owner: new ObjectId(IDS[1]),
                 players: [new ObjectId(IDS[1]), new ObjectId(IDS[0])],

@@ -7,7 +7,6 @@ import {
 } from "@esp-group-one/types/build/tests/helpers/utils";
 import moment from "moment";
 import { MatchStatus, ObjectId, type Scores } from "@esp-group-one/types";
-// eslint-disable-next-line import/no-named-as-default -- Necessary default import.
 import userEvent from "@testing-library/user-event";
 import { mockRouting } from "../../__meta__";
 import { MockAPI, wait } from "../../helpers/utils";

@@ -9,7 +9,6 @@ import {
 } from "@testing-library/react";
 import type { User, UserCreation } from "@esp-group-one/types";
 import { AbilityLevel, ObjectId, Sport } from "@esp-group-one/types";
-// eslint-disable-next-line import/no-named-as-default -- WHYYY
 import userEvent from "@testing-library/user-event";
 import type { UserAPIClient } from "@esp-group-one/api-client/build/src/sub/user";
 import moment from "moment";
@@ -75,9 +74,7 @@ test("Step 1", async () => {
   // Phase 1.
   expect(page).toHaveTextContent("General");
 
-  const fileInput = page.querySelector(
-    `input[type="file"]`,
-  ) as unknown as HTMLInputElement;
+  const fileInput: HTMLInputElement = page.querySelector(`input[type="file"]`)!;
 
   const file = base64ToWebP(PICTURES[0]);
   await userEvent.upload(fileInput, file);
@@ -139,7 +136,7 @@ test("Step 1 Fail", async () => {
   expect(page).toHaveTextContent("General");
 
   // Attempt to submit without anything.
-  (outer.querySelector("form") as unknown as HTMLFormElement).submit();
+  outer.querySelector("form")!.submit();
 
   await act(async () => Promise.resolve());
 });
@@ -166,17 +163,14 @@ test("Step 2", async () => {
     expect(comp.getByText("Set!")).toBeInTheDocument();
   });
 
-  (outer.querySelector("form") as unknown as HTMLFormElement).submit();
+  outer.querySelector("form")!.submit();
 
-  await userEvent.selectOptions(
-    outer.querySelector("select") as unknown as HTMLSelectElement,
-    "badminton",
-  );
+  await userEvent.selectOptions(outer.querySelector("select")!, "badminton");
 
   act(() => void 0);
 
   await userEvent.selectOptions(
-    getByText(outer, "Advanced").parentElement as unknown as HTMLSelectElement,
+    getByText(outer, "Advanced").parentElement! as HTMLSelectElement,
     "Advanced",
   );
 
@@ -230,15 +224,13 @@ test("Step 3", async () => {
     expect(comp.getByText("Start")).toBeInTheDocument();
   });
 
-  (comp.container.querySelector("form") as unknown as HTMLFormElement).submit();
+  comp.container.querySelector("form")!.submit();
 
   const date = moment();
 
   // Date
   await userEvent.type(
-    comp.container.querySelector(
-      `input[type="date"]`,
-    ) as unknown as HTMLInputElement,
+    comp.container.querySelector(`input[type="date"]`)!,
     date.format("YYYY-MM-DD"),
   );
 
@@ -246,7 +238,7 @@ test("Step 3", async () => {
 
   // Start time.
   await userEvent.type(
-    comp.container.querySelector(`#start`) as unknown as HTMLInputElement,
+    comp.container.querySelector(`#start`)!,
     date.format("HH:mm"),
   );
 
@@ -254,7 +246,7 @@ test("Step 3", async () => {
 
   // End time.
   await userEvent.type(
-    comp.container.querySelector(`#end`) as unknown as HTMLInputElement,
+    comp.container.querySelector(`#end`)!,
     date.add(2, "hours").format("HH:mm"),
   );
 
@@ -265,27 +257,25 @@ test("Step 3", async () => {
   act(() => void 0);
 
   // Choose recurring.
-  (comp.container.querySelector("form") as unknown as HTMLFormElement).submit();
+  comp.container.querySelector("form")!.submit();
 
   act(() => void 0);
 
   await userEvent.type(
-    comp.container.querySelector(
-      `input[type="number"]`,
-    ) as unknown as HTMLInputElement,
+    comp.container.querySelector(`input[type="number"]`)!,
     "3",
   );
 
   act(() => void 0);
 
-  (comp.container.querySelector("form") as unknown as HTMLFormElement).submit();
+  comp.container.querySelector("form")!.submit();
 
   await userEvent.selectOptions(
-    comp.container.querySelector(`select`) as unknown as HTMLSelectElement,
+    comp.container.querySelector(`select`)!,
     "days",
   );
 
-  (comp.container.querySelector("form") as unknown as HTMLFormElement).submit();
+  comp.container.querySelector("form")!.submit();
   act(() => void 0);
 
   // Press "Add" button.

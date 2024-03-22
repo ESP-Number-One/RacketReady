@@ -3,7 +3,6 @@ import { IDS, getUser } from "@esp-group-one/test-helpers-base";
 import { AbilityLevel, ObjectId, Sport } from "@esp-group-one/types";
 import { getMatch } from "@esp-group-one/types/build/tests/helpers/utils";
 import moment from "moment";
-// eslint-disable-next-line import/no-named-as-default -- Necessary default import.
 import userEvent from "@testing-library/user-event";
 import { MockAPI, wait } from "../helpers/utils";
 import { mockRouting } from "../__meta__";

@@ -2,7 +2,6 @@ import {
   PICTURES,
   getLeague,
 } from "@esp-group-one/types/build/tests/helpers/utils";
-// eslint-disable-next-line import/no-named-as-default -- WHYYY
 import userEvent from "@testing-library/user-event";
 import { type LeagueCreation, ObjectId, Sport } from "@esp-group-one/types";
 import { IDS } from "@esp-group-one/test-helpers-base";
@@ -45,9 +44,8 @@ test("Successful interaction", async () => {
   act(() => void 0);
 
   // 1. File Input
-  const fileInput = comp.container.querySelector(
-    `input[type="file"]`,
-  ) as unknown as HTMLInputElement;
+  const fileInput: HTMLInputElement =
+    comp.container.querySelector(`input[type="file"]`)!;
 
   const file = base64ToWebP(PICTURES[0]);
   await userEvent.upload(fileInput, file);
@@ -56,7 +54,7 @@ test("Successful interaction", async () => {
   // 2. Sport Select
   await act(async () => {
     await userEvent.selectOptions(
-      comp.container.querySelector("select") as unknown as HTMLSelectElement,
+      comp.container.querySelector("select")!,
       comp.getByText(/badminton/i),
     );
   });
@@ -68,24 +66,18 @@ test("Successful interaction", async () => {
   // 4. Visibility (Keep the same, but go through all radios)
 
   await userEvent.click(
-    comp.container.querySelector(
-      `[name="visibility"][value="private"]`,
-    ) as unknown as HTMLInputElement,
+    comp.container.querySelector(`[name="visibility"][value="private"]`)!,
   );
   act(() => void 0);
 
   await userEvent.click(
-    comp.container.querySelector(
-      `[name="visibility"][value="public"]`,
-    ) as unknown as HTMLInputElement,
+    comp.container.querySelector(`[name="visibility"][value="public"]`)!,
   );
   act(() => void 0);
 
   // B. Press button.
 
-  const submitBtn = comp.container.querySelector(
-    `button[type="submit"]`,
-  ) as unknown as HTMLButtonElement;
+  const submitBtn = comp.container.querySelector(`button[type="submit"]`)!;
 
   await userEvent.click(submitBtn);
 
@@ -125,7 +117,7 @@ test("No profile pic", async () => {
   // 2. Sport Select
   await act(async () => {
     await userEvent.selectOptions(
-      comp.container.querySelector("select") as unknown as HTMLSelectElement,
+      comp.container.querySelector("select")!,
       comp.getByText(/badminton/i),
     );
   });
@@ -137,24 +129,18 @@ test("No profile pic", async () => {
   // 4. Visibility (Keep the same, but go through all radios)
 
   await userEvent.click(
-    comp.container.querySelector(
-      `[name="visibility"][value="private"]`,
-    ) as unknown as HTMLInputElement,
+    comp.container.querySelector(`[name="visibility"][value="private"]`)!,
   );
   act(() => void 0);
 
   await userEvent.click(
-    comp.container.querySelector(
-      `[name="visibility"][value="public"]`,
-    ) as unknown as HTMLInputElement,
+    comp.container.querySelector(`[name="visibility"][value="public"]`)!,
   );
   act(() => void 0);
 
   // B. Press button.
 
-  const submitBtn = comp.container.querySelector(
-    `button[type="submit"]`,
-  ) as unknown as HTMLButtonElement;
+  const submitBtn = comp.container.querySelector(`button[type="submit"]`)!;
 
   await userEvent.click(submitBtn);
 });

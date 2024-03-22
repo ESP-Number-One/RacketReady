@@ -17,13 +17,12 @@ import {
 import { Sport } from "@esp-group-one/types";
 import type { UserAPIClient } from "@esp-group-one/api-client/build/src/sub/user";
 import { IDS, getUser } from "@esp-group-one/types/build/tests/helpers/utils";
-// eslint-disable-next-line import/no-named-as-default -- WHYYY
 import userEvent from "@testing-library/user-event";
 import moment from "moment";
 import { MockAPI, wait } from "../helpers/utils";
 import { SuggestedPeople } from "../../src/pages/suggested_people";
 import { mockRouting } from "../__meta__";
-import { PageTester, fakeId } from "./helpers";
+import { PageTester, randomOId } from "./helpers";
 
 const userFindFn = jest.fn<
   Promise<CensoredUser[]>,
@@ -88,8 +87,7 @@ describe("Success Route", () => {
     });
 
     await userEvent.click(
-      comp.getByText("Bot C").parentElement
-        ?.parentElement as unknown as HTMLAnchorElement,
+      comp.getByText("Bot C").parentElement!.parentElement!,
     );
 
     expect(nav).toHaveBeenCalled();
@@ -116,7 +114,7 @@ describe("Success Route", () => {
       const arr = Array(20)
         .fill(0)
         .map(() => ({
-          u: getUser({ _id: new ObjectId(fakeId()), name: "Bot C" }),
+          u: getUser({ _id: randomOId(), name: "Bot C" }),
           sport: Sport.Badminton,
         }));
       expect(arr.length).toBe(20);
@@ -145,9 +143,9 @@ describe("Success Route", () => {
       expect(comp.container).not.toHaveTextContent(/wait/i);
     });
 
-    const feed = comp.container.querySelector(
+    const feed: HTMLDivElement = comp.container.querySelector(
       ".h-full.overflow-y-scroll.grid.grid-flow-row",
-    ) as unknown as HTMLDivElement;
+    )!;
 
     act(() => {
       fireEvent.scroll(feed, { target: { scrollTop: feed.scrollHeight } });

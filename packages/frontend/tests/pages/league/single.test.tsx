@@ -7,7 +7,7 @@ import {
 import { act, getByText, render } from "@testing-library/react";
 import { ObjectId, Sort } from "@esp-group-one/types";
 import moment from "moment";
-import { userEvent } from "@testing-library/user-event";
+import userEvent from "@testing-library/user-event";
 import { MockAPI, MockErrorHandler, wait } from "../../helpers/utils";
 import { SingleLeaguePage } from "../../../src/pages/league/single";
 import { PageTester } from "../helpers";

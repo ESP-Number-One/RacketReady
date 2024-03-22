@@ -1,5 +1,4 @@
 import { act, render } from "@testing-library/react";
-// eslint-disable-next-line import/no-named-as-default -- WHYYY
 import userEvent from "@testing-library/user-event";
 import {
   getLeague,
@@ -35,9 +34,7 @@ test("Render", async () => {
   );
 
   await act(() => wait(100));
-  await userEvent.click(
-    comp.getByText("Discover more").parentElement as unknown as HTMLElement,
-  );
+  await userEvent.click(comp.getByText("Discover more").parentElement!);
 
   act(() => void 0);
 

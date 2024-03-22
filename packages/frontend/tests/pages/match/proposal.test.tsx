@@ -5,7 +5,6 @@ import {
 import { act, render } from "@testing-library/react";
 import { ObjectId } from "@esp-group-one/types";
 import { IDS } from "@esp-group-one/test-helpers-base";
-// eslint-disable-next-line import/no-named-as-default -- Necessary default import.
 import userEvent from "@testing-library/user-event";
 import { MockAPI } from "../../helpers/utils";
 import { PageTester } from "../helpers";
