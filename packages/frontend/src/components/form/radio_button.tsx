@@ -23,12 +23,9 @@ export function RadioButton({
   value,
 }: RadioButtonProps) {
   const backgroundColour = checked ? "bg-p-green-100" : "bg-p-grey-100";
-  let borderRadius = "rounded"; // default border radius on all sides
-  if (isFirst) {
-    borderRadius = "rounded-l-lg"; // default border radius on the left side
-  } else if (isLast) {
-    borderRadius = "rounded-r-lg"; // keep the medium border radius on the right side
-  }
+  let borderRadius = "";
+  if (isFirst) borderRadius += "rounded-l-lg ";
+  if (isLast) borderRadius += "rounded-r-lg ";
 
   return (
     <label

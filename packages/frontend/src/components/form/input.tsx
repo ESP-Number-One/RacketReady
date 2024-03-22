@@ -48,6 +48,8 @@ export function Input({
   switch (type) {
     case "text":
     case "email":
+    case "time":
+    case "date":
       inp = (
         <input
           className={commonStyles}
@@ -70,32 +72,6 @@ export function Input({
           onChange={handleInputChange}
           placeholder={placeholder}
           required={required}
-          value={value}
-        />
-      );
-      break;
-    case "time":
-      inp = (
-        <input
-          className={commonStyles}
-          disabled={disabled}
-          id={id}
-          onChange={handleInputChange}
-          required={required}
-          type="time"
-          value={value}
-        />
-      );
-      break;
-    case "date":
-      inp = (
-        <input
-          className={commonStyles}
-          disabled={disabled}
-          id={id}
-          onChange={handleInputChange}
-          required={required}
-          type="date"
           value={value}
         />
       );

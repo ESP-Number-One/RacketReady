@@ -21,9 +21,10 @@ function getAbilityColour(abilityLevel: AbilityLevel) {
 }
 
 function getAbilityLevel(sports: SportInfo[], selected: Sport): AbilityLevel {
-  const selectedSport = sports.find((sport) => sport.sport === selected);
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- cannot be called without it existing
+  const selectedSport = sports.find((sport) => sport.sport === selected)!;
 
-  return selectedSport ? selectedSport.ability : AbilityLevel.Beginner;
+  return selectedSport.ability;
 }
 
 export function ProfilePic({

@@ -21,5 +21,5 @@ export function mockLinks(page = "", history?: string[]) {
   const mockedUseNav = asFuncMock(useViewNav);
   mockedUseNav.mockReturnValue(() => undefined);
 
-  return mockedUseNav;
+  return { mockedUseNav, mockedUseLocation };
 }
