@@ -23,7 +23,7 @@ import moment from "moment";
 import { MockAPI, wait } from "../helpers/utils";
 import { SuggestedPeople } from "../../src/pages/suggested_people";
 import { mockRouting } from "../__meta__";
-import { PageTester } from "./helpers";
+import { PageTester, fakeId } from "./helpers";
 
 const userFindFn = jest.fn<
   Promise<CensoredUser[]>,
@@ -111,9 +111,6 @@ describe("Success Route", () => {
       ({ query: { profileText } = { profileText: undefined } }) =>
         Promise.resolve([getUser({ name: profileText })]),
     );
-    const makeLetter = () => "0123456789abcdef"[Math.floor(Math.random() * 16)];
-
-    const fakeId = () => Array(24).fill("0").map(makeLetter).join("");
 
     recommendFn.mockImplementation(() => {
       const arr = Array(20)

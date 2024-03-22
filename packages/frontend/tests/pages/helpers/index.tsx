@@ -62,3 +62,7 @@ export function base64ToWebP(base64: string): File {
 
   return new File([image], "test_image.txt", { type: "image/webp" });
 }
+
+const makeLetter = () => "0123456789abcdef"[Math.floor(Math.random() * 16)];
+
+export const fakeId = () => Array(24).fill("0").map(makeLetter).join("");
