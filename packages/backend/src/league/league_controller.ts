@@ -84,13 +84,13 @@ export class LeaguesController extends ControllerWrap<League> {
   public async getLeagueRounds(
     @Path() leagueId: ID,
     @Request() req: express.Request,
-  ): Promise<WithError<{ rounds: string[] }>> {
+  ): Promise<WithError<{ rounds: number[] }>> {
     const id = new ObjectId(leagueId);
 
     return this.withUser(req, async (currUser) => {
       const res = await this.get(id);
       if (res.success) {
-        if (res.data.private && !currUser.leagues.includes(id)) {
+        if (res.data.private && !hasId(currUser.leagues, id)) {
           // Don't want to give away the league exists if user does not have
           // access
           return this.notFound();
@@ -98,7 +98,7 @@ export class LeaguesController extends ControllerWrap<League> {
         const matches = (await this.getDb().matches()).raw();
         const rounds = (await matches.distinct("round", {
           league: new MongoId(id.mongoDbId),
-        })) as string[];
+        })) as number[];
         return newAPISuccess({ rounds });
       }
       return res;
