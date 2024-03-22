@@ -4,6 +4,7 @@ import {
   isValidElement,
   type JSXElementConstructor,
 } from "react";
+import { twMerge } from "tailwind-merge";
 
 /**
  * ## The Slotting Pattern
@@ -112,25 +113,25 @@ export namespace Slot {
     paddingDir,
     spacing,
   }: Omit<PageParams, "children"> & { paddingDir?: "x" | "y" | "" }): string {
-    let output = "";
-
-    if (className) output += className;
+    const output: string[] = [];
 
     if (padding) {
       switch (paddingDir) {
         case "x":
-          output += " px-2";
+          output.push("px-2");
           break;
         case "y":
-          output += " py-2";
+          output.push("py-2");
           break;
         default:
-          output += "p-2";
+          output.push("p-2");
       }
     }
 
-    if (spacing) output += " space-y-2";
+    if (spacing) output.push("space-y-2");
 
-    return output;
+    if (className) output.push(className);
+
+    return twMerge(...output);
   }
 }

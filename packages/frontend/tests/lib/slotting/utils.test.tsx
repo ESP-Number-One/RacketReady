@@ -55,4 +55,33 @@ describe("Slotting Utilities", () => {
     expect(Slot.filterOrDefault([...noA, otherA], def)).toEqual([otherA]);
     expect(Slot.filterOrDefault(otherA, def)).toEqual([otherA]);
   });
+
+  describe("genClassNames", () => {
+    describe("padding", () => {
+      test("default dir", () => {
+        const res = Slot.genClassNames({ padding: true });
+        expect(res).toBe("p-2");
+      });
+
+      test("y dir", () => {
+        const res = Slot.genClassNames({ padding: true, paddingDir: "y" });
+        expect(res).toBe("py-2");
+      });
+
+      test("x dir", () => {
+        const res = Slot.genClassNames({ padding: true, paddingDir: "x" });
+        expect(res).toBe("px-2");
+      });
+    });
+
+    test("spacing", () => {
+      const res = Slot.genClassNames({ spacing: true });
+      expect(res).toBe("space-y-2");
+    });
+
+    test("customClass", () => {
+      const res = Slot.genClassNames({ spacing: true, className: "yoo hi" });
+      expect(res).toBe("space-y-2 yoo hi");
+    });
+  });
 });
