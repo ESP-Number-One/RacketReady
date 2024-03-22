@@ -18,6 +18,7 @@ describe("Page", () => {
     expect(thing.container.childNodes.length).toBe(1);
     expect(thing.container.childNodes.item(0).childNodes.length).toBe(3);
   });
+
   test("Minimal", () => {
     const thing = render(
       <Page>
@@ -27,6 +28,36 @@ describe("Page", () => {
 
     expect(thing.container.childNodes.length).toBe(1);
     expect(thing.container.childNodes.item(0).childNodes.length).toBe(2);
+  });
+
+  describe("Body options", () => {
+    test("flex col", () => {
+      const thing = render(
+        <Page>
+          <Page.Body flexCol>Body</Page.Body>
+        </Page>,
+      );
+
+      expect(thing.container.childNodes.length).toBe(1);
+      expect(thing.container.childNodes.item(0).childNodes.length).toBe(2);
+
+      const body = thing.container.children[0].children[0].children[0];
+      expect(body.classList.contains("flex")).toBe(true);
+      expect(body.classList.contains("flex-col")).toBe(true);
+    });
+
+    test("Scrollable", () => {
+      const thing = render(
+        <Page>
+          <Page.Body scrollable>Body</Page.Body>
+        </Page>,
+      );
+
+      expect(thing.container.childNodes.length).toBe(1);
+      expect(thing.container.childNodes.item(0).childNodes.length).toBe(2);
+      const body = thing.container.children[0].children[0].children[0];
+      expect(body.classList.contains("overflow-y-scroll")).toBe(true);
+    });
   });
 
   test("Empty", () => {

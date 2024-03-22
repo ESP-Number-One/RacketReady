@@ -59,7 +59,6 @@ export function SetAvailabilityBody({
           onChange={(date) => {
             setInfo({ ...info, date });
           }}
-          placeholder=""
           value={info.date}
           required
         />
@@ -75,7 +74,6 @@ export function SetAvailabilityBody({
               onChange={(start) => {
                 setInfo({ ...info, start });
               }}
-              placeholder=""
               value={info.start}
               required
             />
@@ -93,7 +91,6 @@ export function SetAvailabilityBody({
               onChange={(end) => {
                 setInfo({ ...info, end });
               }}
-              placeholder=""
               required
             />
           </div>

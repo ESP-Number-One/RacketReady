@@ -1,18 +1,32 @@
-import { render } from "@testing-library/react";
+import { cleanup, render } from "@testing-library/react";
 import type { To } from "react-router-dom";
 import { BottomBar } from "../../src/components/bottom_bar.tsx";
 import { mockLinks } from "../helpers/mock.ts";
 
 jest.mock("../../src/state/nav");
 jest.mock("react-router-dom");
-const mockedUseNav = mockLinks();
+const { mockedUseNav } = mockLinks();
+
+afterAll(cleanup);
 
 describe("BottomBar", () => {
   test("highlight current page", () => {
-    const component = render(<BottomBar activePage={"profile"} />);
-    const profile = component.container.children.item(0)?.children.item(3);
-    expect(profile).not.toBeNull();
-    expect(profile?.classList.contains("text-p-blue")).toBe(true);
+    const pages: ("home" | "search" | "leagues" | "profile")[] = [
+      "home",
+      "search",
+      "leagues",
+      "profile",
+    ];
+
+    pages.forEach((pageName, i) => {
+      const component = render(<BottomBar activePage={pageName} />);
+
+      for (let j = 0; j < 4; j++) {
+        const profile = component.container.children.item(0)?.children.item(j);
+        expect(profile).not.toBeNull();
+        expect(profile?.classList.contains("text-p-blue")).toBe(i === j);
+      }
+    });
   });
 
   test("Clicking works", () => {

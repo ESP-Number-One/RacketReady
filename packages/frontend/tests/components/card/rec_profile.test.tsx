@@ -2,6 +2,7 @@ import { AbilityLevel, ObjectId, Sport } from "@esp-group-one/types";
 import { PICTURES } from "@esp-group-one/types/build/tests/helpers/utils";
 import { cleanup, render } from "@testing-library/react";
 import moment from "moment";
+import { userEvent } from "@testing-library/user-event";
 import { RecProfile } from "../../../src/components/rec_profile";
 
 jest.mock("../../../src/state/nav");
@@ -49,13 +50,78 @@ const mockUnavailableProfile = {
 
 describe("RecProfile", () => {
   test("it should render without crashing", () => {
-    render(
+    expect(() =>
+      render(
+        <RecProfile
+          user={mockProfile.user}
+          sport={mockProfile.user.sports[0]}
+          availability={mockProfile.availability}
+          proposeMatch={() => void 0}
+        />,
+      ),
+    ).not.toThrow();
+  });
+
+  test("proposing a match", async () => {
+    const user = userEvent.setup();
+
+    const component = render(
       <RecProfile
         user={mockProfile.user}
         sport={mockProfile.user.sports[0]}
         availability={mockProfile.availability}
+        proposeMatch={(proposal) => {
+          expect(proposal).toStrictEqual({
+            date: moment("2024-03-12T11:30:00Z").toISOString(),
+            to: mockProfile.user._id,
+            sport: mockProfile.user.sports[0].sport,
+          });
+        }}
+      />,
+    );
+
+    const profile = component.container;
+
+    expect(
+      profile.querySelectorAll<HTMLButtonElement>("button.bg-p-grey-900")
+        .length,
+    ).toBe(3);
+
+    // Get the first button
+    const button = profile.querySelector<HTMLButtonElement>(
+      "button.bg-p-grey-900",
+    );
+
+    expect(button).not.toBeNull();
+    if (button) await user.click(button);
+
+    expect(
+      profile.querySelectorAll<HTMLButtonElement>("button.bg-p-grey-900")
+        .length,
+    ).toBe(2);
+  });
+
+  test("match date in couple weeks", () => {
+    const profile = {
+      ...mockProfile,
+      availability: [moment(), moment().add(2, "weeks").add(1, "day")],
+    };
+
+    const component = render(
+      <RecProfile
+        user={profile.user}
+        sport={profile.user.sports[0]}
+        availability={profile.availability}
         proposeMatch={() => void 0}
       />,
+    );
+
+    expect(component.container).toHaveTextContent(
+      profile.availability[0].format("dddd"),
+    );
+
+    expect(component.container).toHaveTextContent(
+      profile.availability[1].format("D/M"),
     );
   });
 

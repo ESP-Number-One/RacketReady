@@ -11,8 +11,8 @@ interface SportsAddMenuProps {
 }
 
 export function SportsAddMenu({ sports, setSports }: SportsAddMenuProps) {
-  const allSports = Object.values(Sport) as Sport[];
-  const allAbilities = Object.values(AbilityLevel) as AbilityLevel[];
+  const allSports = Object.values(Sport);
+  const allAbilities = Object.values(AbilityLevel);
 
   const pickedSports = sports.map((info) => info.sport);
   const unpickedSports = allSports.filter((s) => !pickedSports.includes(s));
@@ -70,21 +70,19 @@ export function SportsAddMenu({ sports, setSports }: SportsAddMenuProps) {
       ))}
 
       {unpickedSports.length > 0 && (
-        <>
-          <SelectSport
-            className="mt-2"
-            onChange={(sport) => {
-              sports.push({
-                sport,
-                ability: undefined as unknown as AbilityLevel,
-              });
-              setSports([...sports]);
-            }}
-            sports={unpickedSports}
-            value={undefined}
-            required={sports.length === 0}
-          />
-        </>
+        <SelectSport
+          className="mt-2"
+          onChange={(sport) => {
+            sports.push({
+              sport,
+              ability: undefined as unknown as AbilityLevel,
+            });
+            setSports([...sports]);
+          }}
+          sports={unpickedSports}
+          value={undefined}
+          required={sports.length === 0}
+        />
       )}
     </div>
   );

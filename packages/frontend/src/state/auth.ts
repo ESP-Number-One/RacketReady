@@ -48,7 +48,7 @@ export function handleApi(
           break;
         }
       }
-      await client.user().addSports(...sportsToAdd);
+      if (sportsToAdd.length > 0) await client.user().addSports(...sportsToAdd);
     }
 
     setResult({ type: "ok", ok: { authenticated: true, client } });
