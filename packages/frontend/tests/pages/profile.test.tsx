@@ -20,7 +20,7 @@ describe("Failing Externals", () => {
 
     const outer = await act(async () => {
       const comp = render(
-        <PageTester route="/profile/:id" path="/profile/UNUSED">
+        <PageTester route="/profile/:id">
           <BlankAPI>
             <ProfilePage />
           </BlankAPI>

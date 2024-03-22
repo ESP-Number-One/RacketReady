@@ -17,7 +17,7 @@ import moment from "moment";
 import { MockAPI, wait } from "../helpers/utils";
 import { SignUp } from "../../src/pages/signup";
 import { mockRouting } from "../__meta__";
-import { PageTester } from "./helpers";
+import { PageTester, base64ToWebP } from "./helpers";
 
 const createFn = jest.fn<Promise<User>, [UserCreation], UserAPIClient>(
   (creation) => {
@@ -59,7 +59,7 @@ test("Step 1", async () => {
   });
 
   const comp = render(
-    <PageTester route="/signup" path="/signup">
+    <PageTester route="/signup">
       <MockedAPI>
         <SignUp />
       </MockedAPI>
@@ -79,15 +79,8 @@ test("Step 1", async () => {
   const fileInput = page.querySelector(
     `input[type="file"]`,
   ) as unknown as HTMLInputElement;
-  const image = new Blob([
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any -- AP
-    (globalThis as any).Buffer.from(
-      PICTURES[0],
-      "base64",
-    ) as unknown as BlobPart,
-  ]);
 
-  const file = new File([image], "test_image.txt", { type: "image/webp" });
+  const file = base64ToWebP(PICTURES[0]);
   await userEvent.upload(fileInput, file);
   await wait(100);
 
@@ -128,7 +121,7 @@ test("Step 1 Fail", async () => {
   });
 
   const comp = render(
-    <PageTester route="/signup" path="/signup">
+    <PageTester route="/signup">
       <MockedAPI>
         <SignUp />
       </MockedAPI>
@@ -162,7 +155,7 @@ test("Step 2", async () => {
   });
 
   const comp = render(
-    <PageTester route="/signup" path="/signup">
+    <PageTester route="/signup">
       <MockedAPI>
         <SignUp />
       </MockedAPI>
@@ -227,7 +220,7 @@ test("Step 3", async () => {
   });
 
   const comp = render(
-    <PageTester route="/signup" path="/signup">
+    <PageTester route="/signup">
       <MockedAPI>
         <SignUp />
       </MockedAPI>

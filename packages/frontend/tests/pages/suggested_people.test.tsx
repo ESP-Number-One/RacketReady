@@ -76,7 +76,7 @@ describe("Success Route", () => {
     );
 
     const comp = render(
-      <PageTester route="/search" path="/search">
+      <PageTester route="/search">
         <MockedAPI>
           <SuggestedPeople />
         </MockedAPI>
@@ -137,7 +137,7 @@ describe("Success Route", () => {
     );
 
     const comp = render(
-      <PageTester route="/search" path="/search">
+      <PageTester route="/search">
         <MockedAPI>
           <SuggestedPeople />
         </MockedAPI>
@@ -188,7 +188,7 @@ describe("API Failure", () => {
     );
 
     const comp = render(
-      <PageTester route="/search" path="/search">
+      <PageTester route="/search">
         <MockedAPI>
           <SuggestedPeople />
         </MockedAPI>
@@ -227,7 +227,7 @@ describe("API Failure", () => {
     );
 
     const comp = render(
-      <PageTester route="/search" path="/search">
+      <PageTester route="/search">
         <MockedAPI>
           <SuggestedPeople />
         </MockedAPI>
