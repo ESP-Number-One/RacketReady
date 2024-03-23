@@ -1,0 +1,28 @@
+{
+  "theme_color": "#d4df64",
+  "background_color": "#2EC6FE",
+  "icons": [
+    {
+      "purpose": "maskable",
+      "sizes": "512x512",
+      "src": "/static/img/logo-maskable.png",
+      "type": "image/png"
+    },
+    {
+      "purpose": "any",
+      "sizes": "512x512",
+      "src": "/static/img/logo-rounded.png",
+      "type": "image/png"
+    }
+  ],
+  "orientation": "portrait",
+  "display": "standalone",
+  "dir": "left",
+  "lang": "en-GB",
+  "name": "Racket Ready",
+  "short_name": "RacketReady",
+  "start_url": "http://localhost:3001",
+  "scope": "http://localhost:3001",
+  "description": "Find new friends, keep up with the competition, and have fun!",
+  "id": "http://localhost:3001"
+}
