@@ -176,7 +176,7 @@ function PhaseThree({ nextPhase, progress, submitText }: PhaseProps) {
           />
         </div>
       </Form.Body>
-      <Form.Footer>
+      <Form.Footer padding>
         <div className="flex gap-2">
           <Button
             type="submit"
