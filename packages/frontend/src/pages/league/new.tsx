@@ -44,7 +44,7 @@ export function NewLeaguePage() {
 
       <Form.Body spacing>
         <SelectSport
-          sports={Object.keys(Sport) as Sport[]}
+          sports={Object.values(Sport) as Sport[]}
           onChange={setSport}
           value={sport}
         />
