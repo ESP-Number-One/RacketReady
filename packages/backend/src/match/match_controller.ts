@@ -34,6 +34,7 @@ import * as express from "express";
 import type { User } from "@esp-group-one/db-client/build/src/types.js";
 import moment from "moment";
 import { ControllerWrap } from "../controller.js";
+import { removeFromAvailabilityCache } from "../lib/availability_cache.js";
 
 @Security("auth0")
 @Route("match")
@@ -67,6 +68,20 @@ export class MatchsController extends ControllerWrap<Match> {
           this.setStatus(400);
           return newAPIError("The match is already accepted");
         }
+
+        // Once the match is accepted, we should make it so no players are
+        // available for that hour in the cache
+        const availability = {
+          timeStart: moment(res.data.date).toISOString(),
+          timeEnd: moment(res.data.date).add(1, "hour").toISOString(),
+        };
+        const promises: Promise<void>[] = [];
+        for (const p of res.data.players) {
+          promises.push(
+            removeFromAvailabilityCache(this.getDb(), p, availability),
+          );
+        }
+        await Promise.all(promises);
 
         const coll = await this.getCollection();
         await coll.edit(id, { $set: { status: MatchStatus.Accepted } });
