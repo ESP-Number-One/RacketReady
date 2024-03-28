@@ -2,10 +2,10 @@ import { act, prettyDOM, render, waitFor } from "@testing-library/react";
 import { getUser } from "@esp-group-one/types/build/tests/helpers/utils";
 import { IDS } from "@esp-group-one/test-helpers-base";
 import { AbilityLevel, ObjectId, Sport } from "@esp-group-one/types";
+import userEvent from "@testing-library/user-event";
 import { MockAPI } from "../../helpers/utils";
 import { PageTester } from "../helpers";
 import { NewMatchPage } from "../../../src/pages/match/new";
-import userEvent from "@testing-library/user-event";
 
 test("Error", async () => {
   const MockedAPI = MockAPI({});
