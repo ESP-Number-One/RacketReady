@@ -51,7 +51,7 @@ export function EditUser() {
         viewNav("/");
       });
     await api.user().me();
-  }, [api, ok]);
+  }, [api, ok, email, name, description, pic]);
 
   if (!ok) return (loading ?? error) as ReactNode;
 
