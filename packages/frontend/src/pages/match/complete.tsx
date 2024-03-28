@@ -46,8 +46,7 @@ export function CompleteMatchForm() {
     .await();
 
   const onSubmit = useCallback(async () => {
-    if (!id) throw new Error("not even close");
-    const objId = new ObjectId(id);
+    const objId = new ObjectId(id as unknown as string);
 
     await api.match().complete(objId, scores);
     if (rating > 0) await api.match().rate(objId, rating);

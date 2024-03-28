@@ -23,9 +23,8 @@ import { Feed } from "../components/card/feed.tsx";
 
 export function ProfilePage() {
   const api = useContext(API);
-  const viewNav = useViewNav();
-
   const { id } = useParams();
+  const viewNav = useViewNav();
 
   const { loading, error, ok } = useAsync(async () => {
     if (!id) throw new Error("No user id provided.");

@@ -67,6 +67,9 @@ const config = {
       transform: {
         "\\.(ts|tsx|js|jsx)$": "ts-jest",
       },
+      moduleNameMapper: {
+        "^(\\.{1,2}/.*)\\.js$": "$1",
+      },
       setupFiles: ["<rootDir>/tests/__presetup__.ts"],
       setupFilesAfterEnv: ["<rootDir>/tests/__setup__.ts"],
       testRegex: "\\.(test|spec)\\.(ts|tsx)$",

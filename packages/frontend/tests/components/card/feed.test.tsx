@@ -21,7 +21,7 @@ const specialRef = Object.defineProperty({ current: null }, "current", {
 
 // const user = setupMain();
 
-const emptyFn = jest.fn(() => wait(50).then(() => []));
+const emptyFn = jest.fn(() => wait(100).then(() => []));
 const singleFn = jest.fn(() =>
   wait(50).then(() => [<div key="singleton">Apples</div>]),
 );
@@ -65,8 +65,10 @@ describe("Slotting", () => {
         return feed.container;
       });
 
-      expect(container.querySelector(".loader")).not.toBeNull();
-      expect(container.querySelector(".loader")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(container.querySelector(".loader")).not.toBeNull();
+        expect(container.querySelector(".loader")).toBeInTheDocument();
+      });
 
       cleanup();
     });

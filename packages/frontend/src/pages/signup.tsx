@@ -37,7 +37,6 @@ function PhaseOne({ nextPhase, progress, submitText }: PhaseProps) {
   });
 
   const onSubmit = useCallback(async () => {
-    console.log(user);
     if (!user.name || !user.email || !user.description || !user.profilePicture)
       throw new Error("Required fields weren't filled in");
 
