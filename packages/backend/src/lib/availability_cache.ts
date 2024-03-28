@@ -33,6 +33,33 @@ export async function getAvailabilityCache(
 }
 
 /**
+ * Removes the user from being available at that hour
+ *
+ * @param db - The database client to use
+ * @param userId - The user id to remove availability for
+ * @param availability - The availability to set the user to
+ */
+export async function removeFromAvailabilityCache(
+  db: DbClient,
+  userId: ObjectId,
+  availability: Availability,
+) {
+  const times = getTimesFor(availability);
+
+  const availabilityCache = await db.availabilityCaches();
+
+  await availabilityCache.editWithQuery(
+    {
+      $and: [
+        { availablePeople: userId },
+        { start: { $in: times.map((x) => x.toISOString()) } },
+      ],
+    },
+    { $pull: { availablePeople: userId } },
+  );
+}
+
+/**
  * Updates the availability cache with a given availability object
  *
  * @param db - The database client to use
@@ -44,28 +71,7 @@ export async function setAvailabilityCache(
   userId: ObjectId,
   availability: Availability,
 ): Promise<void> {
-  const start = moment(availability.timeStart).startOf("hour");
-  const end = moment(availability.timeEnd).startOf("hour");
-
-  const duration = end.diff(start, "hours");
-  const times = Array.from({ length: duration }, (_, i) =>
-    start.clone().add(i, "hours"),
-  );
-
-  const twoWeeksFromStart = start.clone().add(2, "weeks");
-
-  if (availability.recurring) {
-    let lastTimes = [...times];
-    // Get the time objects for the next two weeks
-    while (lastTimes.length > 0) {
-      lastTimes = lastTimes
-        .map((time) =>
-          addTime(time, availability.recurring as unknown as Duration),
-        )
-        .filter((time) => time < twoWeeksFromStart);
-      times.push(...lastTimes);
-    }
-  }
+  const times = getTimesFor(availability);
 
   // Query : Start time in array AND available doesn't contain userId to
   // make sure duplicates don't occur
@@ -90,4 +96,31 @@ function addTime(time: Moment, duration: Duration): Moment {
   if (duration.years) newTime = newTime.add(duration.years, "years");
 
   return newTime;
+}
+
+function getTimesFor(availability: Availability): Moment[] {
+  const start = moment(availability.timeStart).startOf("hour");
+  const end = moment(availability.timeEnd).startOf("hour");
+
+  const duration = end.diff(start, "hours");
+  const times = Array.from({ length: duration }, (_, i) =>
+    start.clone().add(i, "hours"),
+  );
+
+  const twoWeeksFromStart = start.clone().add(2, "weeks");
+
+  if (availability.recurring) {
+    let lastTimes = [...times];
+    // Get the time objects for the next two weeks
+    while (lastTimes.length > 0) {
+      lastTimes = lastTimes
+        .map((time) =>
+          addTime(time, availability.recurring as unknown as Duration),
+        )
+        .filter((time) => time < twoWeeksFromStart);
+      times.push(...lastTimes);
+    }
+  }
+
+  return times;
 }
