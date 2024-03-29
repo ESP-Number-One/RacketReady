@@ -52,9 +52,10 @@ Essentially this is a Typescript-all-the-way-down stack.
   but as of yet it is not required and so not finalised.
 
 ### Getting Started
+
 0. If you use Winodws, please type `git config --global core.autocrlf false` THIS IS IMPORTANT!
-1. Clone this repo: `git clone https://github.com/ESP-Number-One/MatchyoSports --recursive-submodules`
-2. cd into the repo `cd MatchyoSports`
+1. Clone this repo: `git clone https://github.com/ESP-Number-One/RacketReady --recursive-submodules`
+2. cd into the repo `cd RacketReady`
 3. Install dependencies `yarn install`
 4. Build the project `yarn build`
 5. Run the dev servers `yarn dev`
