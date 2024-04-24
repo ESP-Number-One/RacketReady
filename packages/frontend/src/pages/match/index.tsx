@@ -27,6 +27,7 @@ import { Message } from "../../components/message";
 import { Page } from "../../components/page";
 import { Header } from "../../components/page/header";
 import { Input } from "../../components/form/input";
+import { Link } from "../../components/link";
 import { Stars } from "../../components/stars";
 import { useAsync } from "../../lib/async";
 
@@ -195,18 +196,16 @@ export function SingleMatchPage(): ReactNode {
         <div className="flex-none">
           <ErrorDiv className="mt-2" error={myError} />
           <div className="pt-2">
-            <Button
-              backgroundColor="bg-p-grey-100 mt-2"
-              icon={<FontAwesomeIcon icon={faUser} />}
-              onClick={() => {
-                viewNavigate("/profile");
-              }}
+            <Link
+              className="bg-p-grey-100 mt-2 font-body text-2xl font-bold text-white focus:outline-none px-5 py-2.5 inline-flex items-center w-full transform active:scale-95 transition duration-150 ease-in-out"
+              href={`${ok.opponent._id}`}
             >
               {ok.opponent.name}
-            </Button>
+            </Link>
             {isLeague && (
               <Button
-                backgroundColor="bg-p-grey-100 mt-2"
+                backgroundColor="bg-p-grey-100"
+                className="mt-2"
                 icon={<FontAwesomeIcon icon={faTrophy} />}
                 onClick={() => {
                   viewNavigate("/league");
