@@ -74,8 +74,8 @@ export function SuggestedPeople() {
       return raw.map((info) => {
         return {
           ...info,
-          availability: info.availability.filter((t) =>
-            proposedTimes.some((b) => t.isSame(b)),
+          availability: info.availability.filter(
+            (t) => !proposedTimes.some((b) => t.isSame(b)),
           ),
         };
       });

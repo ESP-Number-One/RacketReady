@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
-import { useCallback, useContext, useEffect, useState } from "react";
+import type { MutableRefObject, ReactNode } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import type { Availability, Duration, User } from "@esp-group-one/types";
 import moment, { unitOfTime } from "moment";
 import { API } from "../../state/auth";
@@ -220,19 +220,17 @@ export function SetAvailabilityBody({
   info,
   setInfo,
   refresh: parentRefresh,
-  setRefresh,
 }: {
   info: AvailabilityCreator;
   setInfo: (a: AvailabilityCreator) => void;
-  refresh?: () => void;
-  setRefresh: (f: () => void) => void;
+  refresh: MutableRefObject<(() => void) | undefined>;
 }) {
   const api = useContext(API);
 
-  const [availability, setAvailability] = useState<Availability[]>([]);
-  const [recurringAvailability, setRecurringAvailabilities] = useState<
-    RecurringAvailability[]
-  >([]);
+  const lastPage = useRef<number>(-1);
+  const availability = useRef<Availability[]>([]);
+  const recurringAvailability = useRef<RecurringAvailability[]>([]);
+  const [refreshSignal, setRefreshSignal] = useState<boolean>(false);
 
   const { loading, error, ok, refresh } = useAsync<{
     user: User;
@@ -243,11 +241,10 @@ export function SetAvailabilityBody({
       const avail = user.availability.sort((a, b) =>
         a.timeStart.localeCompare(b.timeStart),
       );
-      setAvailability(avail.filter((a) => !("recurring" in a)));
-
-      setRecurringAvailabilities(
-        avail.filter((a) => "recurring" in a) as RecurringAvailability[],
-      );
+      availability.current = avail.filter((a) => !("recurring" in a));
+      recurringAvailability.current = avail.filter(
+        (a) => "recurring" in a,
+      ) as RecurringAvailability[];
 
       return { user: user };
     },
@@ -257,8 +254,94 @@ export function SetAvailabilityBody({
     .await();
 
   useEffect(() => {
-    if (!parentRefresh && refresh) setRefresh(refresh);
+    setRefreshSignal(!refreshSignal);
+  }, [setRefreshSignal, ok]);
+
+  useEffect(() => {
+    if (refresh) {
+      parentRefresh.current = () => {
+        refresh();
+      };
+    }
   }, [parentRefresh, refresh]);
+
+  const nextPage = useCallback((page: number) => {
+    if (page === 0) lastPage.current = 0;
+
+    return new Promise<ReactNode[]>((resolve) => {
+      const weekAvailabilities: Availability[] = [];
+      let tryNextPage = true;
+      while (tryNextPage) {
+        tryNextPage = recurringAvailability.current.length > 0;
+
+        // loads a week at a time and handles the recurring nature
+        const endWeek = moment().endOf("week").add(lastPage.current, "weeks");
+        const startWeek = endWeek.clone().startOf("week");
+        for (const a of availability.current) {
+          if (endWeek.isBefore(a.timeStart)) {
+            tryNextPage = true;
+            break;
+          }
+          if (startWeek.isAfter(a.timeEnd)) continue;
+          weekAvailabilities.push(a);
+        }
+
+        const newRec: RecurringAvailability[] = [];
+        for (const rec of recurringAvailability.current) {
+          let recStart = moment(rec.timeStart);
+          const recDur = recStart.diff(rec.timeEnd);
+
+          while (startWeek.isAfter(recStart)) {
+            Object.entries(rec.recurring).forEach(([unit, amount]) => {
+              recStart = recStart.add(
+                amount as number,
+                unit as unitOfTime.DurationConstructor,
+              );
+            });
+          }
+
+          const nextAvail = {
+            recurring: rec.recurring,
+            timeStart: recStart.toISOString(),
+            timeEnd: recStart.add(recDur).toISOString(),
+          };
+
+          if (endWeek.isAfter(recStart)) {
+            weekAvailabilities.push(nextAvail);
+          }
+
+          newRec.push(nextAvail);
+        }
+        recurringAvailability.current = newRec;
+
+        if (weekAvailabilities.length > 0) tryNextPage = false;
+        lastPage.current++;
+      }
+
+      resolve(
+        weekAvailabilities
+          .sort((a, b) => a.timeStart.localeCompare(b.timeStart))
+          .map((a) => (
+            <div
+              key={`${a.timeStart} ${a.timeEnd}`}
+              className="bg-p-grey-200 font-body font-bold rounded-lg w-full py-2 px-4 mt-2 text-white text-xl h-min"
+            >
+              <div className="w-full flex place-content-center">
+                {moment(a.timeStart).format("dddd D/M")}
+              </div>
+              <div className="w-full flex">
+                <p className="text-left flex-auto">
+                  {moment(a.timeStart).format("HH:mm")}
+                </p>
+                <p className="text-right flex-auto">
+                  {moment(a.timeEnd).format("HH:mm")}
+                </p>
+              </div>
+            </div>
+          )),
+      );
+    });
+  }, []);
 
   if (!ok) return (loading ?? error) as ReactNode;
 
@@ -270,69 +353,8 @@ export function SetAvailabilityBody({
         <OldForm info={info} setInfo={setInfo} />
       )}
 
-      <div className="flex-1 h-full py-2">
-        <Feed
-          nextPage={(page) => {
-            // loads a week at a time and handles the recurring nature
-            const endWeek = moment().endOf("week").add(page, "weeks");
-            const startWeek = endWeek.clone().startOf("week");
-            const weekAvailabilities: Availability[] = [];
-            for (const a of availability) {
-              if (endWeek.isBefore(a.timeStart)) break;
-              if (startWeek.isAfter(a.timeStart)) continue;
-              weekAvailabilities.push(a);
-            }
-
-            const newRec: RecurringAvailability[] = [];
-            for (const rec of recurringAvailability) {
-              let recStart = moment(rec.timeStart);
-              const recDur = recStart.diff(rec.timeEnd);
-
-              while (startWeek.isAfter(recStart)) {
-                Object.entries(rec.recurring).forEach(([unit, amount]) => {
-                  recStart = recStart.add(
-                    amount as number,
-                    unit as unitOfTime.DurationConstructor,
-                  );
-                });
-              }
-              const nextAvail = {
-                recurring: rec.recurring,
-                timeStart: recStart.toISOString(),
-                timeEnd: recStart.add(recDur).toISOString(),
-              };
-
-              if (endWeek.isAfter(recStart)) {
-                weekAvailabilities.push(nextAvail);
-              }
-
-              newRec.push(nextAvail);
-            }
-
-            return Promise.resolve(
-              weekAvailabilities
-                .sort((a, b) => a.timeStart.localeCompare(b.timeStart))
-                .map((a) => (
-                  <div
-                    key={`${a.timeStart} ${a.timeEnd}`}
-                    className="bg-p-grey-200 font-body font-bold rounded-lg w-full py-2 px-4 mt-2 text-white text-xl"
-                  >
-                    <div className="w-full flex place-content-center">
-                      {moment(a.timeStart).format("dddd D/M")}
-                    </div>
-                    <div className="w-full flex">
-                      <p className="text-left flex-auto">
-                        {moment(a.timeStart).format("HH:MM")}
-                      </p>
-                      <p className="text-right flex-auto">
-                        {moment(a.timeEnd).format("HH:MM")}
-                      </p>
-                    </div>
-                  </div>
-                )),
-            );
-          }}
-        />
+      <div className="flex-1 overflow-y-scroll py-2">
+        <Feed pageSize={0} nextPage={nextPage} refreshSignal={refreshSignal} />
       </div>
     </>
   );
@@ -349,7 +371,7 @@ export function SetAvailability() {
     recurringUnit: undefined,
   });
 
-  const [refresh, setRefresh] = useState<(() => void) | undefined>();
+  const refresh = useRef<(() => void) | undefined>();
 
   const onSubmit = useCallback(async () => {
     await Promise.all(
@@ -381,7 +403,7 @@ export function SetAvailability() {
       }),
     );
 
-    if (refresh) refresh();
+    if (refresh.current) refresh.current();
 
     setInfo({
       date: __SHOW_ALT_AVAIL__ ? [] : [""],
@@ -399,12 +421,7 @@ export function SetAvailability() {
         Availability
       </Form.Header>
       <Form.Body>
-        <SetAvailabilityBody
-          info={info}
-          setInfo={setInfo}
-          refresh={refresh}
-          setRefresh={setRefresh}
-        />
+        <SetAvailabilityBody info={info} setInfo={setInfo} refresh={refresh} />
       </Form.Body>
     </Form>
   );

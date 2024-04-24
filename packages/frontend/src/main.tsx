@@ -6,6 +6,10 @@ import * as config from "@esp-group-one/config";
 import { App } from "./app";
 import "../static/css/index.css";
 
+window.__SHOW_ALT_AVAIL__ = false;
+window.__CONFIRM_PROPOSAL__ = false;
+window.__CONFIRM_CANCEL__ = false;
+
 const root = document.getElementById("root");
 if (root) {
   ReactDOM.createRoot(root).render(

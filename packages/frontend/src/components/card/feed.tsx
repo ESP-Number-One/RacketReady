@@ -28,6 +28,11 @@ enum FeedState {
   Loading,
 
   /**
+   * The feed state for going into loading state
+   */
+  LoadNext,
+
+  /**
    * The lastest fetch encountered an error.
    */
   Error,
@@ -66,7 +71,7 @@ function process<Item>({
     };
 
     if (Array.isArray(delta)) {
-      update(["__DEFAULT__", delta]);
+      if (delta.length > 0) update(["__DEFAULT__", delta]);
     } else {
       Object.entries(delta).forEach(update);
     }
@@ -213,25 +218,30 @@ function FeedImpl<Item extends ReactNode>({
   pageSize = 20,
   children,
   shouldSnap = false,
+  refreshSignal,
 }: {
   nextPage: FeedFunc<Item> | Promise<Item[]>;
   startPage?: number;
   pageSize?: number;
   children?: ReactNode[] | ReactNode;
   shouldSnap?: boolean;
+  refreshSignal?: boolean;
 }) {
   const [page, setPage] = useState(startPage);
   const [init, setInit] = useState(true);
   const [items, setItems] = useState<Record<string, Item[]>>({});
   const [state, setState] = useState(FeedState.Loading);
 
+  const scroller = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     setPage(0);
     setItems({});
-    setState(FeedState.Loading);
-  }, [next]);
+    setState(FeedState.LoadNext);
+  }, [next, refreshSignal]);
 
   const load = useCallback(() => {
+    setState(FeedState.Loading);
     let nextContents;
     if (typeof next === "function") {
       nextContents = next(page);
@@ -248,8 +258,18 @@ function FeedImpl<Item extends ReactNode>({
       );
       setPage(newPage);
 
-      if (newPage - oldPage < pageSize) setState(FeedState.End);
-      else setState(FeedState.Waiting);
+      let waiting = false;
+      if (pageSize > 0) {
+        if (newPage - oldPage < pageSize) setState(FeedState.End);
+        else waiting = true;
+      } else {
+        if (newPage - oldPage === 0) setState(FeedState.End);
+        else waiting = true;
+      }
+
+      if (waiting) {
+        setState(FeedState.Waiting);
+      }
 
       setItems(newItems);
     });
@@ -262,18 +282,32 @@ function FeedImpl<Item extends ReactNode>({
     }
 
     switch (state) {
-      case FeedState.Loading:
+      case FeedState.LoadNext:
         load();
         break;
       case FeedState.Refresh:
         setPage(startPage);
         setItems({});
-        setState(FeedState.Loading);
+        setState(FeedState.LoadNext);
+        break;
+      case FeedState.Waiting:
+        // Basically keep generating so that the user can scroll (so the other
+        // systems can kick in)
+        if (scroller.current) {
+          const elem = scroller.current;
+          if (
+            elem.scrollHeight < elem.clientHeight ||
+            elem.scrollHeight < (elem.parentElement?.clientHeight ?? 0)
+          ) {
+            // We haven't got to the scroll limit, so keep loading
+            setState(FeedState.LoadNext);
+          }
+        }
         break;
       default:
         break;
     }
-  }, [state, load]);
+  }, [state, scroller, scroller.current, load, setState]);
 
   // Slots
 
@@ -326,7 +360,6 @@ function FeedImpl<Item extends ReactNode>({
   // Pull down to refresh.
 
   const [refreshY, setRefreshY] = useState(0);
-  const scroller = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!scroller.current) return () => void 0;
@@ -393,14 +426,14 @@ function FeedImpl<Item extends ReactNode>({
 
       if (state !== FeedState.Waiting) return;
 
-      setState(FeedState.Loading);
+      setState(FeedState.LoadNext);
     }
     container.addEventListener("scroll", scrollHandler);
 
     return () => {
       container.removeEventListener("scroll", scrollHandler);
     };
-  }, [scroller, state]);
+  }, [scroller, scroller.current, state]);
 
   return (
     <div
