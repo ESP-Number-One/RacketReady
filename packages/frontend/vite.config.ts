@@ -31,4 +31,5 @@ export default defineConfig({
     strictPort: true, // not necessary
     port: 3000, // you can replace this port with any port
   },
+  publicDir: "./static",
 });
