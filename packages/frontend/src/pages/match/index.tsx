@@ -79,6 +79,12 @@ export function SingleMatchPage(): ReactNode {
   };
 
   const cancelMatch = useCallback(() => {
+    if (__CONFIRM_CANCEL__) {
+      if (!confirm("Are you sure you want to cancel the match?")) {
+        return;
+      }
+    }
+
     api
       .match()
       .cancel(new ObjectId(id ?? ""))

@@ -73,6 +73,16 @@ export function RecProfile({ user, availability, sport, proposeMatch }: Info) {
                 className="bg-p-grey-900 flex justify-between w-full text-white text-xl text-bold text-body px-5 pt-3 pb-3 rounded-lg"
                 key={`${user._id.toString()}-${i}`}
                 onClick={() => {
+                  if (__CONFIRM_PROPOSAL__) {
+                    if (
+                      !confirm(
+                        `You are sending a match request for ${time.format("HH:mm")}`,
+                      )
+                    ) {
+                      return;
+                    }
+                  }
+
                   proposeMatch({
                     date: time.toISOString(),
                     to: user._id,
@@ -85,9 +95,9 @@ export function RecProfile({ user, availability, sport, proposeMatch }: Info) {
                   );
                 }}
               >
-                <p className="text-left">{`${time.format("hh:mm")}-${endTime
+                <p className="text-left">{`${time.format("HH:mm")}-${endTime
                   .add(1, "hours")
-                  .format("hh:mm")}`}</p>
+                  .format("HH:mm")}`}</p>
                 <p className="text-right">
                   {/* eslint-disable-next-line import/no-named-as-default-member
                   -- using now is ambiguous */}
