@@ -1,13 +1,22 @@
 import { useContext, useMemo, useState, type JSX } from "react";
-import { makeImgSrc, type CensoredUser } from "@esp-group-one/types";
+import {
+  makeImgSrc,
+  type CensoredUser,
+  UserMatchReturn,
+  Sport,
+  AbilityLevel,
+  MatchProposal,
+} from "@esp-group-one/types";
 import { Page } from "../components/page";
 import { Search } from "../components/search";
 import { API } from "../state/auth";
-import { Cards } from "../utils/types_to_cards";
 import { ErrorDiv } from "../components/error";
 import { Profile } from "../components/profile";
 import { Link } from "../components/link";
 import { Feed } from "../components/card/feed";
+import { Moment } from "moment";
+import moment from "moment";
+import { RecProfile } from "../components/rec_profile";
 
 export function SuggestedPeople() {
   const api = useContext(API);
@@ -16,6 +25,81 @@ export function SuggestedPeople() {
   const isSuggested = useMemo(() => search === "", [search]);
   const [myError, setMyError] = useState("");
   const [searchRes, setSearchRes] = useState<CensoredUser[]>([]);
+
+  const [proposedTimes, setProposedTimes] = useState<Moment[]>([]);
+  const [recommendations, setRecommendations] = useState<UserMatchReturn>([]);
+
+  const userAPI = api.user();
+  userAPI
+    .recommendations()
+    .then((users) => {
+      setRecommendations(users);
+    })
+    .catch((e) => {
+      console.warn(e);
+      return [] as JSX.Element[];
+    });
+
+  const rawRecommendationAvailability = useMemo<
+    Promise<
+      {
+        u: CensoredUser;
+        sport: Sport;
+        availability: Moment[];
+      }[]
+    >
+  >(() => {
+    return Promise.all(
+      recommendations.map(async (recInfo) => {
+        return {
+          ...recInfo,
+          availability: await userAPI
+            .findAvailabilityWith(recInfo.u._id, {})
+            .then((res) => res.map((t) => moment(t))),
+        };
+      }),
+    );
+  }, recommendations);
+
+  const recommendationTimes = useMemo<
+    Promise<
+      {
+        u: CensoredUser;
+        sport: Sport;
+        availability: Moment[];
+      }[]
+    >
+  >(async () => {
+    return rawRecommendationAvailability.then((raw) => {
+      return raw.map((info) => {
+        return {
+          ...info,
+          availability: info.availability.filter((t) =>
+            proposedTimes.some((b) => t.isSame(b)),
+          ),
+        };
+      });
+    });
+  }, [rawRecommendationAvailability, proposedTimes]);
+
+  const recCards = useMemo(async () => {
+    return recommendationTimes.then((rt) =>
+      rt.map((user) => {
+        return (
+          <RecProfile
+            key={`${user.u._id.toString()}-${user.sport}`}
+            user={user.u}
+            availability={user.availability}
+            sport={{ sport: user.sport, ability: AbilityLevel.Beginner }}
+            proposeMatch={(proposal: MatchProposal) => {
+              api.match().create(proposal).then().catch(console.warn);
+              setProposedTimes([...proposedTimes, moment(proposal.date)]);
+            }}
+          />
+        );
+      }),
+    );
+  }, [recommendationTimes]);
 
   return (
     <Page page="search">
@@ -41,25 +125,7 @@ export function SuggestedPeople() {
       <Page.Body className="overflow-y-scroll">
         <ErrorDiv error={myError} />
         {isSuggested ? (
-          <Feed
-            shouldSnap
-            nextPage={(pageNum: number) => {
-              if (pageNum === 0) {
-                const userAPI = api.user();
-                return userAPI
-                  .recommendations()
-                  .then((users) => {
-                    return Cards.fromRecommendedUsers(users, api);
-                  })
-                  .catch((e) => {
-                    console.warn(e);
-                    return [] as JSX.Element[];
-                  });
-              }
-
-              return Promise.resolve([]);
-            }}
-          />
+          <Feed shouldSnap nextPage={recCards} />
         ) : (
           searchRes.map((u) => (
             <Link

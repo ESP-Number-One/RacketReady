@@ -214,7 +214,7 @@ function FeedImpl<Item extends ReactNode>({
   children,
   shouldSnap = false,
 }: {
-  nextPage: FeedFunc<Item>;
+  nextPage: FeedFunc<Item> | Promise<Item[]>;
   startPage?: number;
   pageSize?: number;
   children?: ReactNode[] | ReactNode;
@@ -231,22 +231,29 @@ function FeedImpl<Item extends ReactNode>({
     setState(FeedState.Loading);
   }, [next]);
 
-  const load = useCallback(
-    () =>
-      void next(page).then((delta) => {
-        const oldPage = page;
-        const { items: newItems, page: newPage } = process({ items, page })(
-          delta,
-        );
-        setPage(newPage);
+  const load = useCallback(() => {
+    let nextContents;
+    if (typeof next === "function") {
+      nextContents = next(page);
+    } else if (page === 0) {
+      nextContents = next;
+    } else {
+      nextContents = Promise.resolve([]);
+    }
 
-        if (newPage - oldPage < pageSize) setState(FeedState.End);
-        else setState(FeedState.Waiting);
+    nextContents.then((delta) => {
+      const oldPage = page;
+      const { items: newItems, page: newPage } = process({ items, page })(
+        delta,
+      );
+      setPage(newPage);
 
-        setItems(newItems);
-      }),
-    [next, init, page, state],
-  );
+      if (newPage - oldPage < pageSize) setState(FeedState.End);
+      else setState(FeedState.Waiting);
+
+      setItems(newItems);
+    });
+  }, [next, init, page, state]);
 
   useEffect(() => {
     if (init) {
