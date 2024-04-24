@@ -1,12 +1,13 @@
 import { useContext, useMemo, useState, type JSX } from "react";
-import {
-  makeImgSrc,
-  type CensoredUser,
+import { makeImgSrc, AbilityLevel } from "@esp-group-one/types";
+import type {
   UserMatchReturn,
   Sport,
-  AbilityLevel,
   MatchProposal,
+  type CensoredUser,
 } from "@esp-group-one/types";
+import type { Moment } from "moment";
+import moment from "moment";
 import { Page } from "../components/page";
 import { Search } from "../components/search";
 import { API } from "../state/auth";
@@ -14,8 +15,6 @@ import { ErrorDiv } from "../components/error";
 import { Profile } from "../components/profile";
 import { Link } from "../components/link";
 import { Feed } from "../components/card/feed";
-import { Moment } from "moment";
-import moment from "moment";
 import { RecProfile } from "../components/rec_profile";
 
 export function SuggestedPeople() {

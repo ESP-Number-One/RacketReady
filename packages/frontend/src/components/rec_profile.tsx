@@ -76,7 +76,9 @@ export function RecProfile({ user, availability, sport, proposeMatch }: Info) {
                   if (__CONFIRM_PROPOSAL__) {
                     if (
                       !confirm(
-                        `You are sending a match request for ${time.format("HH:mm")}`,
+                        `You are sending a match request for ${time.format(
+                          "HH:mm",
+                        )}`,
                       )
                     ) {
                       return;

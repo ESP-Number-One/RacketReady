@@ -12,7 +12,6 @@ import {
   faPaperPlane,
   faStar,
   faTrophy,
-  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "react-router-dom";

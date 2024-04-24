@@ -251,28 +251,34 @@ function FeedImpl<Item extends ReactNode>({
       nextContents = Promise.resolve([]);
     }
 
-    nextContents.then((delta) => {
-      const oldPage = page;
-      const { items: newItems, page: newPage } = process({ items, page })(
-        delta,
-      );
-      setPage(newPage);
+    nextContents
+      .then((delta) => {
+        const oldPage = page;
+        const { items: newItems, page: newPage } = process({ items, page })(
+          delta,
+        );
+        setPage(newPage);
 
-      let waiting = false;
-      if (pageSize > 0) {
-        if (newPage - oldPage < pageSize) setState(FeedState.End);
-        else waiting = true;
-      } else {
-        if (newPage - oldPage === 0) setState(FeedState.End);
-        else waiting = true;
-      }
+        let waiting = false;
+        if (pageSize > 0) {
+          if (newPage - oldPage < pageSize) {
+            setState(FeedState.End);
+          } else {
+            waiting = true;
+          }
+        } else if (newPage - oldPage === 0) {
+          setState(FeedState.End);
+        } else {
+          waiting = true;
+        }
 
-      if (waiting) {
-        setState(FeedState.Waiting);
-      }
+        if (waiting) {
+          setState(FeedState.Waiting);
+        }
 
-      setItems(newItems);
-    });
+        setItems(newItems);
+      })
+      .catch(console.error);
   }, [next, init, page, state]);
 
   useEffect(() => {

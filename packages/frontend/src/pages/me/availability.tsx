@@ -1,7 +1,9 @@
 import type { MutableRefObject, ReactNode } from "react";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import type { Availability, Duration, User } from "@esp-group-one/types";
-import moment, { unitOfTime } from "moment";
+import type { unitOfTime } from "moment";
+import moment from "moment";
+import Select from "react-select";
 import { API } from "../../state/auth";
 import { useAsync } from "../../lib/async";
 import { Form } from "../../components/form";
@@ -9,7 +11,6 @@ import { Header } from "../../components/page/header";
 import { RadioButton } from "../../components/form/radio_button";
 import { Input } from "../../components/form/input";
 import { Feed } from "../../components/card/feed";
-import Select from "react-select";
 
 export interface AvailabilityCreator {
   date: string[];
@@ -246,7 +247,7 @@ export function SetAvailabilityBody({
         (a) => "recurring" in a,
       ) as RecurringAvailability[];
 
-      return { user: user };
+      return { user };
     },
     { refresh: true },
   )
@@ -292,12 +293,12 @@ export function SetAvailabilityBody({
           const recDur = recStart.diff(rec.timeEnd);
 
           while (startWeek.isAfter(recStart)) {
-            Object.entries(rec.recurring).forEach(([unit, amount]) => {
+            for (const [unit, amount] of Object.entries(rec.recurring)) {
               recStart = recStart.add(
                 amount as number,
                 unit as unitOfTime.DurationConstructor,
               );
-            });
+            }
           }
 
           const nextAvail = {
