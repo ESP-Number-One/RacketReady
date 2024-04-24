@@ -1,13 +1,14 @@
 import type { ReactNode } from "react";
 import { useCallback, useContext, useEffect, useState } from "react";
-import type { Availability, User } from "@esp-group-one/types";
-import moment from "moment";
+import type { Availability, Duration, User } from "@esp-group-one/types";
+import moment, { unitOfTime } from "moment";
 import { API } from "../../state/auth";
 import { useAsync } from "../../lib/async";
 import { Form } from "../../components/form";
 import { Header } from "../../components/page/header";
 import { RadioButton } from "../../components/form/radio_button";
 import { Input } from "../../components/form/input";
+import { Feed } from "../../components/card/feed";
 
 export interface AvailabilityCreator {
   date: string;
@@ -16,6 +17,8 @@ export interface AvailabilityCreator {
   recurring: number | undefined;
   recurringUnit: string | undefined;
 }
+
+type RecurringAvailability = Availability & { recurring: Duration };
 
 export function SetAvailabilityBody({
   info,
@@ -30,14 +33,27 @@ export function SetAvailabilityBody({
 }) {
   const api = useContext(API);
   const [showRecurring, setShowRecurring] = useState(false);
+  const [availability, setAvailability] = useState<Availability[]>([]);
+  const [recurringAvailability, setRecurringAvailabilities] = useState<
+    RecurringAvailability[]
+  >([]);
 
   const { loading, error, ok, refresh } = useAsync<{
     user: User;
   }>(
     async () => {
-      const user = api.user().me();
+      const user = await api.user().me();
 
-      return { user: await user };
+      const avail = user.availability.sort((a, b) =>
+        a.timeStart.localeCompare(b.timeStart),
+      );
+      setAvailability(avail.filter((a) => !("recurring" in a)));
+
+      setRecurringAvailabilities(
+        avail.filter((a) => "recurring" in a) as RecurringAvailability[],
+      );
+
+      return { user: user };
     },
     { refresh: true },
   )
@@ -152,27 +168,69 @@ export function SetAvailabilityBody({
         <hr className="w-full h-1 bg-black rounded-full mt-2" />
       </div>
 
-      <div className="flex-1 content-end overflow-y-scroll h-full py-2">
-        {ok.user.availability
-          .sort((a, b) => a.timeStart.localeCompare(b.timeStart))
-          .map((a) => (
-            <div
-              key={`${a.timeStart} ${a.timeEnd}`}
-              className="bg-p-grey-200 font-body font-bold rounded-lg w-full py-2 px-4 mt-2 text-white text-xl"
-            >
-              <div className="w-full flex place-content-center">
-                {moment(a.timeStart).format("dddd D/M")}
-              </div>
-              <div className="w-full flex">
-                <p className="text-left flex-auto">
-                  {moment(a.timeStart).format("HH:MM")}
-                </p>
-                <p className="text-right flex-auto">
-                  {moment(a.timeEnd).format("HH:MM")}
-                </p>
-              </div>
-            </div>
-          ))}
+      <div className="flex-1 h-full py-2">
+        <Feed
+          nextPage={(page) => {
+            // loads a week at a time and handles the recurring nature
+            const endWeek = moment().endOf("week").add(page, "weeks");
+            const startWeek = endWeek.clone().startOf("week");
+            const weekAvailabilities: Availability[] = [];
+            for (const a of availability) {
+              if (endWeek.isBefore(a.timeStart)) break;
+              if (startWeek.isAfter(a.timeStart)) continue;
+              weekAvailabilities.push(a);
+            }
+
+            const newRec: RecurringAvailability[] = [];
+            for (const rec of recurringAvailability) {
+              let recStart = moment(rec.timeStart);
+              const recDur = recStart.diff(rec.timeEnd);
+
+              while (startWeek.isAfter(recStart)) {
+                Object.entries(rec.recurring).forEach(([unit, amount]) => {
+                  recStart = recStart.add(
+                    amount as number,
+                    unit as unitOfTime.DurationConstructor,
+                  );
+                });
+              }
+              const nextAvail = {
+                recurring: rec.recurring,
+                timeStart: recStart.toISOString(),
+                timeEnd: recStart.add(recDur).toISOString(),
+              };
+
+              if (endWeek.isAfter(recStart)) {
+                weekAvailabilities.push(nextAvail);
+              }
+
+              newRec.push(nextAvail);
+            }
+
+            return Promise.resolve(
+              weekAvailabilities
+                .sort((a, b) => a.timeStart.localeCompare(b.timeStart))
+                .map((a) => (
+                  <div
+                    key={`${a.timeStart} ${a.timeEnd}`}
+                    className="bg-p-grey-200 font-body font-bold rounded-lg w-full py-2 px-4 mt-2 text-white text-xl"
+                  >
+                    <div className="w-full flex place-content-center">
+                      {moment(a.timeStart).format("dddd D/M")}
+                    </div>
+                    <div className="w-full flex">
+                      <p className="text-left flex-auto">
+                        {moment(a.timeStart).format("HH:MM")}
+                      </p>
+                      <p className="text-right flex-auto">
+                        {moment(a.timeEnd).format("HH:MM")}
+                      </p>
+                    </div>
+                  </div>
+                )),
+            );
+          }}
+        />
       </div>
     </>
   );
