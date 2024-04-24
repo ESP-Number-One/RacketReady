@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Page } from "../../components/page";
 import { Header } from "../../components/page/header";
 import { API } from "../../state/auth";
@@ -7,6 +7,10 @@ import { Feed } from "../../components/card/feed";
 
 export function MatchProposal() {
   const api = useContext(API);
+  const [refreshSignal, setRefreshSignal] = useState(false);
+  const refreshPage = () => {
+    setRefreshSignal(!refreshSignal);
+  };
 
   const nextPage = async (pageNum: number) => {
     const matches = await api.match().findProposed({ pageStart: pageNum });
@@ -25,11 +29,11 @@ export function MatchProposal() {
           className="mt-2"
           data={m}
           onAccept={() => {
-            // TODO: refresh page
+            refreshPage();
             api.match().accept(m._id).catch(console.warn);
           }}
           onDecline={() => {
-            // TODO: refresh page
+            refreshPage();
             api.match().cancel(m._id).catch(console.warn);
           }}
           opponent={opponent[0]}
@@ -46,7 +50,7 @@ export function MatchProposal() {
       </Page.Header>
       <Page.Body scrollable>
         <div className="pb-2">
-          <Feed nextPage={nextPage}>
+          <Feed nextPage={nextPage} refreshSignal={refreshSignal}>
             <Feed.Empty>You have no more match proposals.</Feed.Empty>
           </Feed>
         </div>
