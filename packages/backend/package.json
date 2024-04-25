@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsoa spec-and-routes && tsc",
-    "dev": "(run mongo:stop || true) && run mongo:start && cross-env DB_NAME=esp DB_CONN_STRING=mongodb://localhost:27017 run dev:tsoa",
+    "dev": "cross-env DB_NAME=esp DB_CONN_STRING=mongodb://localhost:27017 run dev:tsoa",
     "dev:tsoa": "tsoa spec-and-routes && concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes\"",
     "dev:tsoa-debug": "tsoa spec-and-routes && concurrently \"nodemon  --inspect-brk=5858 --exec\" \"nodemon -x tsoa spec-and-routes\"",
     "dev:debug": "(run mongo:stop || true) && run mongo:start && cross-env DB_NAME=esp DB_CONN_STRING=mongodb://localhost:27017 run dev:tsoa-debug",
@@ -16,7 +16,7 @@
     "lint": "eslint src tests --ext ts,tsx --report-unused-disable-directives",
     "lint:fix": "eslint src tests --ext ts,tsx --report-unused-disable-directives --fix",
     "mongo:setup": "docker volume create esp_mongo_data",
-    "mongo:start": "cross-env-shell docker run -d --rm -p '127.0.0.1:27017:27017' --name esp-mongo-test -v esp_mongo_data:/data/db --mount '\"type=bind,source=$INIT_CWD/etc/mongod.conf,target=/etc/mongod.conf\"' mongo:latest --config '/etc/mongod.conf'",
+    "mongo:start": "cross-env-shell docker run -d --rm -p '127.0.0.1:27017:27017' --name esp-mongo-test -v esp_mongo_data:/data/db --mount '\"type=bind,source=$INIT_CWD/etc/mongod.conf,target=/etc/mongod.conf\"' mongo:latest --config '/etc/mongod.conf' --restart always",
     "mongo:stop": "docker stop esp-mongo-test",
     "start": "node build/src/server.js",
     "test": "jest"

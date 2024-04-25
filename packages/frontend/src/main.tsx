@@ -6,9 +6,15 @@ import * as config from "@esp-group-one/config";
 import { App } from "./app";
 import "../static/css/index.css";
 
-window.__SHOW_ALT_AVAIL__ = false;
-window.__CONFIRM_PROPOSAL__ = false;
-window.__CONFIRM_CANCEL__ = false;
+window.__SHOW_ALT_AVAIL__ = JSON.parse(
+  localStorage.getItem("__SHOW_ALT_AVAIL__") ?? "false",
+) as boolean;
+window.__CONFIRM_PROPOSAL__ = JSON.parse(
+  localStorage.getItem("__CONFIRM_PROPOSAL__") ?? "false",
+) as boolean;
+window.__CONFIRM_CANCEL__ = JSON.parse(
+  localStorage.getItem("__CONFIRM_CANCEL__") ?? "false",
+) as boolean;
 
 const root = document.getElementById("root");
 if (root) {

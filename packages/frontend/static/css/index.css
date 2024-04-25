@@ -8,6 +8,11 @@
   --loading-ball-width: 10vw;
 }
 
+html {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 @-webkit-keyframes roll-in-left {
   0% {
     left: 0;

@@ -20,6 +20,7 @@ import { DiscoverLeagues } from "./pages/league/discover.js";
 import { SuggestedPeople } from "./pages/suggested_people.js";
 import { SignUp } from "./pages/signup.js";
 import { useViewNav } from "./state/nav.js";
+import { Tracker } from "./lib/tracking.js";
 
 export function App() {
   const [result, setResult] = useState({ type: "loading" } as AuthResult);
@@ -51,26 +52,29 @@ export function App() {
   const { ok } = result;
 
   return ok.authenticated ? (
-    <API.Provider value={ok.client}>
-      <Routes>
-        <Route index element={<UpcomingMatch />} />
-        <Route path="/profile/:id" element={<ProfilePage />} />
-        <Route path="/me" element={<YourProfile />} />
-        <Route path="/me/availability" element={<SetAvailability />} />
-        <Route path="/me/edit" element={<EditUser />} />
-        <Route path="/me/sports/edit" element={<EditSports />} />
-        <Route path="/match/new" element={<NewMatchPage />} />
-        <Route path="/league/:id" element={<SingleLeaguePage />} />
-        <Route path="/match/:id" element={<SingleMatchPage />} />
-        <Route path="/match/complete" element={<CompleteMatchForm />} />
-        <Route path="/match/proposals" element={<MatchProposal />} />
-        <Route path="/league/new" element={<NewLeaguePage />} />
-        <Route path="/leagues" element={<YourLeagues />} />
-        <Route path="/leagues/discover" element={<DiscoverLeagues />} />
-        <Route path="/search" element={<SuggestedPeople />} />
-        <Route path="/signup" element={<SignUp />} />
-      </Routes>
-    </API.Provider>
+    <>
+      <Tracker />
+      <API.Provider value={ok.client}>
+        <Routes>
+          <Route index element={<UpcomingMatch />} />
+          <Route path="/profile/:id" element={<ProfilePage />} />
+          <Route path="/me" element={<YourProfile />} />
+          <Route path="/me/availability" element={<SetAvailability />} />
+          <Route path="/me/edit" element={<EditUser />} />
+          <Route path="/me/sports/edit" element={<EditSports />} />
+          <Route path="/match/new" element={<NewMatchPage />} />
+          <Route path="/league/:id" element={<SingleLeaguePage />} />
+          <Route path="/match/:id" element={<SingleMatchPage />} />
+          <Route path="/match/complete" element={<CompleteMatchForm />} />
+          <Route path="/match/proposals" element={<MatchProposal />} />
+          <Route path="/league/new" element={<NewLeaguePage />} />
+          <Route path="/leagues" element={<YourLeagues />} />
+          <Route path="/leagues/discover" element={<DiscoverLeagues />} />
+          <Route path="/search" element={<SuggestedPeople />} />
+          <Route path="/signup" element={<SignUp />} />
+        </Routes>
+      </API.Provider>
+    </>
   ) : (
     <div className="flex min-h-screen px-3 items-center place-content-center">
       <LoginButton />

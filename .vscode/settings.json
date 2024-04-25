@@ -50,5 +50,8 @@
       "commandLine": "yarn jest --selectProjects Types",
       "dashedArgs": true
     }
-  ]
+  ],
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  }
 }

@@ -42,5 +42,8 @@
     "prettier": "^3.1.1",
     "supertest": "^6.3.4",
     "typescript": "5.x"
+  },
+  "dependencies": {
+    "moment": "^2.30.1"
   }
 }
