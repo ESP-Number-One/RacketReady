@@ -372,6 +372,12 @@ export class MatchsController extends ControllerWrap<Match> {
     return this.withVerifiedParam(requestBody, (proposal) => {
       const d = moment(requestBody.date);
       if (!d.isValid() || moment().isAfter(d)) {
+        console.log(d.isValid() ? "Is valid" : `date is invalid ${d}`);
+        console.log(
+          moment().isAfter(d)
+            ? `Is After ${moment().toISOString()} : ${d}`
+            : `date is before ${moment().toISOString()} : ${d}`,
+        );
         this.setStatus(400);
         return Promise.resolve(newAPIError("Invalid date"));
       }

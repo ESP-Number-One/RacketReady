@@ -90,6 +90,7 @@ export function RecProfile({ user, availability, sport, proposeMatch }: Info) {
                     to: user._id,
                     sport: sport.sport,
                   });
+
                   setAvailabilities(
                     availabilities.filter((t) => {
                       return t !== time;

@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState, type JSX } from "react";
+import { useContext, useMemo, useState, useEffect, ReactNode } from "react";
 import { makeImgSrc, AbilityLevel } from "@esp-group-one/types";
 import type {
   UserMatchReturn,
@@ -16,40 +16,44 @@ import { Profile } from "../components/profile";
 import { Link } from "../components/link";
 import { Feed } from "../components/card/feed";
 import { RecProfile } from "../components/rec_profile";
+import { useAsync } from "../lib/async";
 
 export function SuggestedPeople() {
   const api = useContext(API);
 
   const [search, setSearch] = useState("");
-  const isSuggested = useMemo(() => search === "", [search]);
+  const isSuggested = useMemo(() => {
+    console.log("Search updated");
+    return search === "";
+  }, [search]);
   const [myError, setMyError] = useState("");
   const [searchRes, setSearchRes] = useState<CensoredUser[]>([]);
 
   const [proposedTimes, setProposedTimes] = useState<Moment[]>([]);
-  const [recommendations, setRecommendations] = useState<UserMatchReturn>([]);
 
   const userAPI = api.user();
-  userAPI
-    .recommendations()
-    .then((users) => {
-      setRecommendations(users);
-    })
-    .catch((e) => {
-      console.warn(e);
-      return [] as JSX.Element[];
-    });
 
-  const rawRecommendationAvailability = useMemo<
-    Promise<
-      {
-        u: CensoredUser;
-        sport: Sport;
-        availability: Moment[];
-      }[]
-    >
-  >(() => {
-    return Promise.all(
-      recommendations.map(async (recInfo) => {
+  const { loading, error, ok } = useAsync<{
+    recommendations: UserMatchReturn;
+  }>(async () => {
+    return { recommendations: await userAPI.recommendations() };
+  })
+    .catch((err) => <>{err.message}</>)
+    .await();
+
+  const [rawRecAvail, setRawRecAvail] = useState<
+    {
+      u: CensoredUser;
+      sport: Sport;
+      availability: Moment[];
+    }[]
+  >([]);
+
+  useEffect(() => {
+    if (!ok) return;
+    console.log(ok);
+    Promise.all(
+      ok.recommendations.map(async (recInfo) => {
         return {
           ...recInfo,
           availability: await userAPI
@@ -57,33 +61,40 @@ export function SuggestedPeople() {
             .then((res) => res.map((t) => moment(t))),
         };
       }),
-    );
-  }, recommendations);
+    ).then(setRawRecAvail);
+  }, [ok, setRawRecAvail]);
 
-  const recommendationTimes = useMemo<
-    Promise<
-      {
-        u: CensoredUser;
-        sport: Sport;
-        availability: Moment[];
-      }[]
-    >
-  >(async () => {
-    return rawRecommendationAvailability.then((raw) => {
-      return raw.map((info) => {
+  const [recommendationTimes, setRecommendationTimes] = useState<
+    {
+      u: CensoredUser;
+      sport: Sport;
+      availability: Moment[];
+    }[]
+  >([]);
+
+  useEffect(() => {
+    console.log({ proposedTimes, rawRecAvail });
+    setRecommendationTimes(
+      rawRecAvail.map((info) => {
         return {
           ...info,
-          availability: info.availability.filter(
-            (t) => !proposedTimes.some((b) => t.isSame(b)),
-          ),
+          availability: info.availability
+            .filter(
+              (t) =>
+                moment().isBefore(t) && !proposedTimes.some((b) => t.isSame(b)),
+            )
+            .slice(0, 3),
         };
-      });
-    });
-  }, [rawRecommendationAvailability, proposedTimes]);
+      }),
+    );
+  }, [rawRecAvail, proposedTimes, setRecommendationTimes]);
 
-  const recCards = useMemo(async () => {
-    return recommendationTimes.then((rt) =>
-      rt.map((user) => {
+  const [recCards, setRecCards] = useState<ReactNode[]>([]);
+
+  useEffect(() => {
+    console.log({ recommendationTimes });
+    setRecCards(
+      recommendationTimes.map((user) => {
         return (
           <RecProfile
             key={`${user.u._id.toString()}-${user.sport}`}
@@ -91,6 +102,8 @@ export function SuggestedPeople() {
             availability={user.availability}
             sport={{ sport: user.sport, ability: AbilityLevel.Beginner }}
             proposeMatch={(proposal: MatchProposal) => {
+              console.log("Proposing match");
+              console.log(proposal);
               api.match().create(proposal).then().catch(console.warn);
               setProposedTimes([...proposedTimes, moment(proposal.date)]);
             }}
@@ -98,7 +111,9 @@ export function SuggestedPeople() {
         );
       }),
     );
-  }, [recommendationTimes]);
+  }, [recommendationTimes, setRecCards]);
+
+  if (!ok) return (loading ?? error) as ReactNode;
 
   return (
     <Page page="search">
@@ -124,7 +139,7 @@ export function SuggestedPeople() {
       <Page.Body className="overflow-y-scroll">
         <ErrorDiv error={myError} />
         {isSuggested ? (
-          <Feed shouldSnap nextPage={recCards} />
+          <Feed shouldSnap nextPage={Promise.resolve(recCards)} />
         ) : (
           searchRes.map((u) => (
             <Link
