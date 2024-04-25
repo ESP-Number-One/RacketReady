@@ -29,12 +29,22 @@ export function MatchProposal() {
           className="mt-2"
           data={m}
           onAccept={() => {
-            refreshPage();
-            api.match().accept(m._id).catch(console.warn);
+            api
+              .match()
+              .accept(m._id)
+              .then(() => {
+                refreshPage();
+              })
+              .catch(console.warn);
           }}
           onDecline={() => {
-            refreshPage();
-            api.match().cancel(m._id).catch(console.warn);
+            api
+              .match()
+              .cancel(m._id)
+              .then(() => {
+                refreshPage();
+              })
+              .catch(console.warn);
           }}
           opponent={opponent[0]}
         />
