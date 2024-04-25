@@ -87,6 +87,9 @@ export function SingleMatchPage(): ReactNode {
     api
       .match()
       .cancel(new ObjectId(id ?? ""))
+      .then(() => {
+        viewNavigate("/");
+      })
       .catch(setErrorFromError);
   }, []);
 

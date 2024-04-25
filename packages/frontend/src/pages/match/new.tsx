@@ -109,9 +109,21 @@ export function NewMatchPage() {
               />
             )}
 
-            <Input type="date" onChange={setDate} value={date} required />
+            <Input
+              type="date"
+              placeholder="Match date"
+              onChange={setDate}
+              value={date}
+              required
+            />
 
-            <Input type="time" onChange={setTime} value={time} required />
+            <Input
+              type="time"
+              placeholder="Match time"
+              onChange={setTime}
+              value={time}
+              required
+            />
           </>
         )}
       </Form.Body>

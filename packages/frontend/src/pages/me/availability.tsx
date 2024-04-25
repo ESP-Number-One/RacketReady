@@ -66,6 +66,7 @@ export function NewForm({
             recurringUnit: "weeks",
           });
         }}
+        placeholder="Day of the week"
         required
       />
 
@@ -77,6 +78,7 @@ export function NewForm({
           <Input
             id="start"
             type="time"
+            placeholder="Start time"
             onChange={(start) => {
               setInfo({ ...info, start });
             }}
@@ -94,6 +96,7 @@ export function NewForm({
             value={info.end}
             id="end"
             type="time"
+            placeholder="End time"
             onChange={(end) => {
               setInfo({ ...info, end });
             }}
@@ -122,6 +125,7 @@ export function OldForm({
         onChange={(date) => {
           setInfo({ ...info, date: [date] });
         }}
+        placeholder="Availability Date"
         value={info.date[0]}
         required
       />
@@ -134,6 +138,7 @@ export function OldForm({
           <Input
             id="start"
             type="time"
+            placeholder="Start time"
             onChange={(start) => {
               setInfo({ ...info, start });
             }}
@@ -151,6 +156,7 @@ export function OldForm({
             value={info.end}
             id="end"
             type="time"
+            placeholder="End time"
             onChange={(end) => {
               setInfo({ ...info, end });
             }}
