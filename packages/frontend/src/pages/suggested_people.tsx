@@ -4,7 +4,7 @@ import type {
   UserMatchReturn,
   Sport,
   MatchProposal,
-  type CensoredUser,
+  CensoredUser,
 } from "@esp-group-one/types";
 import type { Moment } from "moment";
 import moment from "moment";

@@ -6,7 +6,7 @@ import type {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faUser } from "@fortawesome/free-solid-svg-icons";
 import type { ReactNode } from "react";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useRef, useState } from "react";
 import moment from "moment";
 import { API } from "../state/auth";
 import { SportsAddMenu } from "../components/sports_add_menu";
@@ -121,13 +121,13 @@ function PhaseThree({ nextPhase, progress, submitText }: PhaseProps) {
 
   const [allowProgression, setAllowProgression] = useState(false);
   const [info, setInfo] = useState<AvailabilityCreator>({
-    date: "",
+    date: __SHOW_ALT_AVAIL__ ? [] : [""],
     start: "",
     end: "",
     recurring: undefined,
     recurringUnit: undefined,
   });
-  const [refresh, setRefresh] = useState<(() => void) | undefined>();
+  const refresh = useRef<(() => void) | undefined>();
 
   const onSubmit = useCallback(async () => {
     const { date, start, end, recurring, recurringUnit } = info;
@@ -149,10 +149,10 @@ function PhaseThree({ nextPhase, progress, submitText }: PhaseProps) {
     }
 
     await api.user().addAvailability(req);
-    if (refresh) refresh();
+    if (refresh.current) refresh.current();
 
     setInfo({
-      date: "",
+      date: __SHOW_ALT_AVAIL__ ? [] : [""],
       start: "",
       end: "",
       recurring: undefined,
@@ -171,7 +171,6 @@ function PhaseThree({ nextPhase, progress, submitText }: PhaseProps) {
             info={info}
             setInfo={setInfo}
             refresh={refresh}
-            setRefresh={setRefresh}
           />
         </div>
       </Form.Body>
