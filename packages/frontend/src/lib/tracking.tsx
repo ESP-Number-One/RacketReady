@@ -6,8 +6,37 @@ declare global {
   interface Window {
     CONDITION: typeof CONDITION;
     experiment: Experiment;
+    __remote_promise_table__: Record<number, unknown>;
+    __add_promise__: <T>(maybeProm: Promise<T> | T) => void;
+    __poll_promise__: <T>(id: number) => { value: T } | undefined;
   }
 }
+
+
+let promise_id_current = 0;
+window.__remote_promise_table__ = {};
+window.__add_promise__ = (maybe) => {
+  const id = promise_id_current++;
+  console.log("Added promise with:", id);
+  if (maybe instanceof Promise) {
+    maybe.then((val) => window.__remote_promise_table__[id] = val);
+  } else {
+    window.__remote_promise_table__[id] = maybe;
+  }
+
+  return id;
+}
+window.__poll_promise__ = function <T>(id: number) {
+  if (window.__remote_promise_table__.hasOwnProperty(id)) {
+    const val = window.__remote_promise_table__[id];
+    delete window.__remote_promise_table__[id];
+    console.log("Polled::Ready(", val, ")")
+    return { value: val as T };
+  }
+
+  return undefined;
+}
+
 
 const CURRENT_CONDITION = "$CURRENT_CONDITION";
 
@@ -188,6 +217,7 @@ window.experiment = {
   async participant(id) {
     if (id === this._.participant) return;
     await db._allTables["user-logging"].clear();
+    localStorage.setItem(`__TRACKING__.data`, JSON.stringify({}));
 
     this._.participant = id;
   },
@@ -233,16 +263,16 @@ window.experiment = {
         ///@ts-expect-error - Let me do this.
         delete this._[CURRENT_CONDITION];
 
-        return JSON.parse(JSON.stringify(this._));
+        let tmp = JSON.parse(JSON.stringify(this._));
+
+        const def = defaultState();
+
+        this._.data = def.data;
+        this._.participant = def.participant;
+        this._[CURRENT_CONDITION] = def.participant;
+
+        return tmp;
       }
-
-
-      const defValue = defaultState();
-
-      this._[CURRENT_CONDITION] = defValue[CURRENT_CONDITION] as any;
-      this._.data = defValue.data;
-      this._.participant = defValue.participant;
-
     } else {
       console.warn("EXPERIMENT PARTICIPANT NOT SET!");
     }
