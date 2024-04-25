@@ -45,6 +45,7 @@ import {
   getAvailabilityCache,
   setAvailabilityCache,
 } from "../lib/availability_cache.js";
+import moment from "moment";
 
 @Security("auth0")
 @Route("user")
@@ -95,11 +96,25 @@ export class UsersController extends ControllerWrap<User> {
     const id = new ObjectId(userId);
 
     return this.withUserId(req, async (currUser) => {
+      const matches = await this.getDb().matches();
+      const matchTimes = (
+        await matches.find({
+          players: id,
+          status: { $in: [MatchStatus.Request, MatchStatus.Accepted] },
+        })
+      ).map((m) => m.date);
+
+      const now = moment().toISOString();
       const caches = await this.getDb().availabilityCaches();
       const res = await caches.page({
         ...query,
         query: {
-          $and: [{ availablePeople: id }, { availablePeople: currUser }],
+          $and: [
+            { availablePeople: id },
+            { availablePeople: currUser },
+            { start: { $not: { $in: matchTimes } } },
+            { start: { $gt: now } },
+          ],
         },
         sort: { start: 1 },
       });

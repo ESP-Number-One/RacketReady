@@ -75,17 +75,20 @@ export function SuggestedPeople() {
   useEffect(() => {
     console.log({ proposedTimes, rawRecAvail });
     setRecommendationTimes(
-      rawRecAvail.map((info) => {
-        return {
-          ...info,
-          availability: info.availability
-            .filter(
-              (t) =>
-                moment().isBefore(t) && !proposedTimes.some((b) => t.isSame(b)),
-            )
-            .slice(0, 3),
-        };
-      }),
+      rawRecAvail
+        .map((info) => {
+          return {
+            ...info,
+            availability: info.availability
+              .filter(
+                (t) =>
+                  moment().isBefore(t) &&
+                  !proposedTimes.some((b) => t.isSame(b)),
+              )
+              .slice(0, 3),
+          };
+        })
+        .filter((info) => info.availability.length > 0),
     );
   }, [rawRecAvail, proposedTimes, setRecommendationTimes]);
 
