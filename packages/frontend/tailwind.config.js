@@ -3,6 +3,15 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      keyframes: {
+        "blur-in": {
+          "0%": { "backdrop-filter": "blur(0px)" },
+          "100%": { "backdrop-filter": "blur(10px)" },
+        },
+      },
+      animation: {
+        burring: "blur-in 2s cubic-bezier(0.22,0.78,0.72,0.38) forwards",
+      },
       colors: {
         // Sports
         badminton: "#16a085",

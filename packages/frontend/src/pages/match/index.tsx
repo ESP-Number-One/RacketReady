@@ -29,6 +29,7 @@ import { Input } from "../../components/form/input";
 import { Link } from "../../components/link";
 import { Stars } from "../../components/stars";
 import { useAsync } from "../../lib/async";
+import { Modal } from "../../lib/modal";
 
 export function SingleMatchPage(): ReactNode {
   const api = useContext(API);
@@ -78,19 +79,26 @@ export function SingleMatchPage(): ReactNode {
   };
 
   const cancelMatch = useCallback(() => {
-    if (__CONFIRM_CANCEL__) {
-      if (!confirm("Are you sure you want to cancel the match?")) {
-        return;
-      }
+    if (window.__CONFIRM_CANCEL__) {
+      void Modal.confirm(
+        [
+          { id: "no", label: "No, Keep", type: "other" },
+          { id: "yes", label: "Yes", type: "primary" },
+        ] as const,
+        "Are you sure you want to cancel the match?",
+        "Cancel match?",
+      ).then((t) => {
+        if (t === "yes") {
+          api
+            .match()
+            .cancel(new ObjectId(id ?? ""))
+            .then(() => {
+              viewNavigate("/");
+            })
+            .catch(setErrorFromError);
+        }
+      });
     }
-
-    api
-      .match()
-      .cancel(new ObjectId(id ?? ""))
-      .then(() => {
-        viewNavigate("/");
-      })
-      .catch(setErrorFromError);
   }, []);
 
   const sendMessage: FormEventHandler<HTMLFormElement> = useCallback(

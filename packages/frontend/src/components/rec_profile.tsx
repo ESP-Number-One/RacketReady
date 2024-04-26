@@ -11,6 +11,7 @@ import moment from "moment";
 import { ProfilePic } from "./profile_pic";
 import { Stars } from "./stars";
 import { Link } from "./link";
+import { Modal } from "../lib/modal";
 
 interface Info {
   availability: Moment[];
@@ -73,29 +74,31 @@ export function RecProfile({ user, availability, sport, proposeMatch }: Info) {
                 className="bg-p-grey-900 flex justify-between w-full text-white text-xl text-bold text-body px-5 pt-3 pb-3 rounded-lg"
                 key={`${user._id.toString()}-${i}`}
                 onClick={() => {
-                  if (__CONFIRM_PROPOSAL__) {
-                    if (
-                      !confirm(
-                        `You are sending a match request for ${time.format(
-                          "HH:mm",
-                        )}`,
-                      )
-                    ) {
-                      return;
-                    }
+                  if (window.__CONFIRM_PROPOSAL__) {
+                    void Modal.confirm(
+                      [
+                        { id: "no", label: "No, don't", type: "other" },
+                        { id: "yes", label: "Yes", type: "primary" },
+                      ] as const,
+                      `You are sending a match request to ${user.name
+                      } for ${time.format("HH:mm")}`,
+                      "Send match request?",
+                    ).then((res) => {
+                      if (res === "yes") {
+                        proposeMatch({
+                          date: time.toISOString(),
+                          to: user._id,
+                          sport: sport.sport,
+                        });
+
+                        setAvailabilities(
+                          availabilities.filter((t) => {
+                            return t !== time;
+                          }),
+                        );
+                      }
+                    });
                   }
-
-                  proposeMatch({
-                    date: time.toISOString(),
-                    to: user._id,
-                    sport: sport.sport,
-                  });
-
-                  setAvailabilities(
-                    availabilities.filter((t) => {
-                      return t !== time;
-                    }),
-                  );
                 }}
               >
                 <p className="text-left">{`${time.format("HH:mm")}-${endTime
