@@ -4,12 +4,12 @@ import type { Availability, Duration, User } from "@esp-group-one/types";
 import type { unitOfTime } from "moment";
 import moment from "moment";
 import Select from "react-select";
+import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import { API } from "../../state/auth";
 import { useAsync } from "../../lib/async";
 import { Form } from "../../components/form";
 import { Header } from "../../components/page/header";
 import { RadioButton } from "../../components/form/radio_button";
-import { Input } from "../../components/form/input";
 import { Feed } from "../../components/card/feed";
 
 export interface AvailabilityCreator {
@@ -72,36 +72,25 @@ export function NewForm({
 
       <div className="grid grid-cols-2 gap-2 mt-2">
         <div>
-          <label className="font-body font-bold text-xl" htmlFor="start">
-            Start
-          </label>
-          <Input
-            id="start"
-            type="time"
-            placeholder="Start time"
+          <TimePicker
+            label="Start time"
             onChange={(start) => {
-              setInfo({ ...info, start });
+              setInfo({ ...info, start: start?.format("HH:mm") ?? "" });
             }}
-            value={info.start}
-            required
+            defaultValue={moment(info.start)}
           />
         </div>
         <div>
           <div className="flex justify-end">
-            <label className="font-body font-bold text-xl" htmlFor="end">
-              End
-            </label>
+            <TimePicker
+              label="End time"
+              onChange={(end) => {
+                setInfo({ ...info, end: end?.format("HH:mm") ?? "" });
+                return undefined;
+              }}
+              defaultValue={moment(info.end)}
+            />
           </div>
-          <Input
-            value={info.end}
-            id="end"
-            type="time"
-            placeholder="End time"
-            onChange={(end) => {
-              setInfo({ ...info, end });
-            }}
-            required
-          />
         </div>
       </div>
     </div>
@@ -118,49 +107,38 @@ export function OldForm({
   const [showRecurring, setShowRecurring] = useState(false);
 
   return (
-    <div className="flex-none">
-      <Input
-        className="col-span-2 mt-2"
-        type="date"
+    <div className="flex-none mt-2 w-full">
+      <DatePicker
+        className="col-span-2 mt-4 w-full"
+        label="Availability Date"
+        value={moment(info.date[0])}
         onChange={(date) => {
-          setInfo({ ...info, date: [date] });
+          setInfo({
+            ...info,
+            date: [date?.toISOString() ?? moment().toISOString()],
+          });
         }}
-        placeholder="Availability Date"
-        value={info.date[0]}
-        required
       />
 
       <div className="grid grid-cols-2 gap-2 mt-2">
         <div>
-          <label className="font-body font-bold text-xl" htmlFor="start">
-            Start
-          </label>
-          <Input
-            id="start"
-            type="time"
-            placeholder="Start time"
+          <TimePicker
+            label="Start time"
             onChange={(start) => {
-              setInfo({ ...info, start });
+              setInfo({ ...info, start: start?.format("HH:mm:ss") ?? "" });
+              return undefined;
             }}
-            value={info.start}
-            required
+            defaultValue={moment(info.start)}
           />
         </div>
         <div>
-          <div className="flex justify-end">
-            <label className="font-body font-bold text-xl" htmlFor="end">
-              End
-            </label>
-          </div>
-          <Input
-            value={info.end}
-            id="end"
-            type="time"
-            placeholder="End time"
+          <TimePicker
+            label="End time"
             onChange={(end) => {
-              setInfo({ ...info, end });
+              setInfo({ ...info, end: end?.format("HH:mm:ss") ?? "" });
+              return undefined;
             }}
-            required
+            defaultValue={moment(info.end)}
           />
         </div>
       </div>
@@ -189,7 +167,7 @@ export function OldForm({
         <div className="flex gap-2 mt-2">
           <div className="relative bg-p-grey-100 text-white rounded-lg p-2 flex-none w-16">
             <input
-              className="font-body text-2xl font-bold text-white w-full bg-transparent focus:outline-none inline-flex items-center w-full transform transition duration-150 ease-in-out m-0"
+              className="font-body text-2xl font-bold text-white bg-transparent focus:outline-none inline-flex items-center w-full transform transition duration-150 ease-in-out m-0"
               type="number"
               min={1}
               step={1}
@@ -354,7 +332,7 @@ export function SetAvailabilityBody({
 
   return (
     <>
-      {__SHOW_ALT_AVAIL__ ? (
+      {window.__SHOW_ALT_AVAIL__ ? (
         <NewForm info={info} setInfo={setInfo} />
       ) : (
         <OldForm info={info} setInfo={setInfo} />
@@ -371,7 +349,7 @@ export function SetAvailability() {
   const api = useContext(API);
 
   const [info, setInfo] = useState<AvailabilityCreator>({
-    date: __SHOW_ALT_AVAIL__ ? [] : [""],
+    date: window.__SHOW_ALT_AVAIL__ ? [] : [""],
     start: "",
     end: "",
     recurring: undefined,
@@ -413,7 +391,7 @@ export function SetAvailability() {
     if (refresh.current) refresh.current();
 
     setInfo({
-      date: __SHOW_ALT_AVAIL__ ? [] : [""],
+      date: window.__SHOW_ALT_AVAIL__ ? [] : [""],
       start: "",
       end: "",
       recurring: undefined,

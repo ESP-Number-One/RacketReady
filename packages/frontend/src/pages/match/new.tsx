@@ -5,12 +5,12 @@ import { ObjectId } from "@esp-group-one/types";
 import AsyncSelect from "react-select/async";
 import moment from "moment";
 import { useSearchParams } from "react-router-dom";
+import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import { Form } from "../../components/form";
 import { API } from "../../state/auth";
 import { Header } from "../../components/page/header";
 import { SelectSport } from "../../components/form/select_sports";
 import { useAsync } from "../../lib/async";
-import { Input } from "../../components/form/input";
 import { useViewNav } from "../../state/nav";
 
 export function NewMatchPage() {
@@ -33,7 +33,7 @@ export function NewMatchPage() {
       throw new Error("Not all required fields were filled in!");
     }
 
-    const datetime = moment(`${date} ${time}`);
+    const datetime = moment(`${date}T${time}`, "YYYY-MM-DDTHH:mm:ss");
     const req: MatchProposal = {
       date: datetime.toISOString(),
       to: opponent,
@@ -109,20 +109,19 @@ export function NewMatchPage() {
               />
             )}
 
-            <Input
-              type="date"
-              placeholder="Match date"
-              onChange={setDate}
-              value={date}
-              required
+            <DatePicker
+              label="Match date"
+              onChange={(a) => {
+                setDate(a?.format("YYYY-MM-DD") ?? "");
+              }}
             />
 
-            <Input
-              type="time"
-              placeholder="Match time"
-              onChange={setTime}
-              value={time}
-              required
+            <TimePicker
+              label="Match time"
+              onChange={(t) => {
+                setTime(t?.format("HH:mm:ss") ?? "");
+                return undefined;
+              }}
             />
           </>
         )}

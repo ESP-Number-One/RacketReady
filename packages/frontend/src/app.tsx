@@ -1,6 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import { NewLeaguePage } from "./pages/league/new.js";
 import { API, type AuthResult, handleApi } from "./state/auth.js";
 import { LoginButton } from "./components/auth.js";
@@ -55,24 +57,26 @@ export function App() {
     <>
       <Tracker />
       <API.Provider value={ok.client}>
-        <Routes>
-          <Route index element={<UpcomingMatch />} />
-          <Route path="/profile/:id" element={<ProfilePage />} />
-          <Route path="/me" element={<YourProfile />} />
-          <Route path="/me/availability" element={<SetAvailability />} />
-          <Route path="/me/edit" element={<EditUser />} />
-          <Route path="/me/sports/edit" element={<EditSports />} />
-          <Route path="/match/new" element={<NewMatchPage />} />
-          <Route path="/league/:id" element={<SingleLeaguePage />} />
-          <Route path="/match/:id" element={<SingleMatchPage />} />
-          <Route path="/match/complete" element={<CompleteMatchForm />} />
-          <Route path="/match/proposals" element={<MatchProposal />} />
-          <Route path="/league/new" element={<NewLeaguePage />} />
-          <Route path="/leagues" element={<YourLeagues />} />
-          <Route path="/leagues/discover" element={<DiscoverLeagues />} />
-          <Route path="/search" element={<SuggestedPeople />} />
-          <Route path="/signup" element={<SignUp />} />
-        </Routes>
+        <LocalizationProvider dateAdapter={AdapterMoment}>
+          <Routes>
+            <Route index element={<UpcomingMatch />} />
+            <Route path="/profile/:id" element={<ProfilePage />} />
+            <Route path="/me" element={<YourProfile />} />
+            <Route path="/me/availability" element={<SetAvailability />} />
+            <Route path="/me/edit" element={<EditUser />} />
+            <Route path="/me/sports/edit" element={<EditSports />} />
+            <Route path="/match/new" element={<NewMatchPage />} />
+            <Route path="/league/:id" element={<SingleLeaguePage />} />
+            <Route path="/match/:id" element={<SingleMatchPage />} />
+            <Route path="/match/complete" element={<CompleteMatchForm />} />
+            <Route path="/match/proposals" element={<MatchProposal />} />
+            <Route path="/league/new" element={<NewLeaguePage />} />
+            <Route path="/leagues" element={<YourLeagues />} />
+            <Route path="/leagues/discover" element={<DiscoverLeagues />} />
+            <Route path="/search" element={<SuggestedPeople />} />
+            <Route path="/signup" element={<SignUp />} />
+          </Routes>
+        </LocalizationProvider>
       </API.Provider>
     </>
   ) : (
