@@ -98,6 +98,18 @@ export function RecProfile({ user, availability, sport, proposeMatch }: Info) {
                         );
                       }
                     });
+                  } else {
+                    proposeMatch({
+                      date: time.toISOString(),
+                      to: user._id,
+                      sport: sport.sport,
+                    });
+
+                    setAvailabilities(
+                      availabilities.filter((t) => {
+                        return t !== time;
+                      }),
+                    );
                   }
                 }}
               >
