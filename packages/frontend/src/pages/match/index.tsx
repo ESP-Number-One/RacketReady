@@ -79,6 +79,15 @@ export function SingleMatchPage(): ReactNode {
   };
 
   const cancelMatch = useCallback(() => {
+    const deleteMatch = () =>
+      api
+        .match()
+        .cancel(new ObjectId(id ?? ""))
+        .then(() => {
+          viewNavigate("/");
+        })
+        .catch(setErrorFromError);
+
     if (window.__CONFIRM_CANCEL__) {
       void Modal.confirm(
         [
@@ -89,15 +98,11 @@ export function SingleMatchPage(): ReactNode {
         "Cancel match?",
       ).then((t) => {
         if (t === "yes") {
-          api
-            .match()
-            .cancel(new ObjectId(id ?? ""))
-            .then(() => {
-              viewNavigate("/");
-            })
-            .catch(setErrorFromError);
+          void deleteMatch();
         }
       });
+    } else {
+      void deleteMatch();
     }
   }, []);
 
