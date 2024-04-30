@@ -121,7 +121,7 @@ function PhaseThree({ nextPhase, progress, submitText }: PhaseProps) {
 
   const [allowProgression, setAllowProgression] = useState(false);
   const [info, setInfo] = useState<AvailabilityCreator>({
-    date: __SHOW_ALT_AVAIL__ ? [] : [""],
+    date: window.__SHOW_ALT_AVAIL__ ? [] : [""],
     start: "",
     end: "",
     recurring: undefined,
@@ -132,12 +132,12 @@ function PhaseThree({ nextPhase, progress, submitText }: PhaseProps) {
   const onSubmit = useCallback(async () => {
     const { date, start, end, recurring, recurringUnit } = info;
 
-    if (!date || !start || !end)
+    if (!date[0] || !start || !end)
       throw Error("Required fields were not filled in");
 
     const req: Availability = {
-      timeStart: moment(`${date} ${start}`).toISOString(),
-      timeEnd: moment(`${date} ${end}`).toISOString(),
+      timeStart: moment(`${date[0]} ${start}`).toISOString(),
+      timeEnd: moment(`${date[0]} ${end}`).toISOString(),
     };
 
     if (recurring) {
@@ -152,7 +152,7 @@ function PhaseThree({ nextPhase, progress, submitText }: PhaseProps) {
     if (refresh.current) refresh.current();
 
     setInfo({
-      date: __SHOW_ALT_AVAIL__ ? [] : [""],
+      date: window.__SHOW_ALT_AVAIL__ ? [] : [""],
       start: "",
       end: "",
       recurring: undefined,

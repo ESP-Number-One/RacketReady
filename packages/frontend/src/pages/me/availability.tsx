@@ -115,7 +115,7 @@ export function OldForm({
         onChange={(date) => {
           setInfo({
             ...info,
-            date: [date?.toISOString() ?? moment().toISOString()],
+            date: [date?.format("YYYY-MM-DD") ?? ""],
           });
         }}
       />
@@ -362,6 +362,7 @@ export function SetAvailability() {
     await Promise.all(
       info.date.map(async (date) => {
         const { start, end, recurring, recurringUnit } = info;
+        console.log({ start, end, date });
 
         if (!date || !start || !end)
           throw Error("Required fields were not filled in");

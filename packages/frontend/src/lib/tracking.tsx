@@ -17,7 +17,6 @@ let promise_id_current = 0;
 window.__remote_promise_table__ = {};
 window.__add_promise__ = (maybe) => {
   const id = promise_id_current++;
-  console.log("Added promise with:", id);
   if (maybe instanceof Promise) {
     maybe.then((val) => window.__remote_promise_table__[id] = val);
   } else {
@@ -30,7 +29,6 @@ window.__poll_promise__ = function <T>(id: number) {
   if (window.__remote_promise_table__.hasOwnProperty(id)) {
     const val = window.__remote_promise_table__[id];
     delete window.__remote_promise_table__[id];
-    console.log("Polled::Ready(", val, ")")
     return { value: val as T };
   }
 
@@ -87,11 +85,11 @@ const touch = {
         target: (e.target as HTMLElement)?.innerText
       })
       .then(() => {
-        console.log({
-          url: location.pathname,
-          e: "touchstart",
-          d: [...e.touches],
-        });
+        // console.log({
+        //   url: location.pathname,
+        //   e: "touchstart",
+        //   d: [...e.touches],
+        // });
       });
   },
   move: (e: TouchEvent) => {
@@ -122,11 +120,11 @@ const touch = {
         target: (e.target as HTMLElement)?.innerText
       })
       .then(() => {
-        console.log({
-          url: location.pathname,
-          e: "touchend",
-          d: [...e.touches],
-        });
+        // console.log({
+        //   url: location.pathname,
+        //   e: "touchend",
+        //   d: [...e.touches],
+        // });
       });
   },
   click: (e: MouseEvent) => {
@@ -140,11 +138,11 @@ const touch = {
         selected: (e.target as HTMLElement)?.innerText
       })
       .then(() => {
-        console.log({
-          url: location.pathname,
-          e: "click",
-          d: { x: e.clientX, y: e.clientY },
-        });
+        // console.log({
+        //   url: location.pathname,
+        //   e: "click",
+        //   d: { x: e.clientX, y: e.clientY },
+        // });
       });
   },
 };
